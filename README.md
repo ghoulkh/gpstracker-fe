@@ -15,4 +15,4 @@ Run `npm install --force` to resolve conflict version
 ### `npm run dev`
 
 Runs the app in the development mode.\
-Open [http://localhost:5174](http://localhost:5174) to view it in your browser.\
+Open [http://localhost:5174](http://localhost:5173) to view it in your browser.\
