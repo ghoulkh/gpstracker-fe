@@ -1,0 +1,5 @@
+export const LOGIN_ACCOUNT = "LOGIN_ACCOUNT"
+export const LOGOUT_ACCOUNT = "LOGOUT_ACCOUNT"
+export const UPDATE_USER_INFO = "UPDATE_USER_INFO"
+export const SAVE_INFO = "SAVE_INFO"
+export const API_KEY = "AIzaSyAKS_CZ0CQJBMzZRKy5MC3n8yZvGRnJYn8"
