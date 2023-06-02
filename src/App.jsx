@@ -1,35 +1,64 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '../public/vite.svg'
-import './App.css'
+import './App.css';
+import {BrowserRouter, Routes, Route} from "react-router-dom";
+import {Component} from "react";
+import {LoginNotFound} from "./Page/LoginNotFound.jsx";
+import Header from "./Page/Header.jsx";
+import Body from "./Page/Body.jsx";
+import Footer from "./Page/Footer.jsx";
+import Login from "./Page/Login.jsx";
+import MapContainer from "./Page/MapContainer.jsx";
 
-function App() {
-  const [count, setCount] = useState(0)
+export default class HouseManagement extends Component {
+    constructor(props) {
+        super(props)
+        this.state = {
+            isLoggedIn: !!JSON.parse(localStorage.getItem('USER')),
+            loggedInUserObj: JSON.parse(localStorage.getItem('USER')) ? {username: JSON.parse(localStorage.getItem('USER'))['userInfo']} : {},
+        }
+        this.setLoggedInUser = this.setLoggedInUser.bind(this)
+    }
 
-  return (
-    <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank" rel="noreferrer">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank" rel="noreferrer">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+
+    setLoggedInUser(loggedInUserObj) {
+        this.setState({isLoggedIn: true, loggedInUserObj: {...loggedInUserObj}})
+    }
+
+    render() {
+        return (
+            <div className="App">
+                <BrowserRouter>
+                    <Routes>
+                        <Route path="/"
+                               element={
+                                   <>
+                                       <Header loggedInUserObj={this.state.loggedInUserObj}/>
+                                       <Body/>
+                                       <Footer/>
+                                   </>
+                               }>
+
+                        </Route>
+                        {!this.state.isLoggedIn ?
+                            <Route path="/login"
+                                   element={
+                                       <Login loginProp={this.setLoggedInUser}/>
+                                   }/> :
+                            <Route path="/login" element={<LoginNotFound/>}/>
+                        }
+                        <Route>
+                            <Route path="/location"
+                                   element={
+                                       <>
+                                           <Header loggedInUserObj={this.state.loggedInUserObj}/>
+                                           <MapContainer></MapContainer>
+                                           <Footer/>
+                                       </>
+
+                                   }/>
+                        </Route>
+                    </Routes>
+                </BrowserRouter>
+            </div>
+        );
+    }
 }
-
-export default App
