@@ -38,13 +38,6 @@ export default class HouseManagement extends Component {
                                }>
 
                         </Route>
-                        {!this.state.isLoggedIn ?
-                            <Route path="/login"
-                                   element={
-                                       <Login loginProp={this.setLoggedInUser}/>
-                                   }/> :
-                            <Route path="/login" element={<LoginNotFound/>}/>
-                        }
                         <Route>
                             <Route path="/location"
                                    element={

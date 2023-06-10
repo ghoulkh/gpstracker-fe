@@ -1,0 +1,74 @@
+.main-header {
+    padding: 1rem 2rem 1rem 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #f5f5f5;
+}
+.logo-header {
+    text-align: center;
+    font-size: 25px;
+    display: flex;
+    flex-direction: column;
+}
+.logo-header-1 {
+    width: 100%;
+    display: flex;
+}
+.HUST-header {
+    align-items: center;
+    font-weight: 500;
+    width: 35%;
+    background: #525252;
+    color: #ffffff;
+}
+.tracking-header {
+    align-items: center;
+    font-weight: 500;
+    width: 65%;
+    background: #EA0D34;
+    color: #ffffff;
+}
+.logo-header-2 {
+    color: #525252;
+    font-weight: 500;
+    font-size: 15px;
+}
+.title-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.title-info-header {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #172B47;
+}
+.div-login-header {
+    margin-left: 3rem;
+}
+.btn-login-header {
+    color: #ffffff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: linear-gradient(270deg, #BA1318 0%, #E61A45 60.42%, #EE0000 100%);
+    border-radius: 30px;
+    padding: 12px 24px;
+    font-weight: bold;
+    text-align: center;
+    font-size: 16px;
+}
+.li-title-header {
+    cursor: pointer;
+    font-size: 15px;
+    font-weight: bold;
+    text-align: center;
+    padding: 1rem 1rem;
+    transition: all 100ms ease;
+}
+.li-title-header:hover {
+    color: #E61A45;
+    border-bottom: 2px solid #E61A45;
+}

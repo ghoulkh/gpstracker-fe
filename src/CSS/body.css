@@ -1,0 +1,21 @@
+.main-body {
+}
+.title-background-body {
+    width: 100%;
+    position: absolute;
+    z-index: 1;
+}
+.div-image-background-body {
+    position: absolute;
+    z-index: 0;
+    width: 100%;
+    display: flex;
+    align-items: start;
+    justify-content: end;
+}
+.image-background-body {
+    width: 120vh;
+}
+.background-body {
+    height: fit-content;
+}
