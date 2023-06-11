@@ -11,6 +11,7 @@ import Register from "./Register.jsx";
 
 function Header(props) {
     const [clickLogin, setClickLogin] = useState(false);
+    const [register, setRegister] = useState(false);
     const [anchorProfile, setAnchorProfile] = useState();
 
 
@@ -21,6 +22,10 @@ function Header(props) {
 
     const onClickLogin = (value) => {
         setClickLogin(value)
+    }
+
+    const onClickRegister = (value) => {
+        setRegister(value)
     }
 
     const handleHoverProfile = (event) => {
@@ -125,7 +130,7 @@ function Header(props) {
                         >
                             <div className="items-app-bar2">
                                 <MenuItem className="item-app-bar3"
-                                          onClick={() => onClickLogin(true)}>
+                                          onClick={() => onClickRegister(true)}>
                                     Mở tài khoản</MenuItem>
                                 <MenuItem className="item-app-bar3"
                                           onClick={() => handleClickItem("/change-password")}>
@@ -141,8 +146,9 @@ function Header(props) {
                 <Login loginProp={props.loginProp}
                        clickLoginProp={onClickLogin}/>
             </div>
-            <div className={clickLogin ? "login-click" : "none-click-login"}>
+            <div className={register ? "login-click" : "none-click-login"}>
                 <Register loginProp={props.loginProp}
+                          clickRegisterProp={onClickRegister}
                           clickLoginProp={onClickLogin}/>
             </div>
         </>

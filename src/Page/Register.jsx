@@ -11,11 +11,13 @@ function Register(props) {
     const [phone, setPhone] = useState("");
 
     Register.propTypes = {
+        clickRegisterProp: PropTypes.func,
         clickLoginProp: PropTypes.func,
         loginProp: PropTypes.func,
     };
     const onClickExit = () => {
         props.clickLoginProp(false)
+        props.clickRegisterProp(false)
     }
 
     useEffect(() => {
