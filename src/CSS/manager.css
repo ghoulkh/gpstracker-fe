@@ -1,0 +1,14 @@
+.main-manager {
+    display: flex;
+}
+.info-manager {
+    width: 45%;
+
+}
+.map-info > div:first-child{
+    width: 55% !important;
+    height: 90% !important;
+}
+.map-info > div:first-child > div:first-child {
+    height: 90% !important;
+}

@@ -1,12 +1,10 @@
 import './App.css';
 import {BrowserRouter, Routes, Route} from "react-router-dom";
 import {Component} from "react";
-import {LoginNotFound} from "./Page/LoginNotFound.jsx";
 import Header from "./Page/Header.jsx";
 import Body from "./Page/Body.jsx";
 import Footer from "./Page/Footer.jsx";
-import Login from "./Page/Login.jsx";
-import MapContainer from "./Page/MapContainer.jsx";
+import Manager from "./Page/Manager.jsx";
 
 export default class HouseManagement extends Component {
     constructor(props) {
@@ -22,8 +20,8 @@ export default class HouseManagement extends Component {
     setLoggedInUser(loggedInUserObj) {
         this.setState({isLoggedIn: true, loggedInUserObj: {...loggedInUserObj}})
     }
-
     render() {
+        console.log(this.state.loggedInUserObj)
         return (
             <div className="App">
                 <BrowserRouter>
@@ -31,7 +29,8 @@ export default class HouseManagement extends Component {
                         <Route path="/"
                                element={
                                    <>
-                                       <Header loggedInUserObj={this.state.loggedInUserObj}/>
+                                       <Header loginProp={this.setLoggedInUser}
+                                               loggedInUserObj={this.state.loggedInUserObj}/>
                                        <Body/>
                                        <Footer/>
                                    </>
@@ -42,8 +41,9 @@ export default class HouseManagement extends Component {
                             <Route path="/location"
                                    element={
                                        <>
-                                           <Header loggedInUserObj={this.state.loggedInUserObj}/>
-                                           <MapContainer></MapContainer>
+                                           <Header loginProp={this.setLoggedInUser}
+                                                   loggedInUserObj={this.state.loggedInUserObj}/>
+                                           <Manager></Manager>
                                            <Footer/>
                                        </>
 
