@@ -7,6 +7,7 @@ import {Menu, MenuItem} from "@mui/material";
 import {DownOutlined} from "@ant-design/icons";
 import service from "../API/Service.js";
 import iconAccount from "../Image/icon-account.png";
+import Register from "./Register.jsx";
 
 function Header(props) {
     const [clickLogin, setClickLogin] = useState(false);
@@ -42,10 +43,22 @@ function Header(props) {
         window.location.href = "/";
     }
 
+    const scrollToDiv = (id) => {
+        const element = document.getElementById(id);
+        if (element) {
+            element.scrollIntoView({ behavior: 'smooth' });
+        }
+    };
+
+    const onClickRedirect = (url) => {
+        window.location.href = url
+    }
+
     return (
         <>
             <div className="main-header">
-                <div className="logo-header">
+                <div onClick={() => onClickRedirect("/")}
+                     className="logo-header">
                     <div className="logo-header-1">
                         <div className="HUST-header">
                             HUST
@@ -60,7 +73,8 @@ function Header(props) {
                 </div>
                 <div className="title-header">
                     <div className="title-info-header">
-                        <div className="li-title-header">
+                        <div onClick={() => scrollToDiv('uses-body')}
+                             className="li-title-header">
                             Tính năng
                         </div>
                         <div className="li-title-header">
@@ -90,7 +104,8 @@ function Header(props) {
                             <div
                                 className="user-profile"
                             >
-                                <img src={props.loggedInUserObj.username.avatar !== undefined ?
+                                <img style={{marginRight:"0.5rem"}}
+                                     src={props.loggedInUserObj.username.avatar !== undefined ?
                                     props.loggedInUserObj.username.avatar : iconAccount
                                 }
                                      alt=""></img>
@@ -110,7 +125,7 @@ function Header(props) {
                         >
                             <div className="items-app-bar2">
                                 <MenuItem className="item-app-bar3"
-                                          onClick={() => handleClickItem("/change-password")}>
+                                          onClick={() => onClickLogin(true)}>
                                     Mở tài khoản</MenuItem>
                                 <MenuItem className="item-app-bar3"
                                           onClick={() => handleClickItem("/change-password")}>
@@ -125,6 +140,10 @@ function Header(props) {
             <div className={clickLogin ? "login-click" : "none-click-login"}>
                 <Login loginProp={props.loginProp}
                        clickLoginProp={onClickLogin}/>
+            </div>
+            <div className={clickLogin ? "login-click" : "none-click-login"}>
+                <Register loginProp={props.loginProp}
+                          clickLoginProp={onClickLogin}/>
             </div>
         </>
     )

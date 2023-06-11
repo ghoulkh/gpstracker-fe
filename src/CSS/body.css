@@ -1,9 +1,27 @@
 .main-body {
 }
 .title-background-body {
-    width: 100%;
+    width: 25%;
+    display: flex;
+    flex-direction: column;
+    justify-content: start;
+    align-items: start;
     position: absolute;
     z-index: 1;
+    padding: 5rem 0 0 5rem;
+}
+.title-background-body-1 {
+    font-size: 33px;
+    visibility: visible;
+    animation-duration: 1.5s;
+    animation-name: fadeInUp;
+    color: #172B47;
+    font-family: "FS Magistral-Medium", "Segoe UI", serif;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 56px;
+    text-transform: uppercase;
+    margin-bottom: 2rem;
 }
 .div-image-background-body {
     position: absolute;
@@ -17,5 +35,69 @@
     width: 120vh;
 }
 .background-body {
-    height: fit-content;
+    height: 900px;
+}
+.uses-body {
+    display: flex;
+    flex-direction: column;
+    justify-content: start;
+    align-items: center;
+}
+.div-btn-use-body {
+    margin-top: 2rem;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.icon-btn-use-body {
+    cursor: pointer;
+    padding: 0 3rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+.info-use-body {
+    border-top: 2px solid #c2c2c2;
+    display: flex;
+    padding-top: 3rem;
+}
+.text-icon-use-body {
+    color: #172B47;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+}
+.text-icon-use-body-click {
+    color: #EA0D34;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+}
+.text-info-use-body {
+    display: flex;
+    flex-direction: column;
+    justify-content: start;
+    align-items: start;
+    padding: 2rem 1rem;
+}
+.title-info-use-body {
+    margin-left: 1rem;
+    font-weight: bold;
+    font-size: 20px;
+    font-family: 'Sarabun', sans-serif;
+    color: #172B47;
+}
+.h2-uses-body {
+    font-family: "FS Magistral-Medium", "Segoe UI", serif;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 56px;
+    text-align: center;
+    text-transform: uppercase;
+    color: #172B47;
+    font-size: 36px;
+}
+.CaretUpOutlined {
+    color: #EA0D34;
+    font-size: 30px;
 }

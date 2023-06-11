@@ -6,6 +6,7 @@
     background: #f5f5f5;
 }
 .logo-header {
+    cursor: pointer;
     text-align: center;
     font-size: 25px;
     display: flex;
