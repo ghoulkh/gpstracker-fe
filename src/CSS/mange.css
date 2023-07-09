@@ -18,8 +18,22 @@
     width: 100%;
     font-size: 12px;
     font-weight: 500;
+    color: green;
 }
 .car-user-info:hover {
+    border: 1px solid #990000;
+}
+.car-user-info-disable {
+    padding: unset;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    text-align: center;
+    width: 100%;
+    font-size: 12px;
+    font-weight: 500;
+}
+.car-user-info-disable:hover {
     border: 1px solid #990000;
 }
 .rfid {
@@ -52,4 +66,31 @@
     margin-top: 1rem;
     font-weight: 500;
     margin-bottom: 0.5rem;
+}
+.title-popup {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    font-size: 20px;
+    font-weight: 500;
+    padding: 1rem 2rem;
+}
+.div-btn-popup {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 3rem;
+}
+.body-popup-1 {
+    border: 3px solid #990000;
+    border-radius: 5px;
+}
+.btn-popup {
+    background: #c2c2c2;
+    width: 45%;
+}
+.btn-popup:hover {
+    background: #990000;
 }

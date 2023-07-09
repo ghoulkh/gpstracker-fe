@@ -1,9 +1,10 @@
 import {useState, useEffect} from 'react';
-import {parseISO, startOfDay, endOfDay, format, addMilliseconds} from 'date-fns';
+import {parseISO, format} from 'date-fns';
 import "../../CSS/time-slider.css"
 import service from "../../API/Service.js";
+import moment from "moment";
 
-function TimeSlider() {
+function TimeSlider(props) {
     const [startTime, setStartTime] = useState(0);
     const [endTime, setEndTime] = useState(0);
     const [currentTime, setCurrentTime] = useState(0);
@@ -16,15 +17,45 @@ function TimeSlider() {
 
     useEffect(() => {
         service.getInfoCar(1, 20).then(data => {
-            console.log(data)
             setUser(data)
         })
     }, [])
 
     useEffect(() => {
-        // Cập nhật currentTime theo thời gian trượt thanh
         setCurrentTime(startTime);
     }, [startTime]);
+
+    useEffect(() => {
+        if (isPlaying && rfidValue.length > 0 && startTime && currentTime) {
+            setPosition([])
+            service.getPositionRfidInOneDay(rfidValue, startTime, currentTime)
+                .then(data => {
+                    if (data) {
+                        const list = []
+                        if (data && data[0]) {
+                            list.push(data[0])
+                            setPosition(list)
+                            props.setMarker(list)
+                        }
+                    }
+                });
+        } else {
+            if (rfidValue.length > 0 && startTime && endTime) {
+                service.getPositionRfidInOneDay(rfidValue, startTime, endTime)
+                    .then(data => {
+                        if (data) {
+                            const list = [];
+                            data.forEach(i => {
+                                list.push(i)
+                            })
+                            setPosition(list);
+                            props.setMarker(list)
+                        }
+                    });
+            }
+        }
+
+    }, [rfidValue, startTime, endTime, currentTime, isPlaying]);
 
     const handleSliderChange = (event) => {
         const value = parseInt(event.target.value);
@@ -79,7 +110,7 @@ function TimeSlider() {
         return (
             <>
                 {user.map((data, index) => (
-                    <button onClick={() => handleInputChange(data)} key={index} className="car-user-info">
+                    <button onClick={() => handleInputChange(data)} key={index} className="car-user-info-disable">
                         <div className="rfid">
                             <div>{data.rfid}</div>
                         </div>
@@ -106,15 +137,15 @@ function TimeSlider() {
     const CarInfo = () => {
         return (
             <>
-                {position.reverse().map((data, index) => {
+                {position && position.reverse().map((data, index) => {
                     const dateObj = new Date(data.date);
-                    const vietnamTime = new Date(dateObj.getTime());
-                    const hours = vietnamTime.getHours().toString().padStart(2, '0');
-                    const minutes = vietnamTime.getMinutes().toString().padStart(2, '0');
-                    const seconds = vietnamTime.getSeconds().toString().padStart(2, '0');
+                    const vietnamTime = moment(dateObj).utcOffset(7);
+                    const hours = vietnamTime.hours().toString().padStart(2, '0');
+                    const minutes = vietnamTime.minutes().toString().padStart(2, '0');
+                    const seconds = vietnamTime.seconds().toString().padStart(2, '0');
                     const formattedTime = `${hours}:${minutes}:${seconds}`;
                     return (
-                        <button onClick={() => handleInputChange(data)} key={index} className="car-user-info">
+                        <button onClick={() => handleInputChange(data)} key={index} className="car-user-info-disable">
                             <div className="rfid">
                                 <div>{formattedTime}</div>
                             </div>

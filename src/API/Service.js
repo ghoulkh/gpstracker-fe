@@ -38,8 +38,8 @@ let service = {
         let url = `api/positions?rfid=${rfid}&start_time=${startTime}&end_time=${endTime}`;
         return method.get(url);
     },
-    getInfoPost: id => {
-        let url = "api/post/" + id;
+    getPositionHistoryByRfid: (rfid, pageIndex, pageSize) => {
+        let url = `api/positions/${rfid}?page_index=${pageIndex}&page_size=${pageSize}`;
         return method.get(url);
     },
     getHouseFilter: params => {

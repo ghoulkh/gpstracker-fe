@@ -92,7 +92,7 @@ function Header(props) {
                 </div>
                 <div className="title-header">
                     {isAdmin === 'admin' && <div className="title-header-text">{title}</div>}
-                    {isAdmin === 'autonomous' &&
+                    {isAdmin === 'anonymous' &&
                         <div className="title-info-header">
                             <div onClick={() => scrollToDiv('uses-body')}
                                  className="li-title-header">

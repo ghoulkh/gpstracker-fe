@@ -46,9 +46,10 @@ class Manager extends Component {
                                 </select>
                             </div>
                             {this.state.mode === 'manage' &&
-                                <Manage setMarker={(marker) => this.setMarker(marker)} user={this.state.user}/>}
+                                <Manage setMarker={(marker) => this.setMarker(marker)}
+                                        user={this.state.user}/>}
                             {this.state.mode === 'video' &&
-                                <TimeSlider/>}
+                                <TimeSlider setMarker={(marker) => this.setMarker(marker)}/>}
                         </div>
                     </div>
                     <div className="map-manager">

@@ -53,18 +53,20 @@ function MapContainer(props) {
                                 latLng.lat();
                                 latLng.lng();
                             }}>
-                            {markers.map((data, index) => {
-                                const position = { lat: data.lat, lng: data.lon };
-                                return(
-                                    <Marker
-                                        key={index}
-                                        position={position}
-                                        carInfo={data}
-                                        onClick={onMarkerClick}
-                                        onClose={handleMarkerClick}
-                                        icon={iconMaker}
-                                    />
-                                )
+                            {markers && markers.map((data, index) => {
+                                if (data) {
+                                    const position = { lat: data.lat, lng: data.lon };
+                                    return(
+                                        <Marker
+                                            key={index}
+                                            position={position}
+                                            carInfo={data}
+                                            onClick={onMarkerClick}
+                                            onClose={handleMarkerClick}
+                                            icon={iconMaker}
+                                        />
+                                    )
+                                }
                             })
                             }
                             <InfoWindow
