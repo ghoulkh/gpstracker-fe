@@ -1,0 +1,10 @@
+.time-slider {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: start;
+    padding: 1rem 1rem;
+    border: 1px solid #990000;
+    border-radius: 1rem;
+    margin-top: 1rem;
+}

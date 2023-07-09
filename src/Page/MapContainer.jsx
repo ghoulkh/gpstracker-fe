@@ -1,52 +1,43 @@
 import {Map, Marker, InfoWindow, GoogleApiWrapper} from 'google-maps-react';
-import {useState} from "react";
+import {useEffect, useState} from "react";
 import {API_KEY} from "../Const/ActionType.js";
+import PropTypes from "prop-types";
+import iconMaker from '../Image/icon-marker.png';
 
+
+// eslint-disable-next-line react-refresh/only-export-components
 function MapContainer(props) {
+    MapContainer.propTypes = {
+        google: PropTypes.func,
+        position: PropTypes.func,
+        markers: PropTypes.array,
+    };
+
     const [showingInfoWindow, setShowingInfoWindow] = useState(false);
     const [activeMarker, setActiveMarker] = useState({});
-    const [selectedPlace, setSelectedPlace] = useState({});
+    const [carInfo, setCarInfo] = useState({});
     const [markers, setMarkers] = useState([]);
     const [currentLocation, setCurrentLocation] = useState({
         lat: 21.0285,
         lng: 105.8542,
     });
-    const [zoom, setZoom] = useState(13);
+    const [zoom] = useState(13);
+
+    useEffect(() => {
+        setMarkers(props.markers)
+    }, [props.markers])
 
     const onMarkerClick = (props, marker) => {
-        setSelectedPlace(props);
         setActiveMarker(marker);
         setShowingInfoWindow(true);
         setCurrentLocation(props.position);
+        setCarInfo(marker.carInfo)
     };
 
     const handleMarkerClick = () => {
         setShowingInfoWindow(false)
     };
 
-    const displayMarkers = () => {
-        return markers.map((marker, index) => {
-            return (
-                <Marker
-                    key={index}
-                    id={index}
-                    image={marker.imagesUrl}
-                    name={marker.title}
-                    price={marker.price}
-                    address={marker.address}
-                    position={{
-                        lat: marker.lat,
-                        lng: marker.lnp,
-                    }}
-                    // icon={iconMaker}
-                    onClick={onMarkerClick}
-                    onClose={handleMarkerClick}
-                />
-            );
-        });
-    };
-    console.log(currentLocation)
-    console.log(zoom)
     return (
         <>
             <div className="map">
@@ -62,13 +53,31 @@ function MapContainer(props) {
                                 latLng.lat();
                                 latLng.lng();
                             }}>
-                            {displayMarkers}
+                            {markers.map((data, index) => {
+                                const position = { lat: data.lat, lng: data.lon };
+                                return(
+                                    <Marker
+                                        key={index}
+                                        position={position}
+                                        carInfo={data}
+                                        onClick={onMarkerClick}
+                                        onClose={handleMarkerClick}
+                                        icon={iconMaker}
+                                    />
+                                )
+                            })
+                            }
                             <InfoWindow
                                 marker={activeMarker}
                                 visible={showingInfoWindow}
-                                google="" map="">
+                                google="" map={props.google}>
                                 <div className="map-info-in">
-                                    Đã click vào đây
+                                    <div>
+                                        RFID: {carInfo.rfid}
+                                    </div>
+                                    <div>
+                                        Tốc độ: {carInfo.speed}
+                                    </div>
                                 </div>
                             </InfoWindow>
                         </Map>
@@ -79,6 +88,7 @@ function MapContainer(props) {
     )
 }
 
+// eslint-disable-next-line react-refresh/only-export-components
 export default GoogleApiWrapper({
     apiKey: API_KEY,
 })(MapContainer);

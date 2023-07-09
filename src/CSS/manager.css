@@ -2,13 +2,28 @@
     display: flex;
 }
 .info-manager {
-    width: 45%;
-
+    width: 30%;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 .map-info > div:first-child{
-    width: 55% !important;
-    height: 90% !important;
+    width: 70% !important;
+    height: 100% !important;
 }
 .map-info > div:first-child > div:first-child {
-    height: 90% !important;
+    height: 100% !important;
+}
+.info {
+    background: #f4f4f4;
+    height: 95%;
+    width: 100%;
+    border-radius: 1rem;
+    padding: 1rem;
+}
+.info-select {
+    border: none;
+    width: 100%;
+    font-weight: bold;
 }

@@ -42,6 +42,7 @@
     flex-direction: column;
     justify-content: start;
     align-items: center;
+    height: 800px;
 }
 .div-btn-use-body {
     margin-top: 2rem;

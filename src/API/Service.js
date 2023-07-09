@@ -10,14 +10,6 @@ let service = {
         let url = "api/user";
         return method.post(params, url);
     },
-    forgot: params => {
-        let url = "api/auth/reset-pass";
-        return method.postForm(params, url);
-    },
-    sendMail: (params, username) => {
-        let url = "api/auth/forgot-mail/user/" + username;
-        return method.postForm(params, url);
-    },
     loginWithGoogle: () => {
         let url = "oauth2/authorization/google";
         window.location.href = config.HOST + '/' + url;
@@ -34,16 +26,16 @@ let service = {
         let url = "api/user";
         return method.get(url);
     },
-    postContent: params => {
-        let url = "api/post";
+    registerRfid: params => {
+        let url = "api/user/admin/car-info/author";
         return method.post(params, url);
     },
-    getSearch: params => {
-        let url = "api/search/address?" + params;
+    getInfoCar: (pageIndex, pageSize) => {
+        let url = `api/cars-info?page_index=${pageIndex}&page_size=${pageSize}`;
         return method.get(url);
     },
-    getHouse: params => {
-        let url = "api/search/houses?" + params;
+    getPositionRfidInOneDay: (rfid, startTime, endTime) => {
+        let url = `api/positions?rfid=${rfid}&start_time=${startTime}&end_time=${endTime}`;
         return method.get(url);
     },
     getInfoPost: id => {

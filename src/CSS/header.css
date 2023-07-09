@@ -40,6 +40,11 @@
     justify-content: space-between;
     align-items: center;
 }
+.title-header-text {
+    font-size: 20px;
+    font-weight: 500;
+    color: #EA0D34;
+}
 .title-info-header {
     display: flex;
     justify-content: center;

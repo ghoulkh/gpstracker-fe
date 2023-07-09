@@ -1,24 +1,38 @@
 import "../CSS/header.css";
 import "../CSS/login.css";
 import Login from "./Login.jsx";
-import {useState} from "react";
+import {useEffect, useState} from "react";
 import PropTypes from "prop-types";
 import {Menu, MenuItem} from "@mui/material";
 import {DownOutlined} from "@ant-design/icons";
 import service from "../API/Service.js";
 import iconAccount from "../Image/icon-account.png";
 import Register from "./Register.jsx";
+import auth from "../API/AuthService.js";
 
 function Header(props) {
     const [clickLogin, setClickLogin] = useState(false);
     const [register, setRegister] = useState(false);
     const [anchorProfile, setAnchorProfile] = useState();
-
+    const [title, setTile] = useState("");
+    const [isAdmin] = useState(auth.checkAdmin());
 
     Header.propTypes = {
         loginProp: PropTypes.func,
         loggedInUserObj: PropTypes.func,
     };
+
+    useEffect(() => {
+        switch (isAdmin) {
+            case 'admin':
+                setTile('Chào mừng quản lý đến với hệ thống');
+                break;
+            case 'user':
+                setTile('Chào mừng tài xế đến với hệ thống');
+                break;
+            default: break;
+        }
+    }, [isAdmin]);
 
     const onClickLogin = (value) => {
         setClickLogin(value)
@@ -77,18 +91,21 @@ function Header(props) {
                     </div>
                 </div>
                 <div className="title-header">
-                    <div className="title-info-header">
-                        <div onClick={() => scrollToDiv('uses-body')}
-                             className="li-title-header">
-                            Tính năng
+                    {isAdmin === 'admin' && <div className="title-header-text">{title}</div>}
+                    {isAdmin === 'autonomous' &&
+                        <div className="title-info-header">
+                            <div onClick={() => scrollToDiv('uses-body')}
+                                 className="li-title-header">
+                                Tính năng
+                            </div>
+                            <div className="li-title-header">
+                                Đối tượng sử dụng
+                            </div>
+                            <div className="li-title-header">
+                                Giới thiệu
+                            </div>
                         </div>
-                        <div className="li-title-header">
-                            Đối tượng sử dụng
-                        </div>
-                        <div className="li-title-header">
-                            Giới thiệu
-                        </div>
-                    </div>
+                    }
                     {props.loggedInUserObj.username === undefined &&
                         <div className="div-login-header">
                             <button onClick={() => onClickLogin(true)}
@@ -97,7 +114,7 @@ function Header(props) {
                             </button>
                         </div>
                     }
-                    {props.loggedInUserObj.username !== undefined && <div style={{
+                    {isAdmin === 'admin' && props.loggedInUserObj.username !== undefined && <div style={{
                         "display": "flex", "justifyContent": "center", "alignItems": "center"
                     }}
                     >
@@ -131,7 +148,50 @@ function Header(props) {
                             <div className="items-app-bar2">
                                 <MenuItem className="item-app-bar3"
                                           onClick={() => onClickRegister(true)}>
-                                    Mở tài khoản</MenuItem>
+                                    Kích hoạt tài khoản</MenuItem>
+                                <MenuItem className="item-app-bar3"
+                                          onClick={() => window.location.href = '/admin/manager'}>
+                                    Quản lý và vận hành</MenuItem>
+                                <MenuItem className="item-app-bar3"
+                                          onClick={() => handleClickItem("/change-password")}>
+                                    Đổi mật khẩu</MenuItem>
+                                <MenuItem className="item-app-bar3" onClick={() => handleLogout()}>
+                                    Đăng xuất</MenuItem>
+                            </div>
+                        </Menu>
+                    </div>}
+                    {isAdmin === 'user' && props.loggedInUserObj.username !== undefined && <div style={{
+                        "display": "flex", "justifyContent": "center", "alignItems": "center"
+                    }}
+                    >
+                        <button
+                            className="home-2"
+                            style={{display: "flex"}}
+                            onClick={(e) => handleHoverProfile(e)}
+                        >
+                            <div
+                                className="user-profile"
+                            >
+                                <img style={{marginRight:"0.5rem"}}
+                                     src={props.loggedInUserObj.username.avatar !== undefined ?
+                                         props.loggedInUserObj.username.avatar : iconAccount
+                                     }
+                                     alt=""></img>
+                                <div
+                                    className="text-name"
+                                    color="inherit">{props.loggedInUserObj.username.fullName}</div>
+                                <DownOutlined style={{marginLeft: "0.5rem", marginTop: "2px"}}/>
+                            </div>
+                        </button>
+                        <Menu
+                            id="user-profile-menu"
+                            className="user-profile-menu"
+                            anchorEl={anchorProfile}
+                            open={Boolean(anchorProfile)}
+                            onClose={() => handleCloseProfile()}
+                            MenuListProps={{onMouseLeave: () => handleCloseProfile()}}
+                        >
+                            <div className="items-app-bar2">
                                 <MenuItem className="item-app-bar3"
                                           onClick={() => handleClickItem("/change-password")}>
                                     Đổi mật khẩu</MenuItem>
@@ -149,7 +209,9 @@ function Header(props) {
             <div className={register ? "login-click" : "none-click-login"}>
                 <Register loginProp={props.loginProp}
                           clickRegisterProp={onClickRegister}
-                          clickLoginProp={onClickLogin}/>
+                          clickLoginProp={onClickLogin}
+                          isAdminClick={register}
+                />
             </div>
         </>
     )

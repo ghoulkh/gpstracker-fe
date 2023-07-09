@@ -5,6 +5,8 @@ import Header from "./Page/Header.jsx";
 import Body from "./Page/Body.jsx";
 import Footer from "./Page/Footer.jsx";
 import Manager from "./Page/Manager.jsx";
+import {ToastContainer} from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css';
 
 export default class HouseManagement extends Component {
     constructor(props) {
@@ -38,7 +40,7 @@ export default class HouseManagement extends Component {
 
                         </Route>
                         <Route>
-                            <Route path="/location"
+                            <Route path="/admin/manager"
                                    element={
                                        <>
                                            <Header loginProp={this.setLoggedInUser}
@@ -51,6 +53,7 @@ export default class HouseManagement extends Component {
                         </Route>
                     </Routes>
                 </BrowserRouter>
+                <ToastContainer/>
             </div>
         );
     }

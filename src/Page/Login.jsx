@@ -3,10 +3,14 @@ import {actLogin, actSaveInfo} from "../ActionService/Action.js";
 import {connect} from "react-redux";
 import {useEffect, useState} from "react";
 import service from "../API/Service.js";
+import Register from "./Register.jsx";
+import notice from "../Utils/Notice.js";
 
 function Login(props) {
     const [username, setUsername] = useState();
     const [password, setPassword] = useState();
+    const [register, setRegister] = useState(false);
+    const [clickLogin, setClickLogin] = useState(false);
 
     Login.propTypes = {
         clickLoginProp: PropTypes.func,
@@ -21,8 +25,17 @@ function Login(props) {
     useEffect(() => {
     }, []);
 
+    const onClickRegister = (value) => {
+        setRegister(value)
+    }
+
+    const onClickLogin = (value) => {
+        setClickLogin(value)
+    }
+
     const login = () => { //login with page
         if (username && password) {
+            notice.inf("Loading...")
             service.login({
                 username: username,
                 password: password,
@@ -34,14 +47,18 @@ function Login(props) {
                 service.currentUser()
                     .then(data => {
                         console.log(data)
-                        const {username, avatar, fullName, email, active} = data;
-                        onLoginComplete({username, avatar, fullName, email, active});
+                        onLoginComplete(data);
+                        notice.inf("Đăng nhập thành công")
                         window.location.reload();
                     }).catch(data => {
                     console.log(data)
+                    notice.err("Có lỗi xảy ra")
                 })
             }).catch(data => {
                 console.log(data)
+                if (data.code === 'APP-22') {
+                    notice.err("Sai tên đăng nhập hoặc mật khẩu")
+                }
             })
         }
     }
@@ -81,10 +98,21 @@ function Login(props) {
                             ĐĂNG NHẬP
                         </button>
                     </div>
+                    <div className="div-btn-login">
+                        <button onClick={() => onClickRegister(true)}
+                                className="btn-register">
+                            ĐĂNG KÝ
+                        </button>
+                    </div>
                 </div>
                 <div className="body-login-2">
                     Quên mật khẩu?
                 </div>
+            </div>
+            <div className={register ? "login-click" : "none-click-login"}>
+                <Register loginProp={props.loginProp}
+                          clickRegisterProp={onClickRegister}
+                          clickLoginProp={onClickLogin}/>
             </div>
         </>
     )
