@@ -12,6 +12,8 @@
   "dependencies": {
     "@ant-design/icons": "^5.1.4",
     "@emotion/styled": "^11.11.0",
+    "@mui/icons-material": "^5.14.0",
+    "@mui/lab": "^5.0.0-alpha.136",
     "@mui/material": "^5.13.4",
     "@mui/styled-engine": "^5.13.2",
     "@types/socket.io": "^3.0.2",

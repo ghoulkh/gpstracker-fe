@@ -7,8 +7,6 @@ import "../../CSS/mange.css"
 import PropTypes from "prop-types";
 import moment from "moment";
 import notice from "../../Utils/Notice.js";
-import Register from "../Register.jsx";
-import Login from "../Login.jsx";
 
 const UserManagementComponent = (props) => {
     UserManagementComponent.propTypes = {
@@ -27,19 +25,32 @@ const UserManagementComponent = (props) => {
     useEffect(() => {
         const socket = new SockJS(config.WS);
         const client = Stomp.over(socket);
+        const currentDate = new Date();
+        currentDate.setHours(0, 0, 0, 0);
+        const startTime = currentDate.getTime();
+        const endTime = startTime + 24 * 60 * 60 * 1000;
         if (rfidValue.length > 0) {
             client.connect({}, () => {
                 console.log('WebSocket connection opened');
                 rfidValue.forEach(value => {
                     client.subscribe('/rfid/' + value, message => {
                         console.log('Received message:', message.body);
-                        const newPosition = JSON.parse(message.body);
-                        const list = [...position];
-                        list.unshift(newPosition)
-                        setPosition(list);
-                        props.setMarker([list[0]])
+                        if (message) {
+                            service.getPositionRfidInOneDay(rfidValue, startTime, endTime)
+                                .then(data => {
+                                    if (data) {
+                                        const list = [];
+                                        data.forEach(i => {
+                                            console.log(i)
+                                            list.push(i)
+                                        })
+                                        setPosition(list);
+                                        props.setMarker([list[0]])
+                                    }
+                                });
+                        }
                     });
-                })
+                });
             });
         }
         return () => {

@@ -3,13 +3,17 @@ import "../CSS/manager.css"
 import {Component} from "react";
 import Manage from "./AdminManage/Manage.jsx";
 import TimeSlider from "./AdminManage/TimeSlider.jsx";
+import DirectoryTreeMapImage from "./AdminManage/Image/DirectoryTreeMapImage.jsx";
+import imageNotFound from "../Image/imageNotFound.png";
 
 class Manager extends Component {
     constructor(props) {
         super(props);
         this.state = {
             mode: '',
-            markers: []
+            markers: [],
+            linkImage: "",
+            errorImageUrl: ""
         }
     }
 
@@ -17,6 +21,20 @@ class Manager extends Component {
         this.setState({
             mode: event.target.value
         })
+    }
+
+    handleImageError = () => {
+        this.setState({
+            errorImageUrl: "error"
+        })
+    };
+
+    setLinkImage = (link) => {
+        this.setState({
+            linkImage: link,
+            errorImageUrl: ""
+        })
+        console.log(link)
     }
 
     setMarker = (markers) => {
@@ -50,11 +68,29 @@ class Manager extends Component {
                                         user={this.state.user}/>}
                             {this.state.mode === 'video' &&
                                 <TimeSlider setMarker={(marker) => this.setMarker(marker)}/>}
+                            {this.state.mode === 'image' &&
+                                <DirectoryTreeMapImage setLinkImage={(url) => this.setLinkImage(url)}/>}
+
                         </div>
                     </div>
-                    <div className="map-manager">
+                    {this.state.mode === 'image' ?
+                        <div style={{width:"100%"}}>
+                            <div>
+                                {this.state.linkImage ? (
+                                    !this.state.errorImageUrl &&
+                                    <img style={{ width: "100%" }} src={this.state.linkImage} onError={this.handleImageError} />
+                                ) : (
+                                    <img style={{ width: "100%" }} src={imageNotFound} onError={this.handleImageError} />
+                                )}
+                            </div>
+                            <div>
+                                {this.state.errorImageUrl && (
+                                    <img style={{ width: "100%" }} src={imageNotFound} alt="Fallback Image" />
+                                )}
+                            </div>
+                        </div> :
                         <MapContainer markers={this.state.markers}/>
-                    </div>
+                    }
                 </div>
             </>
         )

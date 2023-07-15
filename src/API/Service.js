@@ -42,13 +42,13 @@ let service = {
         let url = `api/positions/${rfid}?page_index=${pageIndex}&page_size=${pageSize}`;
         return method.get(url);
     },
-    getHouseFilter: params => {
-        let url = "api/search/houses/address-title?" + params;
+    getImage: () => {
+        let url = "api/files";
         return method.get(url);
     },
-    getDistrict: () => {
-        let url = "api/address/district?city=Thành phố Hà Nội";
-        return method.get(url);
+    showImage: (params) => {
+        let url = "api/image/" + params;
+        return method.getFile(url);
     },
     getStreet: params => {
         let url = "api/address/street?district=" + params;

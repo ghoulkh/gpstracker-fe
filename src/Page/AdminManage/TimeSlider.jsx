@@ -13,7 +13,8 @@ function TimeSlider(props) {
     const [user, setUser] = useState([]);
     const [rfidValue, setRfidValue] = useState([]);
     const [licensePlate, setLicensePlate] = useState("");
-    const [position, setPosition] = useState([])
+    const [position, setPosition] = useState([]);
+    const [selectedDays, setSelectedDays] = useState(0); // Default to 1 day ago
 
     useEffect(() => {
         service.getInfoCar(1, 20).then(data => {
@@ -57,9 +58,34 @@ function TimeSlider(props) {
 
     }, [rfidValue, startTime, endTime, currentTime, isPlaying]);
 
+    useEffect(() => {
+        if (selectedDays === 0) {
+            const currentDate = new Date();
+            currentDate.setHours(0, 0, 0, 0);
+            const startTime = currentDate.getTime();
+            const endTime = startTime + 24 * 60 * 60 * 1000;
+            setStartTime(startTime);
+            setEndTime(endTime);
+            setCurrentTime(startTime);
+        } else {
+            const currentDate = new Date();
+            currentDate.setHours(0, 0, 0, 0);
+            const startTime = currentDate - selectedDays * 24 * 60 * 60 * 1000;// Convert days to milliseconds
+            const endTime = startTime + 24 * 60 * 60 * 1000;
+            setStartTime(startTime);
+            setEndTime(endTime);
+            setCurrentTime(startTime); // Set currentTime to startTime when selecting a different number of days
+        }
+    }, [selectedDays]);
+
     const handleSliderChange = (event) => {
         const value = parseInt(event.target.value);
         setCurrentTime(value);
+    };
+
+    const handleSelectDaysChange = (event) => {
+        const selectedDays = parseInt(event.target.value);
+        setSelectedDays(selectedDays);
     };
 
     const handleSliderClick = () => {
@@ -188,13 +214,30 @@ function TimeSlider(props) {
                 </div>
             </div>
             <div className="time-slider">
+                <div className="select-days">
+                    <label>Chọn nhanh: </label>
+                    <select value={selectedDays} onChange={handleSelectDaysChange}>
+                        <option value={0}>Hôm nay</option>
+                        <option value={1}>1 Ngày trước</option>
+                        <option value={2}>2 Ngày trước</option>
+                        <option value={3}>3 Ngày trước</option>
+                        <option value={4}>4 Ngày trước</option>
+                        <option value={5}>5 Ngày trước</option>
+                        <option value={6}>6 Ngày trước</option>
+                        <option value={7}>7 Ngày trước</option>
+                        {/* Add more options for the desired number of days */}
+                    </select>
+                </div>
+                <div style={{marginTop:"0.5rem",marginBottom:"0.5rem"}}>
+                    Hoặc chọn khoảng thời gian
+                </div>
                 <div>
-                    Start Time:{' '}
+                    Bắt đầu từ:{' '}
                     <input type="datetime-local" value={format(startTime, 'yyyy-MM-dd\'T\'HH:mm')}
                            onChange={handleStartTimeChange}/>
                 </div>
                 <div>
-                    End Time:{' '}
+                    Kết thúc tại:{' '}
                     <input type="datetime-local" value={format(endTime, 'yyyy-MM-dd\'T\'HH:mm')}
                            onChange={handleEndTimeChange}/>
                 </div>
@@ -210,13 +253,13 @@ function TimeSlider(props) {
                 </div>
                 <div>
                     {isPlaying ? (
-                        <button onClick={handlePauseClick}>Pause</button>
+                        <button className="btn-pause" onClick={handlePauseClick}>Pause</button>
                     ) : (
-                        <button onClick={handlePlayClick}>Play</button>
+                        <button className="btn-play" onClick={handlePlayClick}>Play</button>
                     )}
                 </div>
                 <div>
-                    Current Time: {format(currentTime, 'HH:mm:ss')}
+                    Thời gian chạy: {format(currentTime, 'HH:mm:ss')}
                 </div>
             </div>
             <div>

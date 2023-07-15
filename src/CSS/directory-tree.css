@@ -1,0 +1,15 @@
+.directory-tree {
+    height: 40rem;
+    overflow: auto;
+}
+.li-direct {
+    cursor: pointer;
+}
+.li-direct:hover {
+    text-decoration: underline;
+    color: #990000;
+}
+.selected-li-directory {
+    text-decoration: underline;
+    cursor: pointer;
+}

@@ -34,6 +34,24 @@ const method = {
             }
         }
     },
+    getFile: async (url) => {
+        url = config.HOST + '/' + url;
+        let headers = {
+            'Authorization': 'Bearer ' + auth.getToken(),
+            'Accept-Language': 'vi'
+        };
+        let response = await fetch(url, {
+            method: 'GET',
+            headers
+        });
+        if (response.status === 401) {
+            return logoutUser();
+        }
+        if (!response.ok) {
+            throw new Error('Request failed: ' + response.status);
+        }
+        return await response.blob();
+    },
     post: async (data, url) => {
         console.log(JSON.stringify(data))
         url = config.HOST + '/' + url
