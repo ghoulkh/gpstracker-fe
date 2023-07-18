@@ -6,7 +6,7 @@
     height: 100vh;
     display: flex;
     justify-content: center;
-    align-items: center;
+    align-items: start;
 }
 .map-info > div:first-child{
     width: 70% !important;
@@ -17,13 +17,14 @@
 }
 .info {
     background: #f4f4f4;
-    height: 95%;
+    height: fit-content;
     width: 100%;
     border-radius: 1rem;
     border: 5px solid #FFFFFF;
     padding: 1rem;
 }
 .info-select {
+    font-size: medium;
     border: none;
     width: 100%;
     font-weight: bold;

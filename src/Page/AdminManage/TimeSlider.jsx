@@ -28,10 +28,10 @@ function TimeSlider(props) {
 
     useEffect(() => {
         if (isPlaying && rfidValue.length > 0 && startTime && currentTime) {
-            setPosition([])
             service.getPositionRfidInOneDay(rfidValue, startTime, currentTime)
                 .then(data => {
                     if (data) {
+                        console.log(data)
                         const list = []
                         if (data && data[0]) {
                             list.push(data[0])
@@ -51,6 +51,7 @@ function TimeSlider(props) {
                             })
                             setPosition(list);
                             props.setMarker(list)
+                            props.setLocation(list)
                         }
                     });
             }
@@ -125,6 +126,14 @@ function TimeSlider(props) {
     }, [isPlaying, currentTime, endTime]);
 
     const handlePlayClick = () => {
+        setPosition((prevPosition) => {
+            if (prevPosition.length > 0) {
+                props.setMarker([prevPosition[0]])
+                return [prevPosition[0]]; // Chỉ giữ lại vị trí đầu tiên
+            } else {
+                return [];
+            }
+        });
         setIsPlaying(true);
     };
 

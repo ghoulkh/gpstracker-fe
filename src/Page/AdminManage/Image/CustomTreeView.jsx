@@ -52,7 +52,7 @@ export default function CustomTreeView({ data, getLinkImage }) {
 
     const handleSelectClick = () => {
         if (selected.length > 0) {
-            getLinkImage("21281926/230709_181804.txt")
+            getLinkImage("NOTFOUND/NOTFOUND.txt")
         }
         setExpanded([]);
         setSelected((oldSelected) => (oldSelected.length === 0 ? Object.keys(treeData) : []));

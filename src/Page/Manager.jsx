@@ -12,6 +12,7 @@ class Manager extends Component {
         this.state = {
             mode: '',
             markers: [],
+            locations: [],
             linkImage: "",
             errorImageUrl: ""
         }
@@ -21,6 +22,15 @@ class Manager extends Component {
         this.setState({
             mode: event.target.value
         })
+        if (event.target.value === 'none') {
+            this.setState({
+                mode: '',
+                markers: [],
+                locations: [],
+                linkImage: "",
+                errorImageUrl: ""
+            })
+        }
     }
 
     handleImageError = () => {
@@ -28,6 +38,13 @@ class Manager extends Component {
             errorImageUrl: "error"
         })
     };
+
+    setLocation = (locations) => {
+        this.setState({
+            locations: locations
+        })
+        console.log(locations)
+    }
 
     setLinkImage = (link) => {
         this.setState({
@@ -39,7 +56,7 @@ class Manager extends Component {
 
     setMarker = (markers) => {
         this.setState({
-            markers:markers
+            markers: markers
         })
         console.log(markers)
     }
@@ -57,7 +74,7 @@ class Manager extends Component {
                             <div>
                                 <select onChange={this.chooseMode} className="info-select">
                                     {/* eslint-disable-next-line react/no-unknown-property */}
-                                    <option value="" disable="true">Chọn...</option>
+                                    <option value="none" disable="true">Chọn...</option>
                                     <option value="manage">Giám sát</option>
                                     <option value="video">Xem lại hành trình</option>
                                     <option value="image">Hình ảnh</option>
@@ -67,29 +84,31 @@ class Manager extends Component {
                                 <Manage setMarker={(marker) => this.setMarker(marker)}
                                         user={this.state.user}/>}
                             {this.state.mode === 'video' &&
-                                <TimeSlider setMarker={(marker) => this.setMarker(marker)}/>}
+                                <TimeSlider setLocation={(location) => this.setLocation(location)}
+                                            setMarker={(marker) => this.setMarker(marker)}/>}
                             {this.state.mode === 'image' &&
                                 <DirectoryTreeMapImage setLinkImage={(url) => this.setLinkImage(url)}/>}
 
                         </div>
                     </div>
                     {this.state.mode === 'image' ?
-                        <div style={{width:"100%"}}>
+                        <div style={{width: "100%"}}>
                             <div>
                                 {this.state.linkImage ? (
                                     !this.state.errorImageUrl &&
-                                    <img style={{ width: "100%" }} src={this.state.linkImage} onError={this.handleImageError} />
+                                    <img style={{width: "100%"}} src={this.state.linkImage}
+                                         onError={this.handleImageError}/>
                                 ) : (
-                                    <img style={{ width: "100%" }} src={imageNotFound} onError={this.handleImageError} />
+                                    <img style={{width: "100%"}} src={imageNotFound} onError={this.handleImageError}/>
                                 )}
                             </div>
                             <div>
                                 {this.state.errorImageUrl && (
-                                    <img style={{ width: "100%" }} src={imageNotFound} alt="Fallback Image" />
+                                    <img style={{width: "100%"}} src={imageNotFound} alt="Fallback Image"/>
                                 )}
                             </div>
                         </div> :
-                        <MapContainer markers={this.state.markers}/>
+                        <MapContainer markers={this.state.markers} locations={this.state.locations}/>
                     }
                 </div>
             </>
