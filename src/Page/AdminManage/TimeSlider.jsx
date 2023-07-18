@@ -14,7 +14,8 @@ function TimeSlider(props) {
     const [rfidValue, setRfidValue] = useState([]);
     const [licensePlate, setLicensePlate] = useState("");
     const [position, setPosition] = useState([]);
-    const [selectedDays, setSelectedDays] = useState(0); // Default to 1 day ago
+    const [selectedDays, setSelectedDays] = useState(0); // Mặc định là ngày hôm nay
+    const [playbackSpeed, setPlaybackSpeed] = useState(1); // Mặc định là x1
 
     useEffect(() => {
         service.getInfoCar(1, 20).then(data => {
@@ -87,22 +88,36 @@ function TimeSlider(props) {
     const handleSelectDaysChange = (event) => {
         const selectedDays = parseInt(event.target.value);
         setSelectedDays(selectedDays);
+        //Khi ngày thay đổi thì set false
+        setIsPlaying(false);
     };
 
     const handleSliderClick = () => {
         setSelectedTime(currentTime);
     };
 
+    const handleSpeedChange = () => {
+        const availablePlaybackSpeeds = [1, 2, 4, 8, 10, 20]; // List of available speeds
+        const currentIndex = availablePlaybackSpeeds.indexOf(playbackSpeed);
+        const nextIndex = (currentIndex + 1) % availablePlaybackSpeeds.length;
+        const nextSpeed = availablePlaybackSpeeds[nextIndex];
+        setPlaybackSpeed(nextSpeed);
+    };
+
     const handleStartTimeChange = (event) => {
         const selectedDateTime = parseISO(event.target.value);
         const startTimeMilliseconds = selectedDateTime.getTime();
         setStartTime(startTimeMilliseconds);
+        //Khi giờ thay đổi thì set false
+        setIsPlaying(false);
     };
 
     const handleEndTimeChange = (event) => {
         const selectedDateTime = parseISO(event.target.value);
         const endTimeMilliseconds = selectedDateTime.getTime();
         setEndTime(endTimeMilliseconds);
+        //Khi giờ thay đổi thì set false
+        setIsPlaying(false);
     };
 
     useEffect(() => {
@@ -111,7 +126,7 @@ function TimeSlider(props) {
         const playSlider = () => {
             // Tăng currentTime khi đang phát và currentTime chưa vượt quá endTime
             if (isPlaying && currentTime < endTime) {
-                setCurrentTime((prevTime) => prevTime + 1000);
+                setCurrentTime((prevTime) => prevTime + 1000 * playbackSpeed); // Multiply by playbackSpeed
             }
         };
 
@@ -123,7 +138,7 @@ function TimeSlider(props) {
         return () => {
             clearInterval(intervalId);
         };
-    }, [isPlaying, currentTime, endTime]);
+    }, [isPlaying, currentTime, endTime, playbackSpeed]);
 
     const handlePlayClick = () => {
         setPosition((prevPosition) => {
@@ -237,7 +252,7 @@ function TimeSlider(props) {
                         {/* Add more options for the desired number of days */}
                     </select>
                 </div>
-                <div style={{marginTop:"0.5rem",marginBottom:"0.5rem"}}>
+                <div style={{marginTop: "0.5rem", marginBottom: "0.5rem"}}>
                     Hoặc chọn khoảng thời gian
                 </div>
                 <div>
@@ -260,12 +275,13 @@ function TimeSlider(props) {
                         onClick={handleSliderClick}
                     />
                 </div>
-                <div>
+                <div className="div-change-play">
                     {isPlaying ? (
                         <button className="btn-pause" onClick={handlePauseClick}>Pause</button>
                     ) : (
                         <button className="btn-play" onClick={handlePlayClick}>Play</button>
                     )}
+                    <button className="btn-speed" onClick={handleSpeedChange}>x{playbackSpeed}</button>
                 </div>
                 <div>
                     Thời gian chạy: {format(currentTime, 'HH:mm:ss')}
