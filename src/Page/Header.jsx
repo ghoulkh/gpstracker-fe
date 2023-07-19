@@ -30,7 +30,8 @@ function Header(props) {
             case 'user':
                 setTile('Chào mừng tài xế đến với hệ thống');
                 break;
-            default: break;
+            default:
+                break;
         }
     }, [isAdmin]);
 
@@ -65,7 +66,7 @@ function Header(props) {
     const scrollToDiv = (id) => {
         const element = document.getElementById(id);
         if (element) {
-            element.scrollIntoView({ behavior: 'smooth' });
+            element.scrollIntoView({behavior: 'smooth'});
         }
     };
 
@@ -91,21 +92,31 @@ function Header(props) {
                     </div>
                 </div>
                 <div className="title-header">
-                    {isAdmin === 'admin' && <div className="title-header-text">{title}</div>}
-                    {isAdmin === 'anonymous' &&
-                        <div className="title-info-header">
-                            <div onClick={() => scrollToDiv('uses-body')}
-                                 className="li-title-header">
-                                Tính năng
-                            </div>
-                            <div className="li-title-header">
-                                Đối tượng sử dụng
-                            </div>
-                            <div className="li-title-header">
-                                Giới thiệu
-                            </div>
+                    <div className="title-info-header">
+                        <div className="li-title-header" onClick={() => window.location.href = '/checking/order'}>
+                            Tra cứu - Định vị
                         </div>
-                    }
+                        {isAdmin === 'admin' &&
+                            <div className="li-title-header"
+                                 onClick={() => window.location.href = '/admin/manager'}>
+                                Quản lý và vận hành
+                            </div>
+                        }
+                        {isAdmin === 'anonymous' &&
+                            <>
+                                <div onClick={() => scrollToDiv('uses-body')}
+                                     className="li-title-header">
+                                    Tính năng
+                                </div>
+                                <div className="li-title-header">
+                                    Đối tượng sử dụng
+                                </div>
+                                <div className="li-title-header">
+                                    Giới thiệu
+                                </div>
+                            </>
+                        }
+                    </div>
                     {props.loggedInUserObj.username === undefined &&
                         <div className="div-login-header">
                             <button onClick={() => onClickLogin(true)}
@@ -126,10 +137,10 @@ function Header(props) {
                             <div
                                 className="user-profile"
                             >
-                                <img style={{marginRight:"0.5rem"}}
+                                <img style={{marginRight: "0.5rem"}}
                                      src={props.loggedInUserObj.username.avatar !== undefined ?
-                                    props.loggedInUserObj.username.avatar : iconAccount
-                                }
+                                         props.loggedInUserObj.username.avatar : iconAccount
+                                     }
                                      alt=""></img>
                                 <div
                                     className="text-name"
@@ -150,9 +161,6 @@ function Header(props) {
                                           onClick={() => onClickRegister(true)}>
                                     Kích hoạt tài khoản</MenuItem>
                                 <MenuItem className="item-app-bar3"
-                                          onClick={() => window.location.href = '/admin/manager'}>
-                                    Quản lý và vận hành</MenuItem>
-                                <MenuItem className="item-app-bar3"
                                           onClick={() => handleClickItem("/change-password")}>
                                     Đổi mật khẩu</MenuItem>
                                 <MenuItem className="item-app-bar3" onClick={() => handleLogout()}>
@@ -172,7 +180,7 @@ function Header(props) {
                             <div
                                 className="user-profile"
                             >
-                                <img style={{marginRight:"0.5rem"}}
+                                <img style={{marginRight: "0.5rem"}}
                                      src={props.loggedInUserObj.username.avatar !== undefined ?
                                          props.loggedInUserObj.username.avatar : iconAccount
                                      }

@@ -50,8 +50,8 @@ let service = {
         let url = "api/image/" + params;
         return method.getFile(url);
     },
-    getStreet: params => {
-        let url = "api/address/street?district=" + params;
+    getOrder: (id, receiver) => {
+        let url = `api/delivery/${id}/email-receiver/${receiver}`;
         return method.get(url);
     },
     getComment: id => {
