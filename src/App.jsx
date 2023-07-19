@@ -7,6 +7,8 @@ import Footer from "./Page/Footer.jsx";
 import Manager from "./Page/Manager.jsx";
 import {ToastContainer} from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
+import CheckingOrder from "./Page/Order/CheckingOrder.jsx";
+import SearchOrder from "./Page/Order/SearchOrder.jsx";
 
 export default class HouseManagement extends Component {
     constructor(props) {
@@ -46,6 +48,18 @@ export default class HouseManagement extends Component {
                                            <Header loginProp={this.setLoggedInUser}
                                                    loggedInUserObj={this.state.loggedInUserObj}/>
                                            <Manager></Manager>
+                                           <Footer/>
+                                       </>
+
+                                   }/>
+                        </Route>
+                        <Route>
+                            <Route path="/checking/order"
+                                   element={
+                                       <>
+                                           <Header loginProp={this.setLoggedInUser}
+                                                   loggedInUserObj={this.state.loggedInUserObj}/>
+                                           <SearchOrder/>
                                            <Footer/>
                                        </>
 
