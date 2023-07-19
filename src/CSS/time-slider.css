@@ -28,3 +28,13 @@
     justify-content: center;
     align-items: center;
 }
+.div-change-play {
+    display: flex;
+}
+.btn-speed {
+    background: #FFFFFF;
+    border-radius: 5rem;
+    color: #990000;
+    margin-left: 1rem;
+    font-weight: 600;
+}

@@ -69,7 +69,6 @@ function MapContainer(props) {
                     lat: point.lat(),
                     lng: point.lng()
                 }));
-
                 setPath(pathCoordinates);
             }
         });
@@ -121,10 +120,10 @@ function MapContainer(props) {
                             {props.locations.length > 1 &&
                                 <Polyline
                                     path={path}
-                                    strokeColor="#00FF00"
+                                    strokeColor="#0000FF"
                                     strokeOpacity={1.0}
                                     strokeWeight={5}
-                                    fillColor="#00FF00"
+                                    fillColor="#0000FF"
                                     fillOpacity={1.0}
                                 />
                             }
