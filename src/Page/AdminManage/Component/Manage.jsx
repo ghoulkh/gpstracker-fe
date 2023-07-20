@@ -1,12 +1,12 @@
 import {useEffect, useState} from "react";
-import config from "../../API/Config.js";
+import config from "../../../API/Config.js";
 import SockJS from "sockjs-client/dist/sockjs"
 import Stomp from 'stompjs';
-import service from "../../API/Service.js";
-import "../../CSS/mange.css"
+import service from "../../../API/Service.js";
+import "../../../CSS/mange.css"
 import PropTypes from "prop-types";
 import moment from "moment";
-import notice from "../../Utils/Notice.js";
+import notice from "../../../Utils/Notice.js";
 
 const UserManagementComponent = (props) => {
     UserManagementComponent.propTypes = {

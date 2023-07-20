@@ -19,7 +19,9 @@ function Register(props) {
         isAdminClick: PropTypes.bool,
     };
     const onClickExit = () => {
-        props.clickLoginProp(false)
+        if (typeof props.clickLoginProp === 'function') {
+            props.clickLoginProp(false);
+        }
         props.clickRegisterProp(false)
     }
 

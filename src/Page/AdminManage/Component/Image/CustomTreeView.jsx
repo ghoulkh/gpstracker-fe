@@ -90,7 +90,7 @@ export default function CustomTreeView({ data, getLinkImage }) {
                      onClick={handleSelectClick}>
                 {selected.length === 0 ? 'Select all' : 'Unselect all'}
             </Button>
-            <Box sx={{ height: "700px", flexGrow: 1, maxWidth: 400, overflowY: 'auto' }}>
+            <Box sx={{ height: "70vh", flexGrow: 1, width: "100%", overflowY: 'auto' }}>
                 <TreeView
                     aria-label="controlled"
                     defaultCollapseIcon={<ExpandMoreIcon />}
