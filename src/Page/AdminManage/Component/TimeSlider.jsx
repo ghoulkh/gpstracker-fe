@@ -3,7 +3,7 @@ import {parseISO, format} from 'date-fns';
 import "../../../CSS/time-slider.css"
 import service from "../../../API/Service.js";
 import moment from "moment";
-import notice from '../../Utils/Notice';
+import notice from '../../../Utils/Notice';
 
 function TimeSlider(props) {
     const [startTime, setStartTime] = useState(0);
