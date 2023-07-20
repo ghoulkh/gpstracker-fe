@@ -1,14 +1,16 @@
 import './App.css';
 import {BrowserRouter, Routes, Route} from "react-router-dom";
-import {Component} from "react";
+import {Component, useState} from "react";
 import Header from "./Page/Header.jsx";
 import Body from "./Page/Body.jsx";
 import Footer from "./Page/Footer.jsx";
-import Manager from "./Page/Manager.jsx";
+import Manager from "./Page/AdminManage/Manager.jsx";
 import {ToastContainer} from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
-import CheckingOrder from "./Page/Order/CheckingOrder.jsx";
 import SearchOrder from "./Page/Order/SearchOrder.jsx";
+import auth from "./API/AuthService.js";
+import {LoginNotFound} from "./Page/LoginNotFound.jsx";
+import DriverManager from "./Page/UserManage/DriverManager.jsx";
 
 export default class HouseManagement extends Component {
     constructor(props) {
@@ -16,6 +18,7 @@ export default class HouseManagement extends Component {
         this.state = {
             isLoggedIn: !!JSON.parse(localStorage.getItem('USER')),
             loggedInUserObj: JSON.parse(localStorage.getItem('USER')) ? {username: JSON.parse(localStorage.getItem('USER'))['userInfo']} : {},
+            isAdmin: auth.checkAdmin()
         }
         this.setLoggedInUser = this.setLoggedInUser.bind(this)
     }
@@ -24,12 +27,32 @@ export default class HouseManagement extends Component {
     setLoggedInUser(loggedInUserObj) {
         this.setState({isLoggedIn: true, loggedInUserObj: {...loggedInUserObj}})
     }
+
     render() {
-        console.log(this.state.loggedInUserObj)
+        const role = this.state.isAdmin
+        console.log(role)
         return (
             <div className="App">
                 <BrowserRouter>
                     <Routes>
+                        {this.state.isAdmin !== 'anonymous' ?
+                            <Route path="/"
+                                   element={
+                                       <>
+                                           <DriverManager loginProp={this.setLoggedInUser}
+                                                          loggedInUserObj={this.state.loggedInUserObj}/>
+                                       </>
+                                   }/> :
+                            <Route path="/"
+                                   element={
+                                       <>
+                                           <Header loginProp={this.setLoggedInUser}
+                                                   loggedInUserObj={this.state.loggedInUserObj}/>
+                                           <Body/>
+                                           <Footer/>
+                                       </>
+                                   }/>
+                        }
                         <Route path="/"
                                element={
                                    <>
@@ -38,10 +61,18 @@ export default class HouseManagement extends Component {
                                        <Body/>
                                        <Footer/>
                                    </>
-                               }>
+                               }/>
+                        <Route path="/checking/order"
+                               element={
+                                   <>
+                                       <Header loginProp={this.setLoggedInUser}
+                                               loggedInUserObj={this.state.loggedInUserObj}/>
+                                       <SearchOrder/>
+                                       <Footer/>
+                                   </>
 
-                        </Route>
-                        <Route>
+                               }/>
+                        {this.state.isAdmin === 'admin' ?
                             <Route path="/admin/manager"
                                    element={
                                        <>
@@ -51,20 +82,9 @@ export default class HouseManagement extends Component {
                                            <Footer/>
                                        </>
 
-                                   }/>
-                        </Route>
-                        <Route>
-                            <Route path="/checking/order"
-                                   element={
-                                       <>
-                                           <Header loginProp={this.setLoggedInUser}
-                                                   loggedInUserObj={this.state.loggedInUserObj}/>
-                                           <SearchOrder/>
-                                           <Footer/>
-                                       </>
-
-                                   }/>
-                        </Route>
+                                   }/> :
+                            <Route path="/admin/manager" element={<LoginNotFound/>}/>
+                        }
                     </Routes>
                 </BrowserRouter>
                 <ToastContainer/>

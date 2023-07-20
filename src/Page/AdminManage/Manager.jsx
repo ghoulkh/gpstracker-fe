@@ -1,10 +1,10 @@
-import MapContainer from "./MapContainer.jsx";
-import "../CSS/manager.css"
+import MapContainer from "../MapContainer.jsx";
+import "../../CSS/manager.css"
 import {Component} from "react";
-import Manage from "./AdminManage/Manage.jsx";
-import TimeSlider from "./AdminManage/TimeSlider.jsx";
-import DirectoryTreeMapImage from "./AdminManage/Image/DirectoryTreeMapImage.jsx";
-import imageNotFound from "../Image/imageNotFound.png";
+import Manage from "./Component/Manage.jsx";
+import TimeSlider from "./Component/TimeSlider.jsx";
+import DirectoryTreeMapImage from "./Component/Image/DirectoryTreeMapImage.jsx";
+import imageNotFound from "../../Image/imageNotFound.png";
 
 class Manager extends Component {
     constructor(props) {

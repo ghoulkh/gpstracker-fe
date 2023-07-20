@@ -1,0 +1,33 @@
+.ant-menu {
+    color: #fff !important;
+    background: #EDEDED;
+}
+.ant-menu-item-selected {
+    background-color: #B039CC !important;
+}
+.ant-menu-item {
+    background-color: #EDEDED;
+    color: #282828;
+}
+.ant-menu-item-only-child {
+}
+.ant-layout-sider-trigger {
+    background: #EDEDED !important;
+    color: #990000 !important;
+}
+.header-user {
+    display: flex;
+    justify-content: end;
+    align-items: center;
+}
+.ant-layout-sider-has-trigger {
+    height: 100vh;
+    overflow: auto;
+}
+.choose-menu-items {
+    padding: 1rem;
+    width: 29rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}

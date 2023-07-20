@@ -1,7 +1,7 @@
 import {useState, useEffect} from 'react';
 import {parseISO, format} from 'date-fns';
-import "../../CSS/time-slider.css"
-import service from "../../API/Service.js";
+import "../../../CSS/time-slider.css"
+import service from "../../../API/Service.js";
 import moment from "moment";
 import notice from '../../Utils/Notice';
 

@@ -1,6 +1,6 @@
 import CustomTreeView from "./CustomTreeView.jsx";
 import {useEffect, useState} from "react";
-import service from "../../../API/Service.js";
+import service from "../../../../API/Service.js";
 
 function DirectoryTreeMapImage(props) {
     const [dataFromAPI, setDataFromAPI] = useState([])

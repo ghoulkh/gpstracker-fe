@@ -117,7 +117,7 @@ function MapContainer(props) {
                                 }
                             })
                             }
-                            {props.locations.length > 1 &&
+                            {props.locations && props.locations.length > 1 &&
                                 <Polyline
                                     path={path}
                                     strokeColor="#0000FF"
