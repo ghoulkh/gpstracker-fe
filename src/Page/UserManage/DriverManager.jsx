@@ -4,12 +4,13 @@ import {UserOutlined} from '@ant-design/icons';
 import {Layout, Select, theme} from 'antd';
 import "../../CSS/driver-manager.css";
 import UserLogin from "../UserLogin.jsx";
-import MapContainer from "../MapContainer.jsx";
+import MapContainer from "../Map/MapContainer.jsx";
 import Manage from "../AdminManage/Component/Manage.jsx";
 import TimeSlider from "../AdminManage/Component/TimeSlider.jsx";
 import DirectoryTreeMapImage from "../AdminManage/Component/Image/DirectoryTreeMapImage.jsx";
 import imageNotFound from "../../Image/imageNotFound.png";
 import auth from "../../API/AuthService.js";
+import AdminOrder from "../AdminManage/Component/Order/AdminOrder.jsx";
 
 const {Header, Sider} = Layout;
 
@@ -84,6 +85,7 @@ const DriverManager = ({loggedInUserObj}) => {
                                     {value: 'manage', label: 'Giám sát'},
                                     {value: 'video', label: 'Xem lại hành trình'},
                                     {value: 'image', label: 'Hình ảnh'},
+                                    {value: 'order', label: 'Lên đơn hàng'},
                                 ]}
                             />
                         </div>
@@ -95,7 +97,9 @@ const DriverManager = ({loggedInUserObj}) => {
                                             setMarker={(marker) => handleSetMarker(marker)}/>}
                             {mode === 'image' &&
                                 <DirectoryTreeMapImage setLinkImage={(url) => handleSetLinkImage(url)}/>}
-
+                            {mode === 'order' &&
+                                <AdminOrder/>
+                            }
                         </div>
                     </>
                 }

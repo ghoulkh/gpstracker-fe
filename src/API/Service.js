@@ -54,17 +54,17 @@ let service = {
         let url = `api/delivery/${id}/email-receiver/${receiver}`;
         return method.get(url);
     },
-    getComment: id => {
-        let url = "api/comment/post/" + id;
+    createDelivery: params => {
+        let url = "api/delivery";
+        return method.post(params, url);
+    },
+    getDeliveryByDriverUserName: (pageIndex, pageSize, userNameAdmin, driverUsername) => {
+        let url = `api/deliveries?page_index=${pageIndex}&page_size=${pageSize}&created_by=${userNameAdmin}&driver=${driverUsername}`;
         return method.get(url);
     },
-    getRating: params => {
-        let url = "api/rating/user/" + params;
-        return method.get(url);
-    },
-    comment: (id, params) => {
-        let url = "api/comment/post/" + id;
-        return method.post(params, url)
+    getDeliveryCANCELED: (pageIndex, pageSize) => {
+        let url = `api/deliveries/canceled?page_index=${pageIndex}&page_size=${pageSize}`;
+        return method.get(url)
     }
 };
 

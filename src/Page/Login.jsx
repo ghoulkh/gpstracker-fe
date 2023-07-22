@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import {actLogin, actSaveInfo} from "../ActionService/Action.js";
+import {actLogin, actLogout, actSaveInfo} from "../ActionService/Action.js";
 import {connect} from "react-redux";
 import {useEffect, useState} from "react";
 import service from "../API/Service.js";
@@ -47,6 +47,20 @@ function Login(props) {
                 service.currentUser()
                     .then(data => {
                         console.log(data)
+                        let isAllowLogin = false;
+                        data.authorities.length > 0 && data.authorities.map(checkRole => {
+                            if (checkRole.role === "ROLE_DRIVER" || checkRole.role === "ROLE_ADMIN") {
+                                isAllowLogin = true;
+                                console.log("HERE" + isAllowLogin)
+
+                            }
+                        })
+                        if (!isAllowLogin) {
+                            notice.inf("Bạn không có phải tài xế, vui lòng liện hệ admin để cập nhật");
+                            actLogout();
+                            localStorage.clear();
+                            return;
+                        }
                         onLoginComplete(data);
                         notice.inf("Đăng nhập thành công")
                         window.location.reload();
