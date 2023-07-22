@@ -8,7 +8,7 @@ const CheckingOrder = ({delivery}) => {
         <>
             {delivery.deliveryStatus &&
                 <VerticalTimeline>
-                    {(delivery.deliveryStatus === "NEW" || delivery.deliveryStatus === "IN_PROGRESS" || delivery.deliveryStatus === "COMPLETED") &&
+                    {(delivery.deliveryStatus === "NEW" || delivery.deliveryStatus === "IN_PROGRESS" || delivery.deliveryStatus === "COMPLETED"||delivery.deliveryStatus === "CANCELED") &&
                         <VerticalTimelineElement
                             className="vertical-timeline-element"
                             contentStyle={{background: '#008080', color: '#fff'}}
@@ -20,7 +20,7 @@ const CheckingOrder = ({delivery}) => {
                             <br /> Vào lúc: {format(delivery.statusHistories[0].createdAt,'HH:mm\' \'dd-MM-yyyy')}</h3>
                         </VerticalTimelineElement>
                     }
-                    {(delivery.deliveryStatus === "IN_PROGRESS" || delivery.deliveryStatus === "COMPLETED") &&
+                    {(delivery.deliveryStatus === "IN_PROGRESS" || delivery.deliveryStatus === "COMPLETED"||delivery.deliveryStatus === "CANCELED") &&
                         <VerticalTimelineElement
                             className="vertical-timeline-element"
                             contentStyle={{background: '#ff9800', color: '#fff'}}
@@ -46,6 +46,18 @@ const CheckingOrder = ({delivery}) => {
                         >
                             <h3 className="vertical-timeline-element-title">Giao thành công đến: {delivery.fullNameReceiver}
                             <br />Vào lúc: {format(delivery.statusHistories[2].createdAt,'HH:mm\' \'dd-MM-yyyy')} </h3>
+                        </VerticalTimelineElement>
+                    }
+                    {(delivery.deliveryStatus === "CANCELED") &&
+                        <VerticalTimelineElement
+                            className="vertical-timeline-element"
+                            contentStyle={{background: '#DD0000', color: '#fff'}}
+                            contentArrowStyle={{borderRight: '7px solid #4caf50'}}
+                            iconStyle={{background: '#DD0000', color: '#fff'}}
+                            icon={<div className="custom-icon">C</div>}
+                        >
+                            <h3 className="vertical-timeline-element-title">Đơn hàng đã được hủy bởi tài xế: {delivery.driverUsername}
+                            <br />Vào lúc: {format(delivery.statusHistories[1].createdAt,'HH:mm\' \'dd-MM-yyyy')} </h3>
                         </VerticalTimelineElement>
                     }
                 </VerticalTimeline>
