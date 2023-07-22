@@ -62,16 +62,19 @@ export default class HouseManagement extends Component {
                                        <Footer/>
                                    </>
                                }/>
-                        <Route path="/checking/order"
-                               element={
-                                   <>
-                                       <Header loginProp={this.setLoggedInUser}
-                                               loggedInUserObj={this.state.loggedInUserObj}/>
-                                       <SearchOrder/>
-                                       <Footer/>
-                                   </>
+                        {this.state.isAdmin === 'anonymous' ?
+                            <Route path="/checking/order"
+                                   element={
+                                       <>
+                                           <Header loginProp={this.setLoggedInUser}
+                                                   loggedInUserObj={this.state.loggedInUserObj}/>
+                                           <SearchOrder/>
+                                           <Footer/>
+                                       </>
 
-                               }/>
+                                   }/> :
+                            <Route path="/checking/order" element={<LoginNotFound/>}/>
+                        }
                         {this.state.isAdmin === 'admin' ?
                             <Route path="/admin/manager"
                                    element={
