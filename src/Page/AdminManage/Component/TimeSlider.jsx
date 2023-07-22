@@ -3,6 +3,7 @@ import {parseISO, format} from 'date-fns';
 import "../../../CSS/time-slider.css"
 import service from "../../../API/Service.js";
 import moment from "moment";
+import notice from '../../../Utils/Notice';
 
 function TimeSlider(props) {
     const [startTime, setStartTime] = useState(0);
@@ -141,15 +142,23 @@ function TimeSlider(props) {
     }, [isPlaying, currentTime, endTime, playbackSpeed]);
 
     const handlePlayClick = () => {
+        if(licensePlate == "") {
+            notice.warn("Vui lòng chọn một xe")
+            setIsPlaying(false);
+            return;
+        }
+
         setPosition((prevPosition) => {
             if (prevPosition.length > 0) {
                 props.setMarker([prevPosition[0]])
+                setIsPlaying(true);
                 return [prevPosition[0]]; // Chỉ giữ lại vị trí đầu tiên
             } else {
+                notice.inf("Không có thông tin về xe trong khoảng thời gian này")
+                setIsPlaying(false);
                 return [];
             }
         });
-        setIsPlaying(true);
     };
 
     const handlePauseClick = () => {

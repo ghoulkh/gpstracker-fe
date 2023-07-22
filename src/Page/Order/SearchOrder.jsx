@@ -34,15 +34,18 @@ const SearchOrder = () => {
         }
         setId(value[0]);
         setReceiver(value[1]);
-    };
-
-    useEffect(() => {
-        service.getOrder(id, receiver).then(data => {
+        service.getOrder(value[0], value[1]).then(data => {
             console.log(data);
             setDelivery(data);
             setIsLoading(false)
+        }).catch((err) => {
+            console.log(err);
+            if(err === "delivery not found!"){
+                notice.err("Mã hàng không tồn tại")
+                setIsLoading(false)
+            }
         })
-    }, [id, receiver, isLoading])
+    };
 
     return (
         <>

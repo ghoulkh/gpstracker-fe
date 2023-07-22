@@ -22,6 +22,7 @@
     "date-fns": "^2.30.0",
     "google-maps-react": "^2.0.6",
     "moment": "^2.29.4",
+    "npm": "^9.8.0",
     "prop-types": "^15.8.1",
     "react": "^18.2.0",
     "react-autocomplete": "^1.8.1",
