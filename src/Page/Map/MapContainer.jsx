@@ -1,8 +1,8 @@
 import {Map, Marker, InfoWindow, GoogleApiWrapper, Polyline} from 'google-maps-react';
 import {useEffect, useState} from "react";
-import {API_KEY} from "../Const/ActionType.js";
+import {API_KEY} from "../../Const/ActionType.js";
 import PropTypes from "prop-types";
-import iconMaker from '../Image/icon-marker.png';
+import iconMaker from '../../Image/icon-marker.png';
 
 
 // eslint-disable-next-line react-refresh/only-export-components
@@ -93,6 +93,7 @@ function MapContainer(props) {
                 <div className="map-main">
                     <div className="map-info">
                         <Map
+
                             google={props.google}
                             zoom={zoom}
                             initialCenter={currentLocation}
@@ -104,8 +105,8 @@ function MapContainer(props) {
                             }}>
                             {markers && markers.map((data, index) => {
                                 if (data) {
-                                    const position = { lat: data.lat, lng: data.lon };
-                                    return(
+                                    const position = {lat: data.lat, lng: data.lon};
+                                    return (
                                         <Marker
                                             key={index}
                                             position={position}

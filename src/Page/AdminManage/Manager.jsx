@@ -1,4 +1,4 @@
-import MapContainer from "../MapContainer.jsx";
+import MapContainer from "../Map/MapContainer.jsx";
 import "../../CSS/manager.css"
 import {Component} from "react";
 import Manage from "./Component/Manage.jsx";

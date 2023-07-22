@@ -16,6 +16,7 @@
     "@mui/lab": "^5.0.0-alpha.136",
     "@mui/material": "^5.13.4",
     "@mui/styled-engine": "^5.13.2",
+    "@react-google-maps/api": "^2.19.0",
     "@types/socket.io": "^3.0.2",
     "antd": "^5.7.1",
     "date-fns": "^2.30.0",

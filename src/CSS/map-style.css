@@ -1,0 +1,319 @@
+.search-header {
+    background: rgb(244, 247, 251);
+    height: fit-content;
+    padding: 1.5rem 2vw;
+    font-size: 25px;
+    font-family: 'Roboto', SansSerif, sans-serif;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.not-found-result {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    color: rgb(97, 101, 126);
+    font-size: 25px;
+    font-family: 'Roboto', SansSerif, sans-serif;
+    height: 80vh;
+    width: 200%;
+    font-weight: 300;
+}
+
+.background-btn-choose {
+    width: fit-content;
+    padding: 10px 2rem 10px 2rem;
+    border-radius: 3rem;
+    background: #FEFEFE;
+}
+
+.choose-area-or-location {
+    color: rgb(97, 101, 126);
+    border: unset;
+    background: #FEFEFE;
+    font-size: 18px;
+    font-family: 'Roboto', SansSerif, sans-serif;
+    font-weight: 500;
+}
+
+.choose-area-or-location-2 {
+    background: #FFC542 !important;
+    color: #FFFFFF;
+    border-radius: 2rem;
+    padding: 5px 15px 5px 15px;
+}
+
+.search-text-in-map {
+    position: relative;
+}
+
+@media screen and (max-width: 1290px) {
+    .search-text-in-map {
+        margin-top: 2rem;
+    }
+}
+
+.search-input-in-map {
+    color: rgb(97, 101, 126);
+    font-size: 18px;
+    font-family: 'Roboto', SansSerif, sans-serif;
+    font-weight: 500;
+    padding: 10px 4rem 10px 2rem;
+    border-radius: 3rem;
+    background: #FEFEFE;
+    border: unset;
+
+}
+
+.search-button-in-map {
+    border: none;
+}
+
+.icon-search-in-map {
+    width: 1.5rem;
+    height: auto;
+    position: absolute;
+    top: 10px; /* Có thể thay đổi vị trí của icon ở đây */
+    /*left: 10px; !* Có thể thay đổi vị trí của icon ở đây *!*/
+    right: 2.5rem;
+}
+
+.other-select-main {
+    width: 15%;
+}
+
+.btn-other-select {
+    position: relative;
+}
+
+.btn-other-select {
+    color: rgb(97, 101, 126);
+    font-size: 18px;
+    font-family: 'Roboto', SansSerif, sans-serif;
+    font-weight: 500;
+    padding: 10px 4rem 10px 2rem;
+    border-radius: 3rem;
+    background: #FEFEFE;
+    border: unset;
+}
+
+.other-select-in-map {
+    border: unset;
+    background: #FEFEFE;
+    font-size: 18px;
+    font-family: 'Roboto', SansSerif, sans-serif;
+    font-weight: 500;
+    color: rgb(97, 101, 126);
+}
+
+.drop-down-other-select {
+    width: 1.5rem;
+    height: auto;
+    position: absolute;
+    top: 15px; /* Có thể thay đổi vị trí của icon ở đây */
+    /*left: 10px; !* Có thể thay đổi vị trí của icon ở đây *!*/
+    right: 2rem;
+}
+
+.items-other-select {
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 1rem 1rem 1rem 1rem;
+    width: fit-content;
+    border-radius: 4px;
+    border: none;
+}
+
+.form-group {
+    justify-content: center;
+    align-items: start;
+}
+
+.items-other-price {
+    display: flex;
+    flex-direction: column;
+    padding: 2rem 2rem 0 2rem;
+}
+
+.items-other-price-1 {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: fit-content;
+}
+
+.item-price-space {
+    font-size: 50px;
+    font-weight: 10000;
+    margin-bottom: 1rem;
+}
+
+.price-input-in-map {
+    width: 10rem;
+    height: 3rem;
+    text-align: center;
+    color: rgb(97, 101, 126);
+    font-size: 18px;
+    font-family: 'Roboto', SansSerif, sans-serif;
+    font-weight: 500;
+    border-radius: 3rem;
+    background: #FEFEFE;
+    border: unset;
+}
+
+.items-other-price-2 {
+    text-align: center;
+    color: rgb(97, 101, 126);
+    font-size: 18px;
+    font-family: 'Roboto', SansSerif, sans-serif;
+    font-weight: 500;
+    margin-bottom: 1rem;
+}
+
+.distance-input-in-map {
+    width: 10rem;
+    height: 3rem;
+    text-align: center;
+    color: rgb(97, 101, 126);
+    font-size: 18px;
+    font-family: 'Roboto', SansSerif, sans-serif;
+    font-weight: 500;
+    border-radius: 3rem;
+    background: #FEFEFE;
+    border: unset;
+}
+
+.list-house-main {
+    display: flex;
+}
+
+.list-house-info {
+    padding: 2vh;
+    width: 35vh;
+    height: 28vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: start;
+}
+
+.list-user-info {
+    padding: 2vh;
+    width: 34vh;
+    height: 20vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: start;
+}
+
+.list-house-title {
+    font-size: 15px;
+    text-align: start;
+    font-weight: 700;
+}
+
+.list-house-address {
+    font-size: 14px;
+    text-align: start;
+}
+
+.list-house-price {
+    font-size: 14px;
+    text-align: start;
+    font-weight: bold;
+    font-family: "Times New Roman", Times, serif;
+    color: #FF9500;
+}
+
+.list-house-last-update {
+    font-size: 14px;
+    text-align: start;
+    font-style: oblique;
+}
+
+@media only screen and (max-width: 810px) {
+    .list-house-img {
+        display: none;
+    }
+}
+.list-house-img-main {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.list-house-img {
+    width: 20vh;
+    height: 20vh;
+    border-radius: 40px 0 0 0;
+    border: unset;
+}
+.list-house-img-ver2 {
+    width: 20vh;
+    height: 20vh;
+    border-radius: 40px 0 0 40px;
+    border: unset;
+}
+.comment-rating-main {
+    display: flex;
+    flex-direction: column;
+    margin: 1rem;
+    cursor: pointer;
+    border: unset;
+    background: #f4f4f4;
+    border-radius: 40px;
+}
+.comment-rating-main:hover {
+    border: 2px solid #ffbc70;
+    box-shadow: rgba(0, 0, 0, 0.3) 0 0 30px;
+}
+
+.comment-rating {
+    border-top: 2px solid #FF9500;
+    padding: 1rem 0;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.comment {
+    font-size: 14px;
+    font-weight: bold;
+    font-family: "Times New Roman", Times, serif;
+    color: #FF9500;
+    width: 50%;
+}
+.rating {
+    font-size: 14px;
+    font-weight: bold;
+    font-family: "Times New Roman", Times, serif;
+    color: #FF9500;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 50%;
+}
+.rating:hover {
+    font-size: 20px;
+}
+.btn-confirm-location {
+    height: 100%;
+    width: 100%;
+}
+.btn-confirm-location-1 {
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    height: 10%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    width: 100%;
+    background: #FEFEFE;
+}

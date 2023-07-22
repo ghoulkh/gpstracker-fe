@@ -1,0 +1,19 @@
+.popup-order-main {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 120vh;
+    height: 80vh;
+    background-color: #FFFFFF;
+    padding: 1rem;
+}
+.title-exit-2 {
+    cursor: pointer;
+    position: relative;
+    top: -12rem;
+    right: -24rem;
+    font-size: 35px;
+    font-weight: 700;
+    transform: rotate(45deg);
+}
