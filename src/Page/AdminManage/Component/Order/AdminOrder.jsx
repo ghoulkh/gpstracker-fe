@@ -2,7 +2,6 @@ import Button from "@mui/material/Button";
 import PopupOrder from "./PopupOrder.jsx";
 import {useEffect, useState} from "react";
 import ClickChooseLocation from "../../../Map/ClickChooseLocation.jsx";
-import moment from "moment/moment.js";
 import service from "../../../../API/Service.js";
 import config from "../../../../API/Config.js";
 import Stomp from "stompjs";
@@ -10,7 +9,7 @@ import notice from "../../../../Utils/Notice.js";
 import SockJS from "sockjs-client/dist/sockjs"
 import auth from "../../../../API/AuthService.js";
 
-const AdminOrder = () => {
+const AdminOrder = ({setLocation, setMarkerStart}) => {
     const [openPopup, setOpenPopup] = useState(false);
     const [openMap, setOpenMap] = useState(false);
     const [lat, setLat] = useState(false);
@@ -68,24 +67,6 @@ const AdminOrder = () => {
     }
 
     useEffect(() => {
-        const listOption = [{
-            value: "",
-            label: `None`
-        }]
-        service.getInfoCar(1, 20).then(data => {
-            data.map(data => {
-                if (data.status === "INACTIVE") {
-                    listOption.push({
-                        value: data.username,
-                        label: `${data.driver} - ${data.licensePlate} - ${data.rfid}`
-                    })
-                }
-            })
-            setUserOptions(listOption);
-            setUser(data);
-        })
-
-
         const socket = new SockJS(config.WS);
         const client = Stomp.over(socket);
         client.connect({}, () => {
@@ -106,16 +87,54 @@ const AdminOrder = () => {
                     setCheckUser(data);
                 }
             });
-
         });
-    }, [checkUser]);
+        return () => {
+            client.disconnect();
+            console.log('WebSocket connection closed');
+        };
+    }, []);
+
+    useEffect(() => {
+        const listOption = [{
+            value: "",
+            label: `None`
+        }]
+        service.getInfoCar(1, 20).then(data => {
+            data.map(data => {
+                if (data.status === "INACTIVE") {
+                    listOption.push({
+                        value: data.username,
+                        label: `${data.driver} - ${data.licensePlate} - ${data.rfid}`
+                    })
+                }
+            })
+            setUserOptions(listOption);
+            setUser(data);
+        })
+    }, [checkUser])
+
 
     useEffect(() => {
         console.log(chooseUser);
-        service.getDeliveryByDriverUserName(1, pageSize, usernameAdmin, chooseUser.driverUsername)
+        service.getDeliveryByDriverUserName(1, pageSize, usernameAdmin, chooseUser.username)
             .then(data => {
-                setDelivery(data)
-                console.log(data);
+                setDelivery(data);
+
+                const listLocation = [{
+                    lat: data[0].fromLat,
+                    lon: data[0].fromLon
+                }]
+                data.map(point => {
+                    if (point.deliveryStatus !== "COMPLETED") {
+                        listLocation.push({
+                            lat: point.toLat,
+                            lon: point.toLon
+                        })
+                    }
+                })
+
+                setMarkerStart(data);
+                setLocation(listLocation);
             }).catch((err) => {
                 console.log(err)
         })
@@ -253,9 +272,11 @@ const AdminOrder = () => {
                         </div>
                     </div>
                     <DeliveryInfo/>
-                    <Button style={{width:"100%", color:"#990000"}} onClick={handlePageSize}>
-                        Xem thêm
-                    </Button>
+                    {delivery.length === 5 &&
+                        <Button style={{width:"100%", color:"#990000"}} onClick={handlePageSize}>
+                            Xem thêm
+                        </Button>
+                    }
                 </div>
             </div>
             <div>
@@ -276,9 +297,11 @@ const AdminOrder = () => {
                         </div>
                     </div>
                     <DeliveryCANCELEDInfo/>
-                    <Button style={{width:"100%", color:"#990000"}} onClick={handlePageSizeCANCELED}>
-                        Xem thêm
-                    </Button>
+                    {deliveryCANCELED.length === 5 &&
+                        <Button style={{width:"100%", color:"#990000"}} onClick={handlePageSizeCANCELED}>
+                            Xem thêm
+                        </Button>
+                    }
                 </div>
             </div>
             <div className={openPopup ? "login-click" : "none-click-login"}>

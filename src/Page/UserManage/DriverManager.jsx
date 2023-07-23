@@ -17,6 +17,7 @@ const {Header, Sider} = Layout;
 const DriverManager = ({loggedInUserObj}) => {
     const [collapsed, setCollapsed] = useState(false);
     const [markers, setMarkers] = useState([]);
+    const [markerStart, setMarkerStart] = useState([]);
     const [locations, setLocations] = useState([]);
     const [mode, setMode] = useState('');
     const [linkImage, setLinkImage] = useState('');
@@ -27,11 +28,12 @@ const DriverManager = ({loggedInUserObj}) => {
         setMode(value)
         if (value === 'none') {
             setMode('');
-            setMarkers([]);
-            setLocations([]);
-            setLinkImage('');
-            setErrorImageUrl('');
         }
+        setLinkImage('');
+        setErrorImageUrl('');
+        setMarkers([]);
+        setMarkerStart([]);
+        setLocations([]);
     }
 
     const handleImageError = () => {
@@ -40,18 +42,19 @@ const DriverManager = ({loggedInUserObj}) => {
 
     const handleSetLocation = (locations) => {
         setLocations(locations)
-        console.log(locations)
     }
 
     const handleSetLinkImage = (link) => {
         setLinkImage(link);
         setErrorImageUrl("");
-        console.log(link)
     }
 
     const handleSetMarker = (markers) => {
         setMarkers(markers)
-        console.log(markers)
+    }
+
+    const handleSetMarkerStart = (markerStart) => {
+        setMarkerStart(markerStart)
     }
 
     const {
@@ -98,7 +101,9 @@ const DriverManager = ({loggedInUserObj}) => {
                             {mode === 'image' &&
                                 <DirectoryTreeMapImage setLinkImage={(url) => handleSetLinkImage(url)}/>}
                             {mode === 'order' &&
-                                <AdminOrder/>
+                                <AdminOrder setLocation={(location) => handleSetLocation(location)}
+                                            setMarkerStart={(markerStart) => handleSetMarkerStart(markerStart)}
+                                />
                             }
                         </div>
                     </>
@@ -125,7 +130,7 @@ const DriverManager = ({loggedInUserObj}) => {
                             )}
                         </div>
                     </div> :
-                    <MapContainer markers={markers} locations={locations}/>
+                    <MapContainer markerStart={markerStart} markers={markers} locations={locations}/>
                 }
             </Layout>
         </Layout>

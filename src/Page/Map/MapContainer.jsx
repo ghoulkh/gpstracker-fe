@@ -3,6 +3,7 @@ import {useEffect, useState} from "react";
 import {API_KEY} from "../../Const/ActionType.js";
 import PropTypes from "prop-types";
 import iconMaker from '../../Image/icon-marker.png';
+import iconOrder from '../../Image/iconOrder.png';
 
 
 // eslint-disable-next-line react-refresh/only-export-components
@@ -24,10 +25,18 @@ function MapContainer(props) {
     });
     const [zoom] = useState(13);
     const [path, setPath] = useState([]);
+    const [markerStart, setMarkerStart] = useState([]);
+    const [deliveryInfo, setDeliveryInfo] = useState({});
+    const [isMarkerStart, setIsmarkerStart] = useState(false);
 
     useEffect(() => {
         setMarkers(props.markers)
     }, [props.markers])
+
+    useEffect(() => {
+        console.log(props.markerStart)
+        setMarkerStart(props.markerStart)
+    }, [props.markerStart])
 
     useEffect(() => {
         if (props.locations.length > 1) {
@@ -40,7 +49,6 @@ function MapContainer(props) {
     }, [props.locations]);
 
     const getPathCoordinates = (locations) => {
-        console.log(locations)
         const directionsService = new props.google.maps.DirectionsService();
 
         if (locations.length < 2) {
@@ -79,12 +87,31 @@ function MapContainer(props) {
         setActiveMarker(marker);
         setShowingInfoWindow(true);
         setCurrentLocation(props.position);
-        setCarInfo(marker.carInfo)
+        setCarInfo(marker.carInfo);
+        setDeliveryInfo(marker.deliveryInfo);
+        setIsmarkerStart(marker.isMarkerStart);
     };
 
     const handleMarkerClick = () => {
         setShowingInfoWindow(false)
     };
+
+    const positionMarkerStart = () => {
+        if (markerStart.length > 0) {
+            const pointStart = markerStart[0];
+            const position = {lat: pointStart.fromLat, lng: pointStart.fromLon};
+            return (
+                <Marker
+                    isMarkerStart={true}
+                    position={position}
+                    deliveryInfo={pointStart}
+                    onClick={onMarkerClick}
+                    onClose={handleMarkerClick}
+                    icon={iconMaker}
+                />
+            )
+        }
+    }
 
     return (
         <>
@@ -102,6 +129,23 @@ function MapContainer(props) {
                                 latLng.lat();
                                 latLng.lng();
                             }}>
+                            {positionMarkerStart()}
+                            {markerStart && markerStart.map((data, index) => {
+                                if (data) {
+                                    const position = {lat: data.toLat, lng: data.toLon};
+                                    return (
+                                        <Marker
+                                            key={index}
+                                            position={position}
+                                            deliveryInfo={data}
+                                            onClick={onMarkerClick}
+                                            onClose={handleMarkerClick}
+                                            icon={iconOrder}
+                                        />
+                                    )
+                                }
+                            })
+                            }
                             {markers && markers.map((data, index) => {
                                 if (data) {
                                     const position = {lat: data.lat, lng: data.lon};
@@ -132,20 +176,51 @@ function MapContainer(props) {
                                 marker={activeMarker}
                                 visible={showingInfoWindow}
                                 google="" map={props.google}>
-                                <div className="map-info-in">
-                                    <div>
-                                        RFID: {carInfo.rfid}
+                                {carInfo &&
+                                    <div className="map-info-in">
+                                        <div>
+                                            RFID: {carInfo.rfid}
+                                        </div>
+                                        <div>
+                                            Tốc độ: {carInfo.speed}
+                                        </div>
+                                        <div>
+                                            Vĩ độ: {carInfo.lat}
+                                        </div>
+                                        <div>
+                                            Kinh độ: {carInfo.lon}
+                                        </div>
                                     </div>
-                                    <div>
-                                        Tốc độ: {carInfo.speed}
+                                }
+                                {deliveryInfo && !isMarkerStart &&
+                                    <div className="map-info-in">
+                                        <div>
+                                            Mã vận đơn: {deliveryInfo.id}
+                                        </div>
+                                        <div>
+                                            Người nhận: {deliveryInfo.fullNameReceiver}
+                                        </div>
+                                        <div>
+                                            Liên hệ: {deliveryInfo.emailReceiver}
+                                        </div>
+                                        <div>
+                                            Địa chỉ: {deliveryInfo.toAddress}
+                                        </div>
                                     </div>
-                                    <div>
-                                        Vĩ độ: {carInfo.lat}
+                                }
+                                {deliveryInfo && isMarkerStart &&
+                                    <div className="map-info-in">
+                                        <div>
+                                            Mã vận đơn: {deliveryInfo.id}
+                                        </div>
+                                        <div>
+                                            Tài xế: {deliveryInfo.driverUsername}
+                                        </div>
+                                        <div>
+                                            Địa chỉ: {deliveryInfo.fromAddress}
+                                        </div>
                                     </div>
-                                    <div>
-                                        Kinh độ: {carInfo.lon}
-                                    </div>
-                                </div>
+                                }
                             </InfoWindow>
                         </Map>
                     </div>
