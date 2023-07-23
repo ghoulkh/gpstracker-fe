@@ -31,24 +31,7 @@ const PopupOrder = ({handleOpenPopup, handleOpenMap, valueClickLocation, userOpt
 
     // Hàm xử lý khi người dùng click vào nút lấy vị trí hiện tại
     useEffect(() => {
-        if (navigator.geolocation) {
-            // Sử dụng Geolocation API để lấy vị trí hiện tại
-            navigator.geolocation.getCurrentPosition(
-                (position) => {
-                    const lat = position.coords.latitude;
-                    const lng = position.coords.longitude;
-                    setFromLat(lat);
-                    setFromLon(lng)
-                    // Gọi Geocoding API để lấy địa chỉ từ vị trí hiện tại
-                    getGeocodeFromLatLng(lat, lng);
-                },
-                (error) => {
-                    alert("Không thể lấy vị trí hiện tại của bạn " + error);
-                }
-            );
-        } else {
-            alert("Trình duyệt của bạn không hỗ trợ Geolocation API.");
-        }
+        getGeocodeFromLatLng();
     }, []);
 
     useEffect(() => {
@@ -62,8 +45,8 @@ const PopupOrder = ({handleOpenPopup, handleOpenMap, valueClickLocation, userOpt
     }, [userOptionsProps])
 
     // Hàm gọi Geocoding API để lấy địa chỉ từ tọa độ
-    const getGeocodeFromLatLng = async (lat, lng) => {
-        await fetch(`https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${lng}&key=${API_KEY}`, {
+    const getGeocodeFromLatLng = async () => {
+        await fetch(`https://maps.googleapis.com/maps/api/geocode/json?latlng=${21.0072824},${105.8426416}&key=${API_KEY}`, {
             method: 'GET',
         }).then(response => response.json()).then(data => {
             if (data.results.length > 0) {
