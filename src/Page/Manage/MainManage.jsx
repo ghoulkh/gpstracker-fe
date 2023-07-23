@@ -1,6 +1,5 @@
 import {useState, useEffect} from 'react';
 import {Link} from 'react-router-dom';
-import {UserOutlined} from '@ant-design/icons';
 import {Layout, Select, theme} from 'antd';
 import "../../CSS/driver-manager.css";
 import UserLogin from "../UserLogin.jsx";
@@ -11,10 +10,11 @@ import DirectoryTreeMapImage from "../AdminManage/Component/Image/DirectoryTreeM
 import imageNotFound from "../../Image/imageNotFound.png";
 import auth from "../../API/AuthService.js";
 import AdminOrder from "../AdminManage/Component/Order/AdminOrder.jsx";
+import DriverManage from "../DriverManage/DriverManage.jsx";
 
 const {Header, Sider} = Layout;
 
-const DriverManager = ({loggedInUserObj}) => {
+const MainManage = ({loggedInUserObj}) => {
     const [collapsed, setCollapsed] = useState(false);
     const [markers, setMarkers] = useState([]);
     const [markerStart, setMarkerStart] = useState([]);
@@ -108,6 +108,9 @@ const DriverManager = ({loggedInUserObj}) => {
                         </div>
                     </>
                 }
+                {role !== "admin" &&
+                    <DriverManage/>
+                }
             </Sider>
             <Layout>
                 <Header className="header-user" style={{padding: 0, background: colorBgContainer}}>
@@ -137,4 +140,4 @@ const DriverManager = ({loggedInUserObj}) => {
     );
 };
 
-export default DriverManager;
+export default MainManage;

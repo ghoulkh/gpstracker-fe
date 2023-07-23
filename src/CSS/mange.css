@@ -56,6 +56,12 @@
     width: 30%;
     text-align: center;
 }
+.action-delivery {
+    padding: 5px;
+    width: 30%;
+    text-align: center;
+    display: flex;
+}
 .main-car-info {
     border: 1px solid #c2c2c2;
     width: 100%;

@@ -64,8 +64,24 @@ let service = {
     },
     getDeliveryCANCELED: (pageIndex, pageSize) => {
         let url = `api/deliveries/canceled?page_index=${pageIndex}&page_size=${pageSize}`;
-        return method.get(url)
-    }
+        return method.get(url);
+    },
+    driverGetDeliveryByStatus: (pageIndex, pageSize, status) => {
+        let url = `api/me/driver/deliveries?page_index=${pageIndex}&page_size=${pageSize}&status=${status}`;
+        return method.get(url);
+    },
+    confirmDelivery: (id) => {
+        let url = `api/driver/start-delivery/${id}`;
+        return method.post({}, url);
+    },
+    completeDelivery: (id) => {
+        let url = `api/driver/completed-delivery/${id}`;
+        return method.post({}, url);
+    },
+    cancelDelivery: (id) => {
+        let url = `api/driver/cancel-delivery/${id}`;
+        return method.post({}, url);
+    },
 };
 
 export default service;
