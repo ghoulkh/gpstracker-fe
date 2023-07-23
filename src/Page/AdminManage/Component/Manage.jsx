@@ -80,12 +80,7 @@ const UserManagementComponent = (props) => {
         }
     }, [rfidValue]);
 
-    useEffect(() => {
-        service.getInfoCar(1, 20).then(data => {
-            console.log(data)
-            setUser(data)
-        })
-
+    useEffect(() =>{
         const socket = new SockJS(config.WS);
         const client = Stomp.over(socket);
         client.connect({}, () => {
@@ -100,6 +95,17 @@ const UserManagementComponent = (props) => {
             });
 
         });
+        return () => {
+            client.disconnect();
+            console.log('WebSocket connection closed');
+        };
+    }, [])
+
+    useEffect(() => {
+        service.getInfoCar(1, 20).then(data => {
+            console.log(data)
+            setUser(data)
+        })
     }, [checkUser])
 
     const handleInputChange = (data) => {
