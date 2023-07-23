@@ -31,6 +31,15 @@
     align-items: start;
     justify-content: end;
 }
+.div-image-background-footer {
+    position: absolute;
+    z-index: 0;
+    width: 100%;
+    display: flex;
+    align-items: start;
+    justify-content: end;
+}
+
 .image-background-body {
     width: 120vh;
 }
@@ -101,4 +110,8 @@
 .CaretUpOutlined {
     color: #EA0D34;
     font-size: 30px;
+}
+.introduction-body {
+    padding-top: 50px;
+    height: 900px;
 }

@@ -63,10 +63,12 @@ function Header(props) {
                                      className="li-title-header">
                                     Tính năng
                                 </div>
-                                <div className="li-title-header">
+                                {/* <div onClick={() => scrollToDiv('introduction-body')}
+                                     className="li-title-header">
                                     Đối tượng sử dụng
-                                </div>
-                                <div className="li-title-header">
+                                </div> */}
+                                <div onClick={() => scrollToDiv('introduction-body')}
+                                    className="li-title-header">
                                     Giới thiệu
                                 </div>
                             </>
