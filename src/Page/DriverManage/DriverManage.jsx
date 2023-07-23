@@ -3,7 +3,7 @@ import service from "../../API/Service.js";
 import Button from "@mui/material/Button";
 import notice from "../../Utils/Notice.js";
 
-const DriverManage = () => {
+const DriverManage = ({setLocation, setMarkerStart}) => {
     const [deliveryNEW, setDeliveryNEW] = useState([]);
     const [deliveryINPROGRESS, setDeliveryINPROGRESS] = useState([]);
     const [deliveryCOMPLETED, setDeliveryCOMPLETED] = useState([]);
@@ -108,7 +108,7 @@ const DriverManage = () => {
                 console.log(data);
                 notice.success("Đã nhận đơn hàng: " + id)
             }).catch(err => {
-                console.log(err)
+            console.log(err)
         })
     }
 
@@ -162,8 +162,10 @@ const DriverManage = () => {
                         <button key={index} className="car-user-info-disable">
                             <Information data={data}/>
                             <div className="action-delivery">
-                                <Button style={{color:"#990000"}} onClick={() => clickConfirmDelivery(data.id)}>XÁC NHẬN</Button>
-                                <Button style={{color:"#990000"}} onClick={() => clickCancelDelivery(data.id)}>HUỶ</Button>
+                                <Button style={{color: "#990000"}} onClick={() => clickConfirmDelivery(data.id)}>XÁC
+                                    NHẬN</Button>
+                                <Button style={{color: "#990000"}}
+                                        onClick={() => clickCancelDelivery(data.id)}>HUỶ</Button>
                             </div>
                         </button>
                     )
@@ -180,8 +182,10 @@ const DriverManage = () => {
                         <button key={index} className="car-user-info-disable">
                             <Information data={data}/>
                             <div className="action-delivery">
-                                <Button style={{color:"#990000"}} onClick={() => clickCompleteDelivery(data.id)}>ĐÃ GIAO</Button>
-                                <Button style={{color:"#990000"}} onClick={() => clickCancelDelivery(data.id)}>HUỶ</Button>
+                                <Button style={{color: "#990000"}} onClick={() => clickCompleteDelivery(data.id)}>ĐÃ
+                                    GIAO</Button>
+                                <Button style={{color: "#990000"}}
+                                        onClick={() => clickCancelDelivery(data.id)}>HUỶ</Button>
                             </div>
                         </button>
                     )
@@ -231,7 +235,7 @@ const DriverManage = () => {
                     <div>Họ tên người nhận</div>
                 </div>
                 <div className="license-plate">
-                    <div>Số điện thoại người nhận</div>
+                    <div>Liên hệ</div>
                 </div>
                 <div className="driver-name">
                     <div>Địa chỉ người nhận</div>
@@ -257,6 +261,26 @@ const DriverManage = () => {
         })
     }
 
+    useEffect(() => {
+        if (isAllowAction) {
+            if (deliveryINPROGRESS.length > 0) {
+                const listLocation = [{
+                    lat: deliveryINPROGRESS[0].fromLat,
+                    lon: deliveryINPROGRESS[0].fromLon
+                }]
+                deliveryINPROGRESS.map(point => {
+                    listLocation.push({
+                        lat: point.toLat,
+                        lon: point.toLon
+                    })
+                })
+                setLocation(listLocation);
+                setMarkerStart(deliveryINPROGRESS);
+            }
+        }
+    }, [isAllowAction]);
+
+
     return (
         <>
             <div>
@@ -265,22 +289,24 @@ const DriverManage = () => {
                     <Title/>
                     <DeliveryNEW/>
                     {deliveryNEW.length === 5 &&
-                        <Button style={{width:"100%", color:"#990000"}} onClick={handlePageSizeNEW}>
+                        <Button style={{width: "100%", color: "#990000"}} onClick={handlePageSizeNEW}>
                             Xem thêm
                         </Button>
                     }
                 </div>
             </div>
-            <Button style={{width:"100%", color:"#990000", marginTop:"1rem"}} onClick={startProcess}>
+            <Button style={{width: "100%", color: "#990000", marginTop: "1rem"}} onClick={startProcess}>
                 Bắt đầu giao hàng
             </Button>
             {!showInfo &&
-                <Button style={{width:"100%", color:"#990000", marginTop:"1rem"}} onClick={() => handleSetShowInfo(true)}>
+                <Button style={{width: "100%", color: "#990000", marginTop: "1rem"}}
+                        onClick={() => handleSetShowInfo(true)}>
                     Xem chi tiết
                 </Button>
             }
             {showInfo &&
-                <Button style={{width:"100%", color:"#990000", marginTop:"1rem"}} onClick={() => handleSetShowInfo(false)}>
+                <Button style={{width: "100%", color: "#990000", marginTop: "1rem"}}
+                        onClick={() => handleSetShowInfo(false)}>
                     Ẩn
                 </Button>
             }
@@ -292,7 +318,7 @@ const DriverManage = () => {
                             <Title/>
                             <DeliveryINPROGRESS/>
                             {deliveryINPROGRESS.length === 5 &&
-                                <Button style={{width:"100%", color:"#990000"}} onClick={handlePageSizeINPROGRESS}>
+                                <Button style={{width: "100%", color: "#990000"}} onClick={handlePageSizeINPROGRESS}>
                                     Xem thêm
                                 </Button>
                             }
@@ -304,7 +330,7 @@ const DriverManage = () => {
                             <Title/>
                             <DeliveryCOMPLETED/>
                             {deliveryCOMPLETED.length === 5 &&
-                                <Button style={{width:"100%", color:"#990000"}} onClick={handlePageSizeCOMPLETED}>
+                                <Button style={{width: "100%", color: "#990000"}} onClick={handlePageSizeCOMPLETED}>
                                     Xem thêm
                                 </Button>
                             }
@@ -316,7 +342,7 @@ const DriverManage = () => {
                             <Title/>
                             <DeliveryCANCELED/>
                             {deliveryCANCELED.length === 5 &&
-                                <Button style={{width:"100%", color:"#990000"}} onClick={handlePageSizeCANCELED}>
+                                <Button style={{width: "100%", color: "#990000"}} onClick={handlePageSizeCANCELED}>
                                     Xem thêm
                                 </Button>
                             }

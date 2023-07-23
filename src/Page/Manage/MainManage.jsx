@@ -109,7 +109,9 @@ const MainManage = ({loggedInUserObj}) => {
                     </>
                 }
                 {role !== "admin" &&
-                    <DriverManage/>
+                    <DriverManage setLocation={(location) => handleSetLocation(location)}
+                                  setMarkerStart={(markerStart) => handleSetMarkerStart(markerStart)}
+                    />
                 }
             </Sider>
             <Layout>

@@ -50,6 +50,8 @@ const PopupOrder = ({handleOpenPopup, handleOpenMap, valueClickLocation, userOpt
             method: 'GET',
         }).then(response => response.json()).then(data => {
             if (data.results.length > 0) {
+                setFromLat(21.0072824);
+                setFromLon(105.8426416);
                 setFromAddress(data.results[0].formatted_address);
             } else {
                 notice.inf("Vui lòng chọn chia sẻ vị trí.");
@@ -90,6 +92,9 @@ const PopupOrder = ({handleOpenPopup, handleOpenMap, valueClickLocation, userOpt
     }
 
     const onSubmit = () => {
+        const emailRegex = /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/;
+        const phoneRegex = /^(0\d{9})$/;
+
         if (!selectedOption.value) {
             notice.inf("Vui lòng chọn tài xế");
             return;
@@ -101,6 +106,11 @@ const PopupOrder = ({handleOpenPopup, handleOpenMap, valueClickLocation, userOpt
         if (!senderEmail) {
             notice.inf("Vui lòng nhập họ tên người nhận");
             return;
+        } else {
+            if (!emailRegex.test(senderEmail)) {
+                notice.inf("Email người gửi chưa đúng định dạng");
+                return;
+            }
         }
         if (!fullNameReceiver) {
             notice.inf("Vui lòng nhập họ tên người nhận");
@@ -109,10 +119,20 @@ const PopupOrder = ({handleOpenPopup, handleOpenMap, valueClickLocation, userOpt
         if (!emailReceiver) {
             notice.inf("Vui lòng nhập email người nhận");
             return;
+        } else {
+            if (!emailRegex.test(emailReceiver)) {
+                notice.inf("Email người nhận chưa đúng định dạng");
+                return;
+            }
         }
         if (!phoneNumberReceiver) {
             notice.inf("Vui lòng nhập số điện thoại người nhận");
             return;
+        } else {
+            if (!phoneRegex.test(phoneNumberReceiver)) {
+                notice.inf("Số điện thoại người nhận không đúng định dạng");
+                return;
+            }
         }
         if (!toAddress) {
             notice.inf("Vui lòng nhập địa chỉ người nhận");
