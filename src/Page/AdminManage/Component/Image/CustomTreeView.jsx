@@ -69,7 +69,7 @@ export default function CustomTreeView({ data, getLinkImage }) {
                                 <TreeItem
                                     key={parentNode + '/' + childNode + '/' + time}
                                     nodeId={parentNode + '/' + childNode + '/' + time}
-                                    label={time}
+                                    label={time.replace(".txt", ".jpg")}
                                     onClick={() => handleGetLinkImage(parentNode,childNode,time)}
                                 />
                             ))}
