@@ -82,6 +82,10 @@ let service = {
         let url = `api/driver/cancel-delivery/${id}`;
         return method.post({}, url);
     },
+    getPositionByUserName: (username) => {
+        let url = `api/driver/${username}/position-log`;
+        return method.get(url);
+    }
 };
 
 export default service;

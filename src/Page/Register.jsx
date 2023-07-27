@@ -2,6 +2,9 @@ import PropTypes from 'prop-types';
 import {useEffect, useState} from "react";
 import service from "../API/Service.js";
 import notice from "../Utils/Notice.js";
+import {Select, Space} from 'antd';
+
+const {Option} = Select;
 
 function Register(props) {
     const [username, setUsername] = useState("");
@@ -11,6 +14,10 @@ function Register(props) {
     const [email, setEmail] = useState("");
     const [phone, setPhone] = useState("");
     const [rfid, setRfid] = useState("");
+    const [districts, setDistricts] = useState([]);
+    const [district, setDistrict] = useState("");
+    const [template, setTemplate] = useState("");
+    const [gpx, setGpx] = useState("");
 
     Register.propTypes = {
         clickRegisterProp: PropTypes.func,
@@ -26,7 +33,25 @@ function Register(props) {
     }
 
     useEffect(() => {
+        fetch("https://provinces.open-api.vn/api/?depth=2", {
+            method: "GET",
+        }).then(response => response.json()).then(data => {
+            const hanoiCity = data.find(item => item.codename === 'thanh_pho_ha_noi');
+            if (hanoiCity) {
+                setDistricts(hanoiCity?.districts || []);
+            } else {
+                console.log("Không tìm thấy thông tin về thành phố Hà Nội.");
+            }
+        })
     }, []);
+
+    const distinctionOptions = districts.length > 0 && districts.map((data, index) => (
+        <Option key={index} value={data.name} label={data.name}>
+            <Space>
+                {data.name}
+            </Space>
+        </Option>
+    ))
 
     const register = () => {
         if (!username) {
@@ -141,35 +166,68 @@ function Register(props) {
         setRfid(event.target.value);
     }
 
+    const handleInputDistrict = (value) => {
+        setDistrict(value);
+    }
+
+    const handleInputTemplate = (event) => {
+        setTemplate(event.target.value);
+    }
+
+    const handleInputGpx = (event) => {
+        setGpx(event.target.value);
+    }
+
     return (
         <>
             {props.isAdminClick ?
-            <>
-                <div className="main-login">
-                    <div className="body-login-1">
-                        <div className="title-login">
-                            <div className="title-login-1">Đăng ký</div>
-                            <div onClick={onClickExit} className="title-login-2">+</div>
-                        </div>
-                        <div className="div-input-login">
-                            <input onChange={handleInputUsername}
-                                   value={username}
-                                   className="input-login"
-                                   placeholder="Tên đăng nhập..."/>
-                            <input onChange={handleInputRfid}
-                                   value={rfid}
-                                   className="input-login"
-                                   placeholder="Rfid..."/>
-                        </div>
-                        <div className="div-btn-login">
-                            <button onClick={registerRfid}
-                                    className="btn-login">
-                                ĐĂNG KÝ
-                            </button>
+                <>
+                    <div className="main-login">
+                        <div className="body-login-1">
+                            <div className="title-login">
+                                <div className="title-login-1">Đăng ký</div>
+                                <div onClick={onClickExit} className="title-login-2">+</div>
+                            </div>
+                            <div className="div-input-login">
+                                <input onChange={handleInputUsername}
+                                       value={username}
+                                       className="input-login"
+                                       placeholder="Tên đăng nhập..."/>
+                                <input onChange={handleInputRfid}
+                                       value={rfid}
+                                       className="input-login"
+                                       placeholder="Rfid..."/>
+                                <input onChange={handleInputTemplate}
+                                       value={template}
+                                       className="input-login"
+                                       placeholder="Biển số xe..."/>
+                                <input onChange={handleInputGpx}
+                                       value={gpx}
+                                       className="input-login"
+                                       placeholder="Giấy phép xe..."/>
+                                <div id="register-select-district">
+                                    <Select
+                                        mode="multiple"
+                                        style={{
+                                            borderRadius: "5px",
+                                        }}
+                                        placeholder="Chọn khu vực chạy xe..."
+                                        onChange={handleInputDistrict}
+                                        optionLabelProp="label"
+                                    >
+                                        {distinctionOptions}
+                                    </Select>
+                                </div>
+                            </div>
+                            <div className="div-btn-login">
+                                <button onClick={registerRfid}
+                                        className="btn-login">
+                                    ĐĂNG KÝ
+                                </button>
+                            </div>
                         </div>
                     </div>
-                </div>
-            </>
+                </>
                 :
                 <div className="main-login">
                     <div className="body-login-1">

@@ -118,3 +118,25 @@
     color: #BA1318;
     border-radius: 0 0 10px 10px;
 }
+#register-select-district {
+    padding: 0 1rem;
+    width: 100%;
+}
+#register-select-district .ant-select {
+    width: 100%;
+}
+#register-select-district .ant-select-selector {
+    padding: 8px 0;
+}
+#register-select-district .ant-select-selector {
+    border-color: #dfdfdf !important;
+}
+#register-select-district .ant-select-selector:hover {
+    border-color: #990000 !important;
+}
+#register-select-district .ant-select-selector::selection {
+    border-color: #990000 !important;
+}
+#register-select-district .ant-select-selection-placeholder {
+    color: #7d7d7d;
+}
