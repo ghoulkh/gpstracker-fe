@@ -7,10 +7,9 @@ import "../../../../CSS/popup-order.css";
 import {Input} from "antd";
 import Select from 'react-select';
 import service from "../../../../API/Service.js";
-import config from "../../../../API/Config.js";
 
 
-const PopupOrder = ({handleOpenPopup, handleOpenMap, valueClickLocation, userOptionsProps}) => {
+const PopupOrder = ({handleOpenPopup, handleOpenMap, valueClickLocation, userOptionsProps, isView, item, isEdit, callBackGetDeliveryCANCELED}) => {
     const [input, setInput] = useState(1);
     const [choose, setChoose] = useState(0);
     const [fromAddress, setFromAddress] = useState("");
@@ -25,9 +24,28 @@ const PopupOrder = ({handleOpenPopup, handleOpenMap, valueClickLocation, userOpt
     const [senderFullName, setSenderFullName] = useState("");
     const [toAddress, setToAddress] = useState("");
     const [selectedOption, setSelectedOption] = useState("");
+    const [driverUserName, setDriverUserName] = useState("");
     const [userOptions, setUserOptions] = useState([]);
-    const [checkUser, setCheckUser] = useState("");
+    const [id, setId] = useState("");
 
+    useEffect(() => {
+        if (item?.id) {
+            console.log(item?.toAddress)
+            setDriverUserName(item?.driverUsername)
+            setEmailReceiver(item?.emailReceiver)
+            setFromAddress(item?.fromAddress)
+            setFromLat(item?.fromLat)
+            setFromLon(item?.fromLon)
+            setFullNameReceiver(item?.fullNameReceiver)
+            setId(item?.id)
+            setPhoneNumberReceiver(item?.phoneNumberReceiver)
+            setSenderEmail(item?.senderEmail)
+            setSenderFullName(item?.senderFullName)
+            setToAddress(item.toAddress)
+            setToLon(item.toLon)
+            setToLat(item.toLat)
+        }
+    }, [item]);
 
     // Hàm xử lý khi người dùng click vào nút lấy vị trí hiện tại
     useEffect(() => {
@@ -62,6 +80,7 @@ const PopupOrder = ({handleOpenPopup, handleOpenMap, valueClickLocation, userOpt
     };
 
     const handleSelectOption = selectedOption => {
+        console.log(selectedOption)
         setSelectedOption(selectedOption)
     };
 
@@ -139,20 +158,90 @@ const PopupOrder = ({handleOpenPopup, handleOpenMap, valueClickLocation, userOpt
             return;
         }
         service.createDelivery({
-            fromAddress:fromAddress,
+            fromAddress: fromAddress,
             toAddress: toAddress,
-            driverUsername:selectedOption.value,
-            fullNameReceiver:fullNameReceiver,
-            phoneNumberReceiver:phoneNumberReceiver,
-            emailReceiver:emailReceiver,
-            senderEmail:senderEmail,
-            senderFullName:senderFullName,
-            fromLat:fromLat,
-            fromLon:fromLon,
-            toLat:toLat,
-            toLon:toLon
+            driverUsername: selectedOption.value,
+            fullNameReceiver: fullNameReceiver,
+            phoneNumberReceiver: phoneNumberReceiver,
+            emailReceiver: emailReceiver,
+            senderEmail: senderEmail,
+            senderFullName: senderFullName,
+            fromLat: fromLat,
+            fromLon: fromLon,
+            toLat: toLat,
+            toLon: toLon
         }).then(() => {
             notice.success("Đã tạo mới một đơn hàng");
+        }).catch((err) => {
+            console.log(err)
+            notice.err("Có lỗi xảy ra vui lòng liên hệ CSKH");
+        })
+    }
+
+    const onUpdateChange = () => {
+        const emailRegex = /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/;
+        const phoneRegex = /^(0\d{9})$/;
+
+        if (!selectedOption.value) {
+            notice.inf("Vui lòng chọn tài xế");
+            return;
+        }
+        if (!senderFullName) {
+            notice.inf("Vui lòng nhập họ tên người gửi");
+            return;
+        }
+        if (!senderEmail) {
+            notice.inf("Vui lòng nhập họ tên người nhận");
+            return;
+        } else {
+            if (!emailRegex.test(senderEmail)) {
+                notice.inf("Email người gửi chưa đúng định dạng");
+                return;
+            }
+        }
+        if (!fullNameReceiver) {
+            notice.inf("Vui lòng nhập họ tên người nhận");
+            return;
+        }
+        if (!emailReceiver) {
+            notice.inf("Vui lòng nhập email người nhận");
+            return;
+        } else {
+            if (!emailRegex.test(emailReceiver)) {
+                notice.inf("Email người nhận chưa đúng định dạng");
+                return;
+            }
+        }
+        if (!phoneNumberReceiver) {
+            notice.inf("Vui lòng nhập số điện thoại người nhận");
+            return;
+        } else {
+            if (!phoneRegex.test(phoneNumberReceiver)) {
+                notice.inf("Số điện thoại người nhận không đúng định dạng");
+                return;
+            }
+        }
+        if (!item?.toAddress) {
+            notice.inf("Vui lòng nhập địa chỉ người nhận");
+            return;
+        }
+        service.changeDriverDelivery({
+            fromAddress: fromAddress,
+            toAddress: item?.toAddress,
+            driverUsername: selectedOption.value,
+            fullNameReceiver: fullNameReceiver,
+            phoneNumberReceiver: phoneNumberReceiver,
+            emailReceiver: emailReceiver,
+            senderEmail: senderEmail,
+            senderFullName: senderFullName,
+            fromLat: fromLat,
+            fromLon: fromLon,
+            toLat: item?.toLat,
+            toLon: item?.toLon
+        }, item?.id).then(() => {
+            notice.success("Đã cập nhật đơn hàng");
+            callBackGetDeliveryCANCELED();
+            handleOpenPopup(false)
         }).catch((err) => {
             console.log(err)
             notice.err("Có lỗi xảy ra vui lòng liên hệ CSKH");
@@ -194,93 +283,149 @@ const PopupOrder = ({handleOpenPopup, handleOpenMap, valueClickLocation, userOpt
                         <h2>
                             Địa chỉ chi nhánh: {fromAddress}
                         </h2>
-                        <div style={{display: "flex", width:"100%", justifyContent: "start", alignItems: "center"}}>
+                        {item?.id &&
+                            <h3>Mã vận đơn: {item?.id}</h3>
+                        }
+                        <div style={{display: "flex", width: "100%", justifyContent: "start", alignItems: "center"}}>
                             <h3>
                                 Chọn tài xế:
                             </h3>
-                            <div style={{width:"fit-content"}}>
-                                <Select
-                                    color={"#990000"}
-                                    value={selectedOption}
-                                    onChange={handleSelectOption}
-                                    options={userOptions}
-                                    isSearchable // Cho phép tìm kiếm các option
-                                    placeholder="Vui lòng chọn tài xế"
-                                />
+                            <div style={{width: "fit-content", display: "flex", justifyContent: "center", alignItems: "center"}}>
+                                {item?.id && isView ?
+                                    <>
+                                        <Input disabled={isView} value={driverUserName}/>
+                                    </> :
+                                    <Select
+                                        isDisabled={isView}
+                                        color={"#990000"}
+                                        value={selectedOption}
+                                        onChange={handleSelectOption}
+                                        options={userOptions}
+                                        isSearchable // Cho phép tìm kiếm các option
+                                        placeholder="Vui lòng chọn tài xế"
+                                    />
+                                }
+                                {isEdit &&
+                                    <>
+                                        <div style={{marginLeft: "1rem"}}> --- </div>
+                                        <div style={{marginLeft: "1rem", fontWeight:500}}>Bị huỷ bởi {driverUserName}</div>
+                                    </>
+                                }
                             </div>
                         </div>
 
-                        <div style={{display: "flex", width:"100%", justifyContent: "start", alignItems: "center"}}>
+                        <div style={{display: "flex", width: "100%", justifyContent: "start", alignItems: "center"}}>
                             <h3>
                                 Họ tên người gửi:
                             </h3>
-                            <div style={{marginRight:"2rem"}}>
-                                <Input onChange={handleSenderFullName} placeholder="Vui lòng nhập họ tên người gửi"/>
+                            <div style={{marginRight: "2rem"}}>
+                                <Input onChange={handleSenderFullName}
+                                       disabled={isView || isEdit}
+                                       value={senderFullName}
+                                       placeholder="Vui lòng nhập họ tên người gửi"/>
                             </div>
                             <h3>
                                 Email người gửi:
                             </h3>
                             <div>
-                                <Input onChange={handleSenderEmail} placeholder="Vui lòng nhập email người gửi"/>
+                                <Input onChange={handleSenderEmail}
+                                       disabled={isView || isEdit}
+                                       value={senderEmail}
+                                       placeholder="Vui lòng nhập email người gửi"/>
                             </div>
                         </div>
 
-                        <div style={{display: "flex", width:"100%", justifyContent: "start", alignItems: "center"}}>
+                        <div style={{display: "flex", width: "100%", justifyContent: "start", alignItems: "center"}}>
                             <h3>
                                 Họ tên người nhận:
                             </h3>
-                            <div style={{marginRight:"2rem"}}>
-                                <Input onChange={handlefullNameReceiver} placeholder="Vui lòng nhập họ tên người gửi"/>
+                            <div style={{marginRight: "2rem"}}>
+                                <Input onChange={handlefullNameReceiver}
+                                       disabled={isView || isEdit}
+                                       value={fullNameReceiver}
+                                       placeholder="Vui lòng nhập họ tên người gửi"/>
                             </div>
                             <h3>
                                 Email người nhận:
                             </h3>
-                            <div style={{marginRight:"2rem"}}>
-                                <Input onChange={handleEmailReceiver} placeholder="Vui lòng nhập email người gửi"/>
+                            <div style={{marginRight: "2rem"}}>
+                                <Input onChange={handleEmailReceiver}
+                                       disabled={isView || isEdit}
+                                       value={emailReceiver}
+                                       placeholder="Vui lòng nhập email người gửi"/>
                             </div>
                             <h3>
                                 Số điện thoại người nhận:
                             </h3>
                             <div>
-                                <Input onChange={handlePhoneNumberReceiver} placeholder="Vui lòng nhập email người gửi"/>
+                                <Input onChange={handlePhoneNumberReceiver}
+                                       disabled={isView || isEdit}
+                                       value={phoneNumberReceiver}
+                                       placeholder="Vui lòng nhập email người gửi"/>
                             </div>
                         </div>
 
-                        <div className="div-location">
-                            <div className="div-location-1">
-                                <h3>
-                                    Địa chỉ người nhận:
-                                </h3>
-                                <div className="background-btn-choose-input">
-                                    <button onClick={() => handleChooseAreaOrLocation("input")}
-                                            style={{marginRight:"1rem"}}
-                                            className={input % 2 === 0 ? "choose-input-or-choose-2" : "choose-input-or-choose"}>
-                                        Nhập vị trí
-                                    </button>
-                                    <button onClick={() => handleChooseAreaOrLocation("choose")}
-                                            className={choose % 2 === 0 ? "choose-input-or-choose-2" : "choose-input-or-choose"}>
-                                        Chọn trên bản đồ
-                                    </button>
-                                </div>
-                            </div>
-                            <div className="div-select-type-main">
-                                {input % 2 === 0 &&
-                                    <div className="div-type">
-                                        <AddressInput onAddressChanged={handleAddressInputChanged}/>
+                        {!isView && !isEdit ?
+                            <>
+                                <div className="div-location">
+                                    <div className="div-location-1">
+                                        <h3>
+                                            Địa chỉ người nhận:
+                                        </h3>
+                                        <div className="background-btn-choose-input">
+                                            <button onClick={() => handleChooseAreaOrLocation("input")}
+                                                    style={{marginRight: "1rem"}}
+                                                    className={input % 2 === 0 ? "choose-input-or-choose-2" : "choose-input-or-choose"}>
+                                                Nhập vị trí
+                                            </button>
+                                            <button onClick={() => handleChooseAreaOrLocation("choose")}
+                                                    className={choose % 2 === 0 ? "choose-input-or-choose-2" : "choose-input-or-choose"}>
+                                                Chọn trên bản đồ
+                                            </button>
+                                        </div>
                                     </div>
-                                }
-                                {choose % 2 === 0 &&
-                                    <div className="btn-type-0">
-                                        <button className="btn-type" onClick={openMap}>
-                                            {toAddress ? toAddress : "Mở bản đồ"}
-                                        </button>
-                                    </div>}
-                            </div>
+                                    <div className="div-select-type-main">
+                                        {input % 2 === 0 &&
+                                            <div className="div-type">
+                                                <AddressInput disable={isView}
+                                                              onAddressChanged={handleAddressInputChanged}/>
+                                            </div>
+                                        }
+                                        {choose % 2 === 0 &&
+                                            <div className="btn-type-0">
+                                                <button className="btn-type" onClick={openMap}>
+                                                    {toAddress ? toAddress : "Mở bản đồ"}
+                                                </button>
+                                            </div>}
+                                    </div>
+                                </div>
+                            </> :
+                            <>
+                                <div className="div-location">
+                                    <div className="div-location-1">
+                                        <h3>
+                                            Địa chỉ người nhận:
+                                        </h3>
+                                        <div className="background-btn-choose-input">
+                                            <Input value={item?.toAddress} disabled={isView || isEdit}/>
+                                        </div>
+                                    </div>
+                                </div>
+                            </>
+                        }
+                    </div>
+                    {!isView && !isEdit &&
+                        <div style={{width: "100%", padding: "0 15rem"}}>
+                            <Button onClick={onSubmit}
+                                    style={{width: "100%", marginBottom: "1rem", color: "#990000"}}>Thêm</Button>
                         </div>
-                    </div>
-                    <div style={{width:"100%",padding:"0 15rem"}}>
-                        <Button onClick={onSubmit} style={{width:"100%",marginBottom:"1rem", color:"#990000"}}>Thêm</Button>
-                    </div>
+                    }
+                    {isEdit &&
+                        <div style={{width: "100%", padding: "0 15rem"}}>
+                            <Button onClick={onUpdateChange}
+                                    style={{width: "100%", marginBottom: "1rem", color: "#990000"}}>Thay đổi</Button>
+                        </div>
+                    }
                 </div>
             </div>
         </>

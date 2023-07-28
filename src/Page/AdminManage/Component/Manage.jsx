@@ -7,6 +7,7 @@ import "../../../CSS/mange.css"
 import PropTypes from "prop-types";
 import moment from "moment";
 import notice from "../../../Utils/Notice.js";
+import {format} from "date-fns";
 
 const UserManagementComponent = (props) => {
     UserManagementComponent.propTypes = {
@@ -171,12 +172,7 @@ const UserManagementComponent = (props) => {
             <>
                 {position.map((data, index) => {
                     const dateObj = new Date(data.date);
-                    const vietnamTime = moment(dateObj).utcOffset(7);
-                    const hours = vietnamTime.hours().toString().padStart(2, '0');
-                    const minutes = vietnamTime.minutes().toString().padStart(2, '0');
-                    const seconds = vietnamTime.seconds().toString().padStart(2, '0');
-
-                    const formattedTime = `${hours}:${minutes}:${seconds}`;
+                    const formattedTime = format(dateObj.getTime(), 'yyyy-MM-dd\' | \'HH:mm:ss');
                     return (
                         <button key={index} className="car-user-info-disable">
                             <div className="rfid">

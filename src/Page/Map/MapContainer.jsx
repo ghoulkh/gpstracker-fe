@@ -4,6 +4,8 @@ import {API_KEY} from "../../Const/ActionType.js";
 import PropTypes from "prop-types";
 import iconMaker from '../../Image/icon-marker.png';
 import iconOrder from '../../Image/iconOrder.png';
+import iconOffice from '../../Image/icon-office.png';
+import notice from "../../Utils/Notice.js";
 
 
 // eslint-disable-next-line react-refresh/only-export-components
@@ -27,7 +29,9 @@ function MapContainer(props) {
     const [path, setPath] = useState([]);
     const [markerStart, setMarkerStart] = useState([]);
     const [deliveryInfo, setDeliveryInfo] = useState({});
+    const [officeInfo, setOfficeInfo] = useState({});
     const [isMarkerStart, setIsmarkerStart] = useState(false);
+    const [addressOffice, setAddressOffice] = useState("");
 
     useEffect(() => {
         setMarkers(props.markers)
@@ -79,6 +83,9 @@ function MapContainer(props) {
                 }));
                 setPath(pathCoordinates);
             }
+        }).catch(() => {
+            notice.inf("Không có kết quả nào phù hợp");
+            setPath([])
         });
     };
 
@@ -90,6 +97,7 @@ function MapContainer(props) {
         setCarInfo(marker.carInfo);
         setDeliveryInfo(marker.deliveryInfo);
         setIsmarkerStart(marker.isMarkerStart);
+        setOfficeInfo(marker.officeInfo);
     };
 
     const handleMarkerClick = () => {
@@ -98,8 +106,9 @@ function MapContainer(props) {
 
     const positionMarkerStart = () => {
         if (markerStart.length > 0) {
+            console.log(markerStart)
             const pointStart = markerStart[0];
-            const position = {lat: pointStart.fromLat, lng: pointStart.fromLon};
+            const position = {lat: pointStart.lat, lng: pointStart.lon};
             return (
                 <Marker
                     isMarkerStart={true}
@@ -112,6 +121,20 @@ function MapContainer(props) {
             )
         }
     }
+
+    useEffect(() => {
+        fetch(`https://maps.googleapis.com/maps/api/geocode/json?latlng=${21.0072824},${105.8426416}&key=${API_KEY}`, {
+            method: 'GET',
+        }).then(response => response.json()).then(data => {
+            if (data.results.length > 0) {
+                setAddressOffice(data.results[0].formatted_address);
+            } else {
+                notice.inf("Vui lòng chọn chia sẻ vị trí.");
+            }
+        }).catch(() => {
+            notice.inf("Vui lòng chọn chia sẻ vị trí.")
+        })
+    }, []);
 
     return (
         <>
@@ -130,6 +153,17 @@ function MapContainer(props) {
                                 latLng.lng();
                             }}>
                             {positionMarkerStart()}
+                            <Marker
+                                position={{lat: 21.0072824, lng: 105.8426416}}
+                                officeInfo={{
+                                    info: addressOffice,
+                                    lat: 21.0072824,
+                                    lon: 105.8426416
+                                }}
+                                onClick={onMarkerClick}
+                                onClose={handleMarkerClick}
+                                icon={iconOffice}
+                            />
                             {markerStart && markerStart.map((data, index) => {
                                 if (data) {
                                     const position = {lat: data.toLat, lng: data.toLon};
@@ -206,18 +240,37 @@ function MapContainer(props) {
                                         <div>
                                             Địa chỉ: {deliveryInfo.toAddress}
                                         </div>
+                                        <div>
+                                            Trạng thái: {deliveryInfo.deliveryStatus}
+                                        </div>
                                     </div>
                                 }
                                 {deliveryInfo && isMarkerStart &&
                                     <div className="map-info-in">
                                         <div>
-                                            Mã vận đơn: {deliveryInfo.id}
+                                            RFID: {deliveryInfo.rfid}
                                         </div>
                                         <div>
-                                            Tài xế: {deliveryInfo.driverUsername}
+                                            Tốc độ: {deliveryInfo.speed}
                                         </div>
                                         <div>
-                                            Địa chỉ: {deliveryInfo.fromAddress}
+                                            Vĩ độ: {deliveryInfo.lat}
+                                        </div>
+                                        <div>
+                                            Kinh độ: {deliveryInfo.lon}
+                                        </div>
+                                    </div>
+                                }
+                                {officeInfo &&
+                                    <div className="map-info-in">
+                                        <div>
+                                            Địa chỉ chi nhánh: {officeInfo.info}
+                                        </div>
+                                        <div>
+                                            Vĩ độ: {officeInfo.lat}
+                                        </div>
+                                        <div>
+                                            Kinh độ: {officeInfo.lon}
                                         </div>
                                     </div>
                                 }

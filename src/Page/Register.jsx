@@ -33,15 +33,9 @@ function Register(props) {
     }
 
     useEffect(() => {
-        fetch("https://provinces.open-api.vn/api/?depth=2", {
-            method: "GET",
-        }).then(response => response.json()).then(data => {
-            const hanoiCity = data.find(item => item.codename === 'thanh_pho_ha_noi');
-            if (hanoiCity) {
-                setDistricts(hanoiCity?.districts || []);
-            } else {
-                console.log("Không tìm thấy thông tin về thành phố Hà Nội.");
-            }
+        service.getDistrictByCity()
+            .then(response => response).then(data => {
+                setDistricts(data || []);
         })
     }, []);
 
@@ -117,10 +111,27 @@ function Register(props) {
             notice.warn("Mã số thẻ không được để trống")
             return;
         }
+        if (!template) {
+            notice.warn("Biển số xe không được để trống")
+            return;
+        }
+        if (!gpx) {
+            notice.warn("Giấy phép xe không được để trống")
+            return;
+        }
+        if (!district) {
+            notice.warn("Khu vực chạy xe không được để trống")
+            return;
+        }
+
+        notice.inf("Loading...")
 
         service.registerRfid({
             username: username,
-            rfid: rfid
+            rfid: rfid,
+            licensePlate: template,
+            drivingLicense: gpx,
+            activeAreas: district
         }).then(data => {
             console.log(data);
             notice.success("Đăng ký thành công!")

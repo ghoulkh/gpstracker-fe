@@ -198,11 +198,7 @@ function TimeSlider(props) {
             <>
                 {position && position.reverse().map((data, index) => {
                     const dateObj = new Date(data.date);
-                    const vietnamTime = moment(dateObj).utcOffset(7);
-                    const hours = vietnamTime.hours().toString().padStart(2, '0');
-                    const minutes = vietnamTime.minutes().toString().padStart(2, '0');
-                    const seconds = vietnamTime.seconds().toString().padStart(2, '0');
-                    const formattedTime = `${hours}:${minutes}:${seconds}`;
+                    const formattedTime = format(dateObj.getTime(), 'yyyy-MM-dd\' | \'HH:mm:ss');
                     return (
                         <button onClick={() => handleInputChange(data)} key={index} className="car-user-info-disable">
                             <div className="rfid">

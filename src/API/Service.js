@@ -85,6 +85,14 @@ let service = {
     getPositionByUserName: (username) => {
         let url = `api/driver/${username}/position-log`;
         return method.get(url);
+    },
+    changeDriverDelivery: (params, id) => {
+        let url = `api/delivery/${id}`;
+        return method.patch(params, url);
+    },
+    getDistrictByCity: () => {
+        let url = `api/address/district?city=Th%C3%A0nh%20ph%E1%BB%91%20H%C3%A0%20N%E1%BB%99i`;
+        return method.get(url);
     }
 };
 

@@ -21,10 +21,11 @@ class ClickChooseLocation extends Component {
     handleClick = (mapProps, map, clickEvent) => {
         const lat = clickEvent.latLng.lat();
         const lng = clickEvent.latLng.lng();
+        console.log(lat)
+        console.log(lng)
         fetch(`https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${lng}&key=${API_KEY}`)
             .then(response => response.json())
             .then(data => {
-                console.log(data)
                 if (data.results.length > 0) {
                     this.setState({address: data.results[0].formatted_address});
                     this.props.handleClickLocation(lat, lng, data.results[0].formatted_address)

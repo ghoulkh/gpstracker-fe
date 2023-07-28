@@ -8,6 +8,7 @@ import Stomp from "stompjs";
 import notice from "../../../../Utils/Notice.js";
 import SockJS from "sockjs-client/dist/sockjs"
 import auth from "../../../../API/AuthService.js";
+import {format} from "date-fns";
 
 const AdminOrder = ({setLocation, setMarkerStart}) => {
     const [openPopup, setOpenPopup] = useState(false);
@@ -23,10 +24,26 @@ const AdminOrder = ({setLocation, setMarkerStart}) => {
     const [chooseUser, setChooseUser] = useState({});
     const [pageSize, setPageSize] = useState(5);
     const [pageSizeCANCELED, setPageSizeCANCELED] = useState(5);
+    const [isView, setIsView] = useState(false);
+    const [isEdit, setIsEdit] = useState(false);
+    const [itemView, setItemView] = useState({})
     const usernameAdmin = auth.getUserInfo()?.username;
 
     const handleOpenMap = (value) => {
         setOpenMap(value)
+    }
+
+    const handleViewItem = (data) => {
+        setItemView(data);
+        setIsView(true);
+        setOpenPopup(true);
+    }
+
+    const handleEditItem = (data) => {
+        setItemView(data);
+        setIsView(false);
+        setIsEdit(true)
+        setOpenPopup(true);
     }
 
     const handleSetClickLocation = (lat, lon, address) => {
@@ -37,6 +54,9 @@ const AdminOrder = ({setLocation, setMarkerStart}) => {
 
     const handleOpenPopup = (value) => {
         setOpenPopup(value)
+        setItemView({});
+        setIsView(false)
+        setIsEdit(false)
     }
 
     const handleInputChange = (value) => {
@@ -79,7 +99,7 @@ const AdminOrder = ({setLocation, setMarkerStart}) => {
                         if (data.status === "INACTIVE") {
                             listOptionNew.push({
                                 value: data.username,
-                                label: `${data.driver} - ${data.licensePlate} - ${data.rfid}`
+                                label: `${data.username} - ${data.driver} - ${data.licensePlate} - ${data.rfid}`
                             })
                         }
                     })
@@ -101,10 +121,15 @@ const AdminOrder = ({setLocation, setMarkerStart}) => {
         }]
         service.getInfoCar(1, 20).then(data => {
             data.map(data => {
+                console.log(data)
                 if (data.status === "INACTIVE") {
                     listOption.push({
                         value: data.username,
-                        label: `${data.driver} - ${data.licensePlate} - ${data.rfid}`
+                        label: `${data.username} 
+                        - ${data.driver}
+                         - ${data.licensePlate}
+                          - ${data.rfid}
+                           - ${data.activeAreas}`
                     })
                 }
             })
@@ -113,30 +138,59 @@ const AdminOrder = ({setLocation, setMarkerStart}) => {
         })
     }, [checkUser])
 
+    useEffect(() => {
+        const socket = new SockJS(config.WS);
+        const client = Stomp.over(socket);
+        if (chooseUser?.rfid) {
+            client.connect({}, () => {
+                console.log('WebSocket connection opened');
+                client.subscribe('/rfid/' + chooseUser?.rfid, message => {
+                    console.log('Received message:', message.body);
+                    console.log("KHANH")
+                    setMarkerStart(prevState => {
+                        return ([JSON.parse(message.body), ...prevState.slice(1)])
+                    });
+                    // setLocation(listLocation);
+                });
+            });
+        }
+        return () => {
+            client.disconnect();
+            console.log('WebSocket connection closed');
+        };
+    }, [chooseUser?.rfid]);
 
     useEffect(() => {
-        console.log(chooseUser);
         service.getDeliveryByDriverUserName(1, pageSize, usernameAdmin, chooseUser.username)
             .then(data => {
                 setDelivery(data);
 
-                const listLocation = [{
-                    lat: data[0].fromLat,
-                    lon: data[0].fromLon
-                }]
-                data.map(point => {
-                    if (point.deliveryStatus !== "COMPLETED") {
-                        listLocation.push({
-                            lat: point.toLat,
-                            lon: point.toLon
+                service.getPositionHistoryByRfid(chooseUser.rfid, 1, 1)
+                    .then(dataRfid => {
+                        let listLocation = [{
+                            lat: data[0].fromLat,
+                            lon: data[0].fromLon
+                        }]
+                        if (dataRfid.length > 0) {
+                            listLocation = [{
+                                lat: dataRfid[0].lat,
+                                lon: dataRfid[0].lon
+                            }]
+                        }
+                        data.map(point => {
+                            if (point.deliveryStatus !== "COMPLETED") {
+                                listLocation.push({
+                                    lat: point.toLat,
+                                    lon: point.toLon
+                                })
+                            }
                         })
-                    }
-                })
 
-                setMarkerStart(data);
-                setLocation(listLocation);
+                        setMarkerStart([...dataRfid, ...data]);
+                        setLocation(listLocation);
+                    });
             }).catch((err) => {
-                console.log(err)
+            console.log(err)
         })
     }, [chooseUser, pageSize]);
 
@@ -150,6 +204,48 @@ const AdminOrder = ({setLocation, setMarkerStart}) => {
             console.log(err)
         })
     }, [pageSizeCANCELED])
+
+    const callBackGetDeliveryCANCELED = () => {
+        service.getDeliveryCANCELED(1, pageSizeCANCELED)
+            .then(data => {
+                setDeliveryCANCELED(data)
+                console.log(data);
+            }).catch((err) => {
+            console.log(err)
+        })
+
+        service.getDeliveryByDriverUserName(1, pageSize, usernameAdmin, chooseUser.username)
+            .then(data => {
+                setDelivery(data);
+
+                service.getPositionHistoryByRfid(chooseUser.rfid, 1, 1)
+                    .then(dataRfid => {
+                        let listLocation = [{
+                            lat: data[0].fromLat,
+                            lon: data[0].fromLon
+                        }]
+                        if (dataRfid.length > 0) {
+                            listLocation = [{
+                                lat: dataRfid[0].lat,
+                                lon: dataRfid[0].lon
+                            }]
+                        }
+                        data.map(point => {
+                            if (point.deliveryStatus !== "COMPLETED") {
+                                listLocation.push({
+                                    lat: point.toLat,
+                                    lon: point.toLon
+                                })
+                            }
+                        })
+
+                        setMarkerStart([...dataRfid, ...data]);
+                        setLocation(listLocation);
+                    });
+            }).catch((err) => {
+            console.log(err)
+        })
+    }
 
     const UserInfo = () => {
         return (
@@ -181,7 +277,10 @@ const AdminOrder = ({setLocation, setMarkerStart}) => {
             <>
                 {delivery.map((data, index) => {
                     return (
-                        <button key={index} className="car-user-info-disable">
+                        <button
+                            key={index}
+                            onClick={() => handleViewItem(data)}
+                            className="car-user-info-disable">
                             <div className="rfid">
                                 <div>{data.id}</div>
                             </div>
@@ -192,7 +291,18 @@ const AdminOrder = ({setLocation, setMarkerStart}) => {
                                 <div>{data.toAddress}</div>
                             </div>
                             <div className="driving-license">
-                                <div>{data.deliveryStatus}</div>
+                                <div>
+                                    {data.deliveryStatus}
+                                </div>
+                                <div>
+                                    {data.statusHistories.map(dataItem => {
+                                        if (dataItem.deliveryStatus === data.deliveryStatus) {
+                                            return (
+                                                `|` + format(dataItem.createdAt, 'yyyy-MM-dd\' | \'HH:mm:ss')
+                                            )
+                                        }
+                                    })}
+                                </div>
                             </div>
                         </button>
                     )
@@ -206,7 +316,10 @@ const AdminOrder = ({setLocation, setMarkerStart}) => {
             <>
                 {deliveryCANCELED.map((data, index) => {
                     return (
-                        <button key={index} className="car-user-info-disable">
+                        <button
+                            key={index}
+                            onClick={() => handleEditItem(data)}
+                            className="car-user-info-disable">
                             <div className="rfid">
                                 <div>{data.id}</div>
                             </div>
@@ -217,7 +330,18 @@ const AdminOrder = ({setLocation, setMarkerStart}) => {
                                 <div>{data.toAddress}</div>
                             </div>
                             <div className="driving-license">
-                                <div>{data.deliveryStatus}</div>
+                                <div>
+                                    {data.deliveryStatus}
+                                </div>
+                                <div>
+                                    {data.statusHistories.map(dataItem => {
+                                        if (dataItem.deliveryStatus === data.deliveryStatus) {
+                                            return (
+                                                `|` + format(dataItem.createdAt, 'yyyy-MM-dd\' | \'HH:mm:ss')
+                                            )
+                                        }
+                                    })}
+                                </div>
                             </div>
                         </button>
                     )
@@ -229,7 +353,7 @@ const AdminOrder = ({setLocation, setMarkerStart}) => {
     return (
         <>
             <div>
-                <Button style={{width:"100%", color:"#990000"}} onClick={() => handleOpenPopup(true)}>
+                <Button style={{width: "100%", color: "#990000"}} onClick={() => handleOpenPopup(true)}>
                     Thêm đơn
                 </Button>
 
@@ -273,7 +397,7 @@ const AdminOrder = ({setLocation, setMarkerStart}) => {
                     </div>
                     <DeliveryInfo/>
                     {delivery.length === 5 &&
-                        <Button style={{width:"100%", color:"#990000"}} onClick={handlePageSize}>
+                        <Button style={{width: "100%", color: "#990000"}} onClick={handlePageSize}>
                             Xem thêm
                         </Button>
                     }
@@ -298,7 +422,7 @@ const AdminOrder = ({setLocation, setMarkerStart}) => {
                     </div>
                     <DeliveryCANCELEDInfo/>
                     {deliveryCANCELED.length === 5 &&
-                        <Button style={{width:"100%", color:"#990000"}} onClick={handlePageSizeCANCELED}>
+                        <Button style={{width: "100%", color: "#990000"}} onClick={handlePageSizeCANCELED}>
                             Xem thêm
                         </Button>
                     }
@@ -310,6 +434,10 @@ const AdminOrder = ({setLocation, setMarkerStart}) => {
                     lon: lon,
                     address: address
                 }}
+                            isView={isView}
+                            isEdit={isEdit}
+                            item={itemView}
+                            callBackGetDeliveryCANCELED={callBackGetDeliveryCANCELED}
                             handleOpenPopup={handleOpenPopup}
                             handleOpenMap={handleOpenMap}
                             userOptionsProps={userOptions}
@@ -317,7 +445,9 @@ const AdminOrder = ({setLocation, setMarkerStart}) => {
             </div>
             <div className={openMap ? "login-click" : "none-click-login"}>
                 <div style={{width: "100%", height: "100%"}}>
-                    <ClickChooseLocation handleClickLocation={handleSetClickLocation} openMap={handleOpenMap}/>
+                    <ClickChooseLocation
+                        handleClickLocation={handleSetClickLocation}
+                        openMap={handleOpenMap}/>
                 </div>
             </div>
         </>
