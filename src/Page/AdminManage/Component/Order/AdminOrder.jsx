@@ -99,7 +99,11 @@ const AdminOrder = ({setLocation, setMarkerStart}) => {
                         if (data.status === "INACTIVE") {
                             listOptionNew.push({
                                 value: data.username,
-                                label: `${data.username} - ${data.driver} - ${data.licensePlate} - ${data.rfid}`
+                                label: `${data.username} 
+                                - ${data.driver}
+                                - ${data.licensePlate}
+                                - ${data.rfid}
+                                - ${data.activeAreas}`
                             })
                         }
                     })
@@ -127,9 +131,9 @@ const AdminOrder = ({setLocation, setMarkerStart}) => {
                         value: data.username,
                         label: `${data.username} 
                         - ${data.driver}
-                         - ${data.licensePlate}
-                          - ${data.rfid}
-                           - ${data.activeAreas}`
+                        - ${data.licensePlate}
+                        - ${data.rfid}
+                        - ${data.activeAreas}`
                     })
                 }
             })
@@ -147,10 +151,13 @@ const AdminOrder = ({setLocation, setMarkerStart}) => {
                 client.subscribe('/rfid/' + chooseUser?.rfid, message => {
                     console.log('Received message:', message.body);
                     console.log("KHANH")
+                    const result = JSON.parse(message.body)
                     setMarkerStart(prevState => {
-                        return ([JSON.parse(message.body), ...prevState.slice(1)])
+                        return ([result, ...prevState.slice(1)])
                     });
-                    // setLocation(listLocation);
+                    setLocation(prevState => {
+                        return ([{lat: result.lat, lon: result.lon}, ...prevState.slice(1)])
+                    });
                 });
             });
         }

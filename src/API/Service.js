@@ -93,6 +93,10 @@ let service = {
     getDistrictByCity: () => {
         let url = `api/address/district?city=Th%C3%A0nh%20ph%E1%BB%91%20H%C3%A0%20N%E1%BB%99i`;
         return method.get(url);
+    },
+    getMyCarInfo: () => {
+        let url = `api/me/cars-info`;
+        return method.get(url);
     }
 };
 

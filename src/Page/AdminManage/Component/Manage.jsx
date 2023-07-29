@@ -5,7 +5,6 @@ import Stomp from 'stompjs';
 import service from "../../../API/Service.js";
 import "../../../CSS/mange.css"
 import PropTypes from "prop-types";
-import moment from "moment";
 import notice from "../../../Utils/Notice.js";
 import {format} from "date-fns";
 

@@ -2,6 +2,9 @@ import {useEffect, useState} from "react";
 import service from "../../API/Service.js";
 import Button from "@mui/material/Button";
 import notice from "../../Utils/Notice.js";
+import config from "../../API/Config.js";
+import Stomp from "stompjs";
+import SockJS from "sockjs-client/dist/sockjs"
 
 const DriverManage = ({setLocation, setMarkerStart}) => {
     const [deliveryNEW, setDeliveryNEW] = useState([]);
@@ -17,6 +20,7 @@ const DriverManage = ({setLocation, setMarkerStart}) => {
     const [confirmId, setConfirmId] = useState("");
     const [completeId, setCompleteId] = useState("");
     const [cancelId, setCancelId] = useState("");
+    const [carInfo, setCarInfo] = useState({});
 
     useEffect(() => {
         service.driverGetDeliveryByStatus(1, pageSizeNEW, "NEW").then(data => {
@@ -34,6 +38,14 @@ const DriverManage = ({setLocation, setMarkerStart}) => {
     }, []);
 
     useEffect(() => {
+        service.getMyCarInfo().then(data => {
+            if (data.length > 0) {
+                setCarInfo(data[0]);
+            }
+        })
+    }, []);
+
+    useEffect(() => {
         service.driverGetDeliveryByStatus(1, pageSizeNEW, "NEW").then(data => {
             setDeliveryNEW(data);
         })
@@ -42,6 +54,40 @@ const DriverManage = ({setLocation, setMarkerStart}) => {
     useEffect(() => {
         service.driverGetDeliveryByStatus(1, pageSizeINPROGRESS, "IN_PROGRESS").then(data => {
             setDeliveryINPROGRESS(data);
+            service.driverGetDeliveryByStatus(1, pageSizeNEW, "NEW").then(dataNEW => {
+                console.log(dataNEW)
+                console.log(dataNEW.length)
+                if (dataNEW.length === 0) {
+                    if (deliveryINPROGRESS.length > 0) {
+                        console.log(deliveryINPROGRESS)
+                        setIsAllowAction(true);
+                        service.getPositionHistoryByRfid(carInfo?.rfid, 1, 1)
+                            .then(dataRfid => {
+                                let listLocation = [{
+                                    lat: deliveryINPROGRESS[0].fromLat,
+                                    lon: deliveryINPROGRESS[0].fromLon
+                                }]
+                                if (dataRfid.length > 0) {
+                                    listLocation = [{
+                                        lat: dataRfid[0].lat,
+                                        lon: dataRfid[0].lon
+                                    }]
+                                }
+                                deliveryINPROGRESS.map(point => {
+                                    listLocation.push({
+                                        lat: point.toLat,
+                                        lon: point.toLon
+                                    })
+                                })
+
+                                console.log(listLocation)
+
+                                setMarkerStart([...dataRfid, ...deliveryINPROGRESS]);
+                                setLocation(listLocation);
+                            });
+                    }
+                }
+            })
         })
     }, [pageSizeINPROGRESS, confirmId, completeId, cancelId]);
 
@@ -114,7 +160,7 @@ const DriverManage = ({setLocation, setMarkerStart}) => {
 
     const clickCompleteDelivery = (id) => {
         if (!isAllowAction) {
-            notice.warn("Vui lòng ấn bắt đầu giao hàng");
+            notice.warn("Vui lòng xác nhận hết các đơn hàng mới");
             return;
         }
         service.completeDelivery(id)
@@ -251,35 +297,30 @@ const DriverManage = ({setLocation, setMarkerStart}) => {
         setShowInfo(value)
     }
 
-    const startProcess = () => {
-        service.driverGetDeliveryByStatus(1, pageSizeNEW, "NEW").then(data => {
-            if (data.length === 0) {
-                setIsAllowAction(true);
-            } else {
-                notice.warn("Vui lòng xác nhận hết các đơn hàng mới");
-            }
-        })
-    }
-
     useEffect(() => {
-        if (isAllowAction) {
-            if (deliveryINPROGRESS.length > 0) {
-                const listLocation = [{
-                    lat: deliveryINPROGRESS[0].fromLat,
-                    lon: deliveryINPROGRESS[0].fromLon
-                }]
-                deliveryINPROGRESS.map(point => {
-                    listLocation.push({
-                        lat: point.toLat,
-                        lon: point.toLon
-                    })
-                })
-                setLocation(listLocation);
-                setMarkerStart(deliveryINPROGRESS);
-            }
+        const socket = new SockJS(config.WS);
+        const client = Stomp.over(socket);
+        if (carInfo?.rfid) {
+            client.connect({}, () => {
+                console.log('WebSocket connection opened');
+                client.subscribe('/rfid/' + carInfo?.rfid, message => {
+                    console.log('Received message:', message.body);
+                    console.log("KHANH")
+                    const result = JSON.parse(message.body)
+                    setMarkerStart(prevState => {
+                        return ([result, ...prevState.slice(1)])
+                    });
+                    setLocation(prevState => {
+                        return ([{lat: result.lat, lon: result.lon}, ...prevState.slice(1)])
+                    });
+                });
+            });
         }
-    }, [isAllowAction]);
-
+        return () => {
+            client.disconnect();
+            console.log('WebSocket connection closed');
+        };
+    }, [carInfo?.rfid]);
 
     return (
         <>
@@ -295,9 +336,6 @@ const DriverManage = ({setLocation, setMarkerStart}) => {
                     }
                 </div>
             </div>
-            <Button style={{width: "100%", color: "#990000", marginTop: "1rem"}} onClick={startProcess}>
-                Bắt đầu giao hàng
-            </Button>
             {!showInfo &&
                 <Button style={{width: "100%", color: "#990000", marginTop: "1rem"}}
                         onClick={() => handleSetShowInfo(true)}>

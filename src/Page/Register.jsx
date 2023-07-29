@@ -40,9 +40,9 @@ function Register(props) {
     }, []);
 
     const distinctionOptions = districts.length > 0 && districts.map((data, index) => (
-        <Option key={index} value={data.name} label={data.name}>
+        <Option key={index} value={data} label={data}>
             <Space>
-                {data.name}
+                {data}
             </Space>
         </Option>
     ))
