@@ -5,6 +5,7 @@ import notice from "../../Utils/Notice.js";
 import config from "../../API/Config.js";
 import Stomp from "stompjs";
 import SockJS from "sockjs-client/dist/sockjs"
+import {format} from "date-fns";
 
 const DriverManage = ({setLocation, setMarkerStart}) => {
     const [deliveryNEW, setDeliveryNEW] = useState([]);
@@ -16,7 +17,10 @@ const DriverManage = ({setLocation, setMarkerStart}) => {
     const [pageSizeCOMPLETED, setPageSizeCOMPLETED] = useState(5);
     const [pageSizeCANCELED, setPageSizeCANCELED] = useState(5);
     const [isAllowAction, setIsAllowAction] = useState(false);
-    const [showInfo, setShowInfo] = useState(false);
+    const [showInfoNEW, setShowInfoNEW] = useState(false);
+    const [showInfoINPROGRESS, setShowInfoINPROGRESS] = useState(false);
+    const [showInfoCOMPLETED, setShowInfoCOMPLETED] = useState(false);
+    const [showInfoCANCELED, setShowInfoCANCELED] = useState(false);
     const [confirmId, setConfirmId] = useState("");
     const [completeId, setCompleteId] = useState("");
     const [cancelId, setCancelId] = useState("");
@@ -37,13 +41,47 @@ const DriverManage = ({setLocation, setMarkerStart}) => {
         })
     }, []);
 
-    useEffect(() => {
-        service.getMyCarInfo().then(data => {
-            if (data.length > 0) {
-                setCarInfo(data[0]);
-            }
+    const execute = () => {
+        service.driverGetDeliveryByStatus(1, pageSizeINPROGRESS, "IN_PROGRESS").then(dataINPROGRESS => {
+            setDeliveryINPROGRESS(dataINPROGRESS);
+            service.driverGetDeliveryByStatus(1, pageSizeNEW, "NEW").then(dataNEW => {
+                if (dataNEW.length === 0) {
+                    if (dataINPROGRESS.length > 0) {
+                        setIsAllowAction(true);
+                        service.getMyCarInfo().then(dataRFID => {
+                            if (dataRFID.length > 0) {
+                                setCarInfo(dataRFID[0]);
+                                service.getPositionHistoryByRfid(dataRFID[0]?.rfid, 1, 1)
+                                    .then(dataRfid => {
+                                        let listLocation = [{
+                                            lat: dataINPROGRESS[0].fromLat,
+                                            lon: dataINPROGRESS[0].fromLon
+                                        }]
+                                        if (dataRfid.length > 0) {
+                                            listLocation = [{
+                                                lat: dataRfid[0].lat,
+                                                lon: dataRfid[0].lon
+                                            }]
+                                        }
+                                        dataINPROGRESS.map(point => {
+                                            listLocation.push({
+                                                lat: point.toLat,
+                                                lon: point.toLon
+                                            })
+                                        })
+                                        setMarkerStart([...dataRfid, ...dataINPROGRESS]);
+                                        setLocation(listLocation);
+                                    })
+                            }
+                        })
+                    } else {
+                        setMarkerStart([]);
+                        setLocation([]);
+                    }
+                }
+            })
         })
-    }, []);
+    }
 
     useEffect(() => {
         service.driverGetDeliveryByStatus(1, pageSizeNEW, "NEW").then(data => {
@@ -52,43 +90,7 @@ const DriverManage = ({setLocation, setMarkerStart}) => {
     }, [pageSizeNEW, confirmId, cancelId]);
 
     useEffect(() => {
-        service.driverGetDeliveryByStatus(1, pageSizeINPROGRESS, "IN_PROGRESS").then(data => {
-            setDeliveryINPROGRESS(data);
-            service.driverGetDeliveryByStatus(1, pageSizeNEW, "NEW").then(dataNEW => {
-                console.log(dataNEW)
-                console.log(dataNEW.length)
-                if (dataNEW.length === 0) {
-                    if (deliveryINPROGRESS.length > 0) {
-                        console.log(deliveryINPROGRESS)
-                        setIsAllowAction(true);
-                        service.getPositionHistoryByRfid(carInfo?.rfid, 1, 1)
-                            .then(dataRfid => {
-                                let listLocation = [{
-                                    lat: deliveryINPROGRESS[0].fromLat,
-                                    lon: deliveryINPROGRESS[0].fromLon
-                                }]
-                                if (dataRfid.length > 0) {
-                                    listLocation = [{
-                                        lat: dataRfid[0].lat,
-                                        lon: dataRfid[0].lon
-                                    }]
-                                }
-                                deliveryINPROGRESS.map(point => {
-                                    listLocation.push({
-                                        lat: point.toLat,
-                                        lon: point.toLon
-                                    })
-                                })
-
-                                console.log(listLocation)
-
-                                setMarkerStart([...dataRfid, ...deliveryINPROGRESS]);
-                                setLocation(listLocation);
-                            });
-                    }
-                }
-            })
-        })
+        execute()
     }, [pageSizeINPROGRESS, confirmId, completeId, cancelId]);
 
     useEffect(() => {
@@ -185,12 +187,22 @@ const DriverManage = ({setLocation, setMarkerStart}) => {
     }
 
     const Information = ({data}) => {
+        let date = data.createdAt
+        if (data?.statusHistories.length > 1) {
+            const statusHistory = data?.statusHistories;
+            const lastItem = statusHistory[statusHistory.length - 1];
+            date = lastItem.createdAt;
+        }
+        const dateObj = new Date(date);
+        const formattedTime = format(dateObj.getTime(), 'yyyy-MM-dd\' | \'HH:mm:ss');
+        console.log(data)
         return (
             <>
                 <div className="rfid">
-                    <div>{data.fullNameReceiver}</div>
+                    {formattedTime}
                 </div>
                 <div className="license-plate">
+                    <div>{data.fullNameReceiver}</div>
                     <div>{data.phoneNumberReceiver}</div>
                 </div>
                 <div className="driver-name">
@@ -278,7 +290,7 @@ const DriverManage = ({setLocation, setMarkerStart}) => {
         return (
             <div className="car-info">
                 <div className="rfid">
-                    <div>Họ tên người nhận</div>
+                    <div>Thời gian</div>
                 </div>
                 <div className="license-plate">
                     <div>Liên hệ</div>
@@ -287,14 +299,10 @@ const DriverManage = ({setLocation, setMarkerStart}) => {
                     <div>Địa chỉ người nhận</div>
                 </div>
                 <div className="driving-license">
-                    <div>Hành động</div>
+                    <div>Trạng thái</div>
                 </div>
             </div>
         )
-    }
-
-    const handleSetShowInfo = (value) => {
-        setShowInfo(value)
     }
 
     useEffect(() => {
@@ -325,33 +333,60 @@ const DriverManage = ({setLocation, setMarkerStart}) => {
     return (
         <>
             <div>
-                <div className="info-v1">Các đơn hàng mới:</div>
-                <div className="main-car-info">
-                    <Title/>
-                    <DeliveryNEW/>
-                    {deliveryNEW.length === 5 &&
-                        <Button style={{width: "100%", color: "#990000"}} onClick={handlePageSizeNEW}>
-                            Xem thêm
-                        </Button>
-                    }
+                <div className="info-v1">
+                    <div style={{display: "flex", justifyContent: "start", alignItems: "center"}}>
+                        <div>
+                            Các đơn hàng mới:
+                        </div>
+                        {!showInfoNEW &&
+                            <Button style={{color: "#990000", fontSize: "12px"}}
+                                    onClick={() => setShowInfoNEW(true)}>
+                                Xem chi tiết
+                            </Button>
+                        }
+                        {showInfoNEW &&
+                            <Button style={{color: "#990000", fontSize: "12px"}}
+                                    onClick={() => setShowInfoNEW(false)}>
+                                Ẩn
+                            </Button>
+                        }
+                    </div>
                 </div>
+                {showInfoNEW &&
+                    <div className="main-car-info">
+                        <Title/>
+                        <DeliveryNEW/>
+                        {deliveryNEW.length === 5 &&
+                            <Button style={{width: "100%", color: "#990000"}} onClick={handlePageSizeNEW}>
+                                Xem thêm
+                            </Button>
+                        }
+                    </div>
+                }
             </div>
-            {!showInfo &&
-                <Button style={{width: "100%", color: "#990000", marginTop: "1rem"}}
-                        onClick={() => handleSetShowInfo(true)}>
-                    Xem chi tiết
-                </Button>
-            }
-            {showInfo &&
-                <Button style={{width: "100%", color: "#990000", marginTop: "1rem"}}
-                        onClick={() => handleSetShowInfo(false)}>
-                    Ẩn
-                </Button>
-            }
-            {showInfo &&
-                <>
-                    <div>
-                        <div className="info-v1">Các đơn hàng đang trong quá trình vận chuyển</div>
+
+            <>
+                <div>
+                    <div className="info-v1">
+                        <div style={{display: "flex", justifyContent: "start", alignItems: "center"}}>
+                            <div>
+                                Các đơn hàng đang trong quá trình vận chuyển:
+                            </div>
+                            {!showInfoINPROGRESS &&
+                                <Button style={{color: "#990000", fontSize: "12px"}}
+                                        onClick={() => setShowInfoINPROGRESS(true)}>
+                                    Xem chi tiết
+                                </Button>
+                            }
+                            {showInfoINPROGRESS &&
+                                <Button style={{color: "#990000", fontSize: "12px"}}
+                                        onClick={() => setShowInfoINPROGRESS(false)}>
+                                    Ẩn
+                                </Button>
+                            }
+                        </div>
+                    </div>
+                    {showInfoINPROGRESS &&
                         <div className="main-car-info">
                             <Title/>
                             <DeliveryINPROGRESS/>
@@ -361,9 +396,29 @@ const DriverManage = ({setLocation, setMarkerStart}) => {
                                 </Button>
                             }
                         </div>
+                    }
+                </div>
+                <div>
+                    <div className="info-v1">
+                        <div style={{display: "flex", justifyContent: "start", alignItems: "center"}}>
+                            <div>
+                                Các đơn hàng đã hoàn thành:
+                            </div>
+                            {!showInfoCOMPLETED &&
+                                <Button style={{color: "#990000", fontSize: "12px"}}
+                                        onClick={() => setShowInfoCOMPLETED(true)}>
+                                    Xem chi tiết
+                                </Button>
+                            }
+                            {showInfoCOMPLETED &&
+                                <Button style={{color: "#990000", fontSize: "12px"}}
+                                        onClick={() => setShowInfoCOMPLETED(false)}>
+                                    Ẩn
+                                </Button>
+                            }
+                        </div>
                     </div>
-                    <div>
-                        <div className="info-v1">Các đơn hàng đã hoàn thành</div>
+                    {showInfoCOMPLETED &&
                         <div className="main-car-info">
                             <Title/>
                             <DeliveryCOMPLETED/>
@@ -373,9 +428,31 @@ const DriverManage = ({setLocation, setMarkerStart}) => {
                                 </Button>
                             }
                         </div>
+                    }
+                </div>
+                <div>
+                    <div className="info-v1">
+                        <div className="info-v1">
+                            <div style={{display: "flex", justifyContent: "start", alignItems: "center"}}>
+                                <div>
+                                    Các đơn hàng đã bị huỷ:
+                                </div>
+                                {!showInfoCANCELED &&
+                                    <Button style={{color: "#990000", fontSize: "12px"}}
+                                            onClick={() => setShowInfoCANCELED(true)}>
+                                        Xem chi tiết
+                                    </Button>
+                                }
+                                {showInfoCANCELED &&
+                                    <Button style={{color: "#990000", fontSize: "12px"}}
+                                            onClick={() => setShowInfoCANCELED(false)}>
+                                        Ẩn
+                                    </Button>
+                                }
+                            </div>
+                        </div>
                     </div>
-                    <div>
-                        <div className="info-v1">Các đơn hàng đã bị huỷ</div>
+                    {showInfoCANCELED &&
                         <div className="main-car-info">
                             <Title/>
                             <DeliveryCANCELED/>
@@ -385,9 +462,9 @@ const DriverManage = ({setLocation, setMarkerStart}) => {
                                 </Button>
                             }
                         </div>
-                    </div>
-                </>
-            }
+                    }
+                </div>
+            </>
         </>
     )
 }

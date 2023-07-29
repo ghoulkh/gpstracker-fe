@@ -54,7 +54,20 @@ const AdminOrder = ({setLocation, setMarkerStart}) => {
 
     const handleOpenPopup = (value) => {
         setOpenPopup(value)
-        setItemView({});
+        setItemView({
+            fromAddress: "",
+            toAddress: "",
+            driverUsername: "",
+            fullNameReceiver: "",
+            phoneNumberReceiver: "",
+            emailReceiver: "",
+            senderEmail: "",
+            senderFullName: "",
+            fromLat: "",
+            fromLon: "",
+            toLat: "",
+            toLon: ""
+        });
         setIsView(false)
         setIsEdit(false)
     }
@@ -95,7 +108,7 @@ const AdminOrder = ({setLocation, setMarkerStart}) => {
                     const data = JSON.parse(message.body)
                     const listOptionNew = [];
                     notice.inf("User rfid: " + data.rfid + " đã bắt đầu giao hàng");
-                    listOption.forEach(data => {
+                    listOptionNew.forEach(data => {
                         if (data.status === "INACTIVE") {
                             listOptionNew.push({
                                 value: data.username,
@@ -185,7 +198,7 @@ const AdminOrder = ({setLocation, setMarkerStart}) => {
                             }]
                         }
                         data.map(point => {
-                            if (point.deliveryStatus !== "COMPLETED") {
+                            if (point.deliveryStatus !== "COMPLETED" && point.deliveryStatus !== "CANCELED") {
                                 listLocation.push({
                                     lat: point.toLat,
                                     lon: point.toLon

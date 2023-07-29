@@ -1,9 +1,10 @@
-import {useState, useEffect} from 'react';
+import {useState, useEffect, useRef} from 'react';
 import {parseISO, format} from 'date-fns';
 import "../../../CSS/time-slider.css"
 import service from "../../../API/Service.js";
-import moment from "moment";
 import notice from '../../../Utils/Notice';
+import {useSetRecoilState} from "recoil";
+import {positionClickState} from "../../recoil.js";
 
 function TimeSlider(props) {
     const [startTime, setStartTime] = useState(0);
@@ -17,6 +18,9 @@ function TimeSlider(props) {
     const [position, setPosition] = useState([]);
     const [selectedDays, setSelectedDays] = useState(0); // Mặc định là ngày hôm nay
     const [playbackSpeed, setPlaybackSpeed] = useState(1); // Mặc định là x1
+    const [userIndex, setUserIndex] = useState();
+    const [carInfoIndex, setCarInfoIndex] = useState();
+    const setPositionClick = useSetRecoilState(positionClickState);
 
     useEffect(() => {
         service.getInfoCar(1, 20).then(data => {
@@ -169,7 +173,9 @@ function TimeSlider(props) {
         return (
             <>
                 {user.map((data, index) => (
-                    <button onClick={() => handleInputChange(data)} key={index} className="car-user-info-disable">
+                    <button
+                        data-index={index}
+                        onClick={() => handleInputChange(data, index)} key={index} className={index === userIndex ? "car-user-info-enable" : "car-user-info-disable"}>
                         <div className="rfid">
                             <div>{data.rfid}</div>
                         </div>
@@ -188,9 +194,25 @@ function TimeSlider(props) {
         )
     }
 
-    const handleInputChange = (data) => {
+    const divRefUser = useRef(null);
+    const divRefCar = useRef(null);
+
+    const handleInputChange = (data, index) => {
         setRfidValue([data.rfid]);
         setLicensePlate(data.licensePlate);
+        setUserIndex(index)
+        const button = divRefUser.current.querySelector(`[data-index="${index}"]`);
+        button.scrollIntoView({behavior: 'smooth', block: 'nearest'});
+    };
+
+    const handleCarInfoChange = (data, index) => {
+        setPositionClick({
+            lat: data.lat,
+            lng: data.lon,
+        })
+        setCarInfoIndex(index)
+        const button = divRefCar.current.querySelector(`[data-index="${index}"]`);
+        button.scrollIntoView({behavior: 'smooth', block: 'nearest'});
     };
 
     const CarInfo = () => {
@@ -200,7 +222,10 @@ function TimeSlider(props) {
                     const dateObj = new Date(data.date);
                     const formattedTime = format(dateObj.getTime(), 'yyyy-MM-dd\' | \'HH:mm:ss');
                     return (
-                        <button onClick={() => handleInputChange(data)} key={index} className="car-user-info-disable">
+                        <button onClick={() => handleCarInfoChange(data, index)}
+                                key={index}
+                                data-index={index}
+                                className={index === carInfoIndex ? "car-user-info-enable" : "car-user-info-disable"}>
                             <div className="rfid">
                                 <div>{formattedTime}</div>
                             </div>
@@ -224,7 +249,7 @@ function TimeSlider(props) {
         <>
             <div>
                 <div className="info-v1">Thông tin xe</div>
-                <div className="main-car-info">
+                <div ref={divRefUser} className="main-car-info">
                     <div className="car-info">
                         <div className="rfid">
                             <div>RFID</div>
@@ -294,7 +319,7 @@ function TimeSlider(props) {
             </div>
             <div>
                 <div className="info-v1">Theo dõi xe: {licensePlate}</div>
-                <div className="main-car-info">
+                <div ref={divRefCar} className="main-car-info">
                     <div className="car-info">
                         <div className="rfid">
                             <div>Thời gian</div>

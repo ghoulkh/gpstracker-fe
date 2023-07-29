@@ -4,6 +4,7 @@ import App from './App';
 import { legacy_createStore as createStore } from 'redux'
 import rootReducer from './ActionService'
 import { Provider } from 'react-redux'
+import {RecoilRoot} from "recoil";
 
 const store = createStore(
     rootReducer,
@@ -13,4 +14,11 @@ const store = createStore(
 const rootElement = document.getElementById("root");
 const root = createRoot(rootElement);
 
-root.render(<Provider store={store}><App /></Provider>);
+root.render(
+    <RecoilRoot>
+        <Provider store={store}>
+            <App />
+        </Provider>
+    </RecoilRoot>
+
+);

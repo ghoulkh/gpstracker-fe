@@ -6,7 +6,9 @@ import iconMaker from '../../Image/icon-marker.png';
 import iconOrder from '../../Image/iconOrder.png';
 import iconOffice from '../../Image/icon-office.png';
 import notice from "../../Utils/Notice.js";
-
+import {useRecoilValue} from "recoil";
+import {positionClickState} from "../recoil.js";
+import {format} from "date-fns";
 
 // eslint-disable-next-line react-refresh/only-export-components
 function MapContainer(props) {
@@ -21,11 +23,12 @@ function MapContainer(props) {
     const [activeMarker, setActiveMarker] = useState({});
     const [carInfo, setCarInfo] = useState({});
     const [markers, setMarkers] = useState([]);
+    const currentLocationClick = useRecoilValue(positionClickState);
     const [currentLocation, setCurrentLocation] = useState({
         lat: 21.0285,
         lng: 105.8542,
     });
-    const [zoom] = useState(13);
+    const [zoom, setZoom] = useState(13);
     const [path, setPath] = useState([]);
     const [markerStart, setMarkerStart] = useState([]);
     const [deliveryInfo, setDeliveryInfo] = useState({});
@@ -36,6 +39,14 @@ function MapContainer(props) {
     useEffect(() => {
         setMarkers(props.markers)
     }, [props.markers])
+
+    useEffect(() => {
+        if (currentLocationClick) {
+            setCurrentLocation(currentLocationClick);
+            setZoom(20);
+        }
+        // setZoom(15)
+    }, [currentLocationClick]);
 
     useEffect(() => {
         console.log(props.markerStart)
@@ -136,6 +147,33 @@ function MapContainer(props) {
         })
     }, []);
 
+    const DivCarInfo = () => {
+        let formattedTime;
+        if (carInfo?.date) {
+            const dateObj = new Date(carInfo.date);
+            formattedTime = format(dateObj.getTime(), 'yyyy-MM-dd\' | \'HH:mm:ss');
+        }
+        return (
+            <div className="map-info-in">
+                <div>
+                    RFID: {carInfo.rfid}
+                </div>
+                <div>
+                    Tốc độ: {carInfo.speed}
+                </div>
+                <div>
+                    Vĩ độ: {carInfo.lat}
+                </div>
+                <div>
+                    Kinh độ: {carInfo.lon}
+                </div>
+                <div>
+                    Thời gian: {formattedTime && formattedTime}
+                </div>
+            </div>
+        )
+    }
+
     return (
         <>
             <div className="map">
@@ -211,20 +249,7 @@ function MapContainer(props) {
                                 visible={showingInfoWindow}
                                 google="" map={props.google}>
                                 {carInfo &&
-                                    <div className="map-info-in">
-                                        <div>
-                                            RFID: {carInfo.rfid}
-                                        </div>
-                                        <div>
-                                            Tốc độ: {carInfo.speed}
-                                        </div>
-                                        <div>
-                                            Vĩ độ: {carInfo.lat}
-                                        </div>
-                                        <div>
-                                            Kinh độ: {carInfo.lon}
-                                        </div>
-                                    </div>
+                                    <DivCarInfo />
                                 }
                                 {deliveryInfo && !isMarkerStart &&
                                     <div className="map-info-in">

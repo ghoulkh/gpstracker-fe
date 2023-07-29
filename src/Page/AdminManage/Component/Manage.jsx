@@ -1,4 +1,4 @@
-import {useEffect, useState} from "react";
+import {useEffect, useRef, useState} from "react";
 import config from "../../../API/Config.js";
 import SockJS from "sockjs-client/dist/sockjs"
 import Stomp from 'stompjs';
@@ -7,6 +7,8 @@ import "../../../CSS/mange.css"
 import PropTypes from "prop-types";
 import notice from "../../../Utils/Notice.js";
 import {format} from "date-fns";
+import {useSetRecoilState} from "recoil";
+import {positionClickState} from "../../recoil.js";
 
 const UserManagementComponent = (props) => {
     UserManagementComponent.propTypes = {
@@ -21,6 +23,9 @@ const UserManagementComponent = (props) => {
     const [position, setPosition] = useState([])
     const [popup, setPopup] = useState(false)
     const [checkUser, setCheckUser] = useState(null);
+    const [userIndex, setUserIndex] = useState();
+    const [carInfoIndex, setCarInfoIndex] = useState();
+    const setPositionClick = useSetRecoilState(positionClickState);
 
     useEffect(() => {
         const socket = new SockJS(config.WS);
@@ -80,7 +85,7 @@ const UserManagementComponent = (props) => {
         }
     }, [rfidValue]);
 
-    useEffect(() =>{
+    useEffect(() => {
         const socket = new SockJS(config.WS);
         const client = Stomp.over(socket);
         client.connect({}, () => {
@@ -108,16 +113,28 @@ const UserManagementComponent = (props) => {
         })
     }, [checkUser])
 
-    const handleInputChange = (data) => {
+    const handleInputChange = (data, index) => {
+        setUserIndex(index)
         setRfid([data.rfid])
         setLicense(data.licensePlate);
+        const button = divRefUser.current.querySelector(`[data-index="${index}"]`);
+        button.scrollIntoView({behavior: 'smooth', block: 'nearest'});
         if (data.status === 'INACTIVE') {
             setPopup(true)
         } else {
             setLicensePlate(data.licensePlate);
             setRfidValue([data.rfid]);
         }
+    };
 
+    const handleCarInfoChange = (data, index) => {
+        setPositionClick({
+            lat: data.lat,
+            lng: data.lon,
+        })
+        setCarInfoIndex(index)
+        const button = divRefCar.current.querySelector(`[data-index="${index}"]`);
+        button.scrollIntoView({behavior: 'smooth', block: 'nearest'});
     };
 
     const handleConfirm = () => {
@@ -141,12 +158,19 @@ const UserManagementComponent = (props) => {
         setPopup(false)
     }
 
+    const divRefUser = useRef(null);
+    const divRefCar = useRef(null);
+
     const UserInfo = () => {
         return (
             <>
                 {user.map((data, index) => (
-                    <button onClick={() => handleInputChange(data)}
+                    <button onClick={() => handleInputChange(data, index)}
                             key={index}
+                            data-index={index}
+                            style={{
+                                border: index === userIndex && "1px solid #990000",
+                            }}
                             className={data.status === 'ACTIVE' ? 'car-user-info' : 'car-user-info-disable'}>
                         <div className="rfid">
                             <div>{data.rfid}</div>
@@ -173,7 +197,16 @@ const UserManagementComponent = (props) => {
                     const dateObj = new Date(data.date);
                     const formattedTime = format(dateObj.getTime(), 'yyyy-MM-dd\' | \'HH:mm:ss');
                     return (
-                        <button key={index} className="car-user-info-disable">
+                        <button
+                            key={index}
+                            data-index={index}
+                            style={{
+                                border: index === userIndex && "1px solid #990000",
+                            }}
+                            onClick={() => {
+                                handleCarInfoChange(data,index)
+                            }}
+                            className="car-user-info-disable">
                             <div className="rfid">
                                 <div>{formattedTime}</div>
                             </div>
@@ -197,7 +230,7 @@ const UserManagementComponent = (props) => {
         <div>
             <div>
                 <div className="info-v1">Thông tin xe</div>
-                <div className="main-car-info">
+                <div ref={divRefUser} className="main-car-info">
                     <div className="car-info">
                         <div className="rfid">
                             <div>RFID</div>
@@ -217,7 +250,7 @@ const UserManagementComponent = (props) => {
             </div>
             <div>
                 <div className="info-v1">Theo dõi xe: {licensePlate}</div>
-                <div className="main-car-info">
+                <div ref={divRefCar} className="main-car-info">
                     <div className="car-info">
                         <div className="rfid">
                             <div>Thời gian</div>

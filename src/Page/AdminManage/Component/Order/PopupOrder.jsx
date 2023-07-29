@@ -9,7 +9,16 @@ import Select from 'react-select';
 import service from "../../../../API/Service.js";
 
 
-const PopupOrder = ({handleOpenPopup, handleOpenMap, valueClickLocation, userOptionsProps, isView, item, isEdit, callBackGetDeliveryCANCELED}) => {
+const PopupOrder = ({
+                        handleOpenPopup,
+                        handleOpenMap,
+                        valueClickLocation,
+                        userOptionsProps,
+                        isView,
+                        item,
+                        isEdit,
+                        callBackGetDeliveryCANCELED
+                    }) => {
     const [input, setInput] = useState(1);
     const [choose, setChoose] = useState(0);
     const [fromAddress, setFromAddress] = useState("");
@@ -29,22 +38,19 @@ const PopupOrder = ({handleOpenPopup, handleOpenMap, valueClickLocation, userOpt
     const [id, setId] = useState("");
 
     useEffect(() => {
-        if (item?.id) {
-            console.log(item?.toAddress)
-            setDriverUserName(item?.driverUsername)
-            setEmailReceiver(item?.emailReceiver)
-            setFromAddress(item?.fromAddress)
-            setFromLat(item?.fromLat)
-            setFromLon(item?.fromLon)
-            setFullNameReceiver(item?.fullNameReceiver)
-            setId(item?.id)
-            setPhoneNumberReceiver(item?.phoneNumberReceiver)
-            setSenderEmail(item?.senderEmail)
-            setSenderFullName(item?.senderFullName)
-            setToAddress(item.toAddress)
-            setToLon(item.toLon)
-            setToLat(item.toLat)
-        }
+        setDriverUserName(item?.driverUsername)
+        setEmailReceiver(item?.emailReceiver)
+        setFromAddress(item?.fromAddress)
+        setFromLat(item?.fromLat)
+        setFromLon(item?.fromLon)
+        setFullNameReceiver(item?.fullNameReceiver)
+        setId(item?.id)
+        setPhoneNumberReceiver(item?.phoneNumberReceiver)
+        setSenderEmail(item?.senderEmail)
+        setSenderFullName(item?.senderFullName)
+        setToAddress(item.toAddress)
+        setToLon(item.toLon)
+        setToLat(item.toLat)
     }, [item]);
 
     // Hàm xử lý khi người dùng click vào nút lấy vị trí hiện tại
@@ -174,6 +180,10 @@ const PopupOrder = ({handleOpenPopup, handleOpenMap, valueClickLocation, userOpt
             notice.success("Đã tạo mới một đơn hàng");
         }).catch((err) => {
             console.log(err)
+            if (err.description) {
+                notice.err(err.description);
+                return;
+            }
             notice.err("Có lỗi xảy ra vui lòng liên hệ CSKH");
         })
     }
@@ -290,7 +300,12 @@ const PopupOrder = ({handleOpenPopup, handleOpenMap, valueClickLocation, userOpt
                             <h3>
                                 Chọn tài xế:
                             </h3>
-                            <div style={{width: "fit-content", display: "flex", justifyContent: "center", alignItems: "center"}}>
+                            <div style={{
+                                width: "fit-content",
+                                display: "flex",
+                                justifyContent: "center",
+                                alignItems: "center"
+                            }}>
                                 {item?.id && isView ?
                                     <>
                                         <Input disabled={isView} value={driverUserName}/>
@@ -307,8 +322,9 @@ const PopupOrder = ({handleOpenPopup, handleOpenMap, valueClickLocation, userOpt
                                 }
                                 {isEdit &&
                                     <>
-                                        <div style={{marginLeft: "1rem"}}> --- </div>
-                                        <div style={{marginLeft: "1rem", fontWeight:500}}>Bị huỷ bởi {driverUserName}</div>
+                                        <div style={{marginLeft: "1rem"}}> ---</div>
+                                        <div style={{marginLeft: "1rem", fontWeight: 500}}>Bị huỷ
+                                            bởi {driverUserName}</div>
                                     </>
                                 }
                             </div>

@@ -23,6 +23,17 @@
 .car-user-info:hover {
     border: 1px solid #990000;
 }
+.car-user-info-enable {
+    padding: unset;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    text-align: center;
+    width: 100%;
+    font-size: 12px;
+    font-weight: 500;
+    border: 1px solid #990000;
+}
 .car-user-info-disable {
     padding: unset;
     display: flex;
@@ -45,6 +56,7 @@
     padding: 5px;
     width: 25%;
     text-align: center;
+    margin-right: 1rem;
 }
 .driver-name {
     padding: 5px;

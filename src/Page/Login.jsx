@@ -40,13 +40,11 @@ function Login(props) {
                 username: username,
                 password: password,
             }).then(data => {
-                console.log(data);
                 props.onLogin({
                     accessToken: data.token
                 });
                 service.currentUser()
                     .then(data => {
-                        console.log(data)
                         let isAllowLogin = false;
                         data.authorities.length > 0 && data.authorities.map(checkRole => {
                             if (checkRole.role === "ROLE_DRIVER" || checkRole.role === "ROLE_ADMIN") {
