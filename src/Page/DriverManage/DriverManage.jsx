@@ -8,6 +8,7 @@ import SockJS from "sockjs-client/dist/sockjs"
 import {format} from "date-fns";
 import {driverDeliveryTypeState} from "../recoil.js";
 import {useRecoilValue} from "recoil";
+import {actLogout} from "../../ActionService/Action.js";
 
 const DriverManage = ({setLocation, setMarkerStart, isPopupNavigation}) => {
     const [deliveryNEW, setDeliveryNEW] = useState([]);
@@ -52,6 +53,13 @@ const DriverManage = ({setLocation, setMarkerStart, isPopupNavigation}) => {
                     if (dataINPROGRESS.length > 0) {
                         setIsAllowAction(true);
                         service.getMyCarInfo().then(dataRFID => {
+                            if (dataRFID.length === 0) {
+                                notice.inf('Bạn không phải tài xế');
+                                setInterval(() => {
+                                    localStorage.clear();
+                                    window.location.reload();
+                                }, 2000)
+                            }
                             if (dataRFID.length > 0) {
                                 setCarInfo(dataRFID[0]);
                                 service.getPositionHistoryByRfid(dataRFID[0]?.rfid, 1, 1)
