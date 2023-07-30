@@ -6,8 +6,10 @@ import config from "../../API/Config.js";
 import Stomp from "stompjs";
 import SockJS from "sockjs-client/dist/sockjs"
 import {format} from "date-fns";
+import {driverDeliveryTypeState} from "../recoil.js";
+import {useRecoilValue} from "recoil";
 
-const DriverManage = ({setLocation, setMarkerStart}) => {
+const DriverManage = ({setLocation, setMarkerStart, isPopupNavigation}) => {
     const [deliveryNEW, setDeliveryNEW] = useState([]);
     const [deliveryINPROGRESS, setDeliveryINPROGRESS] = useState([]);
     const [deliveryCOMPLETED, setDeliveryCOMPLETED] = useState([]);
@@ -25,6 +27,7 @@ const DriverManage = ({setLocation, setMarkerStart}) => {
     const [completeId, setCompleteId] = useState("");
     const [cancelId, setCancelId] = useState("");
     const [carInfo, setCarInfo] = useState({});
+    const typeNagaDelivery = useRecoilValue(driverDeliveryTypeState)
 
     useEffect(() => {
         service.driverGetDeliveryByStatus(1, pageSizeNEW, "NEW").then(data => {
@@ -332,139 +335,196 @@ const DriverManage = ({setLocation, setMarkerStart}) => {
 
     return (
         <>
-            <div>
-                <div className="info-v1">
-                    <div style={{display: "flex", justifyContent: "start", alignItems: "center"}}>
-                        <div>
-                            Các đơn hàng mới:
-                        </div>
-                        {!showInfoNEW &&
-                            <Button style={{color: "#990000", fontSize: "12px"}}
-                                    onClick={() => setShowInfoNEW(true)}>
-                                Xem chi tiết
-                            </Button>
-                        }
-                        {showInfoNEW &&
-                            <Button style={{color: "#990000", fontSize: "12px"}}
-                                    onClick={() => setShowInfoNEW(false)}>
-                                Ẩn
-                            </Button>
-                        }
-                    </div>
-                </div>
-                {showInfoNEW &&
-                    <div className="main-car-info">
-                        <Title/>
-                        <DeliveryNEW/>
-                        {deliveryNEW.length === 5 &&
-                            <Button style={{width: "100%", color: "#990000"}} onClick={handlePageSizeNEW}>
-                                Xem thêm
-                            </Button>
-                        }
-                    </div>
-                }
-            </div>
-
-            <>
-                <div>
-                    <div className="info-v1">
-                        <div style={{display: "flex", justifyContent: "start", alignItems: "center"}}>
-                            <div>
-                                Các đơn hàng đang trong quá trình vận chuyển:
-                            </div>
-                            {!showInfoINPROGRESS &&
-                                <Button style={{color: "#990000", fontSize: "12px"}}
-                                        onClick={() => setShowInfoINPROGRESS(true)}>
-                                    Xem chi tiết
-                                </Button>
-                            }
-                            {showInfoINPROGRESS &&
-                                <Button style={{color: "#990000", fontSize: "12px"}}
-                                        onClick={() => setShowInfoINPROGRESS(false)}>
-                                    Ẩn
+            {isPopupNavigation ?
+                <>
+                    {typeNagaDelivery === "NEW" &&
+                        <div className="main-car-info">
+                            <Title/>
+                            <DeliveryNEW/>
+                            {deliveryNEW.length === 5 &&
+                                <Button style={{width: "100%", color: "#990000"}} onClick={handlePageSizeNEW}>
+                                    Xem thêm
                                 </Button>
                             }
                         </div>
-                    </div>
-                    {showInfoINPROGRESS &&
+                    }
+                    {typeNagaDelivery === "INPROGRESS" &&
                         <div className="main-car-info">
                             <Title/>
                             <DeliveryINPROGRESS/>
                             {deliveryINPROGRESS.length === 5 &&
-                                <Button style={{width: "100%", color: "#990000"}} onClick={handlePageSizeINPROGRESS}>
+                                <Button style={{width: "100%", color: "#990000"}}
+                                        onClick={handlePageSizeINPROGRESS}>
                                     Xem thêm
                                 </Button>
                             }
                         </div>
                     }
-                </div>
-                <div>
-                    <div className="info-v1">
-                        <div style={{display: "flex", justifyContent: "start", alignItems: "center"}}>
-                            <div>
-                                Các đơn hàng đã hoàn thành:
-                            </div>
-                            {!showInfoCOMPLETED &&
-                                <Button style={{color: "#990000", fontSize: "12px"}}
-                                        onClick={() => setShowInfoCOMPLETED(true)}>
-                                    Xem chi tiết
-                                </Button>
-                            }
-                            {showInfoCOMPLETED &&
-                                <Button style={{color: "#990000", fontSize: "12px"}}
-                                        onClick={() => setShowInfoCOMPLETED(false)}>
-                                    Ẩn
-                                </Button>
-                            }
-                        </div>
-                    </div>
-                    {showInfoCOMPLETED &&
+                    {typeNagaDelivery === "COMPLETED" &&
                         <div className="main-car-info">
                             <Title/>
                             <DeliveryCOMPLETED/>
                             {deliveryCOMPLETED.length === 5 &&
-                                <Button style={{width: "100%", color: "#990000"}} onClick={handlePageSizeCOMPLETED}>
+                                <Button style={{width: "100%", color: "#990000"}}
+                                        onClick={handlePageSizeCOMPLETED}>
                                     Xem thêm
                                 </Button>
                             }
                         </div>
                     }
-                </div>
-                <div>
-                    <div className="info-v1">
+                    {typeNagaDelivery === "CANCELED" &&
+                        <div className="main-car-info">
+                            <Title/>
+                            <DeliveryCANCELED/>
+                            {deliveryCANCELED.length === 5 &&
+                                <Button style={{width: "100%", color: "#990000"}}
+                                        onClick={handlePageSizeCANCELED}>
+                                    Xem thêm
+                                </Button>
+                            }
+                        </div>
+                    }
+                </>
+                :
+                <>
+                    <div>
                         <div className="info-v1">
                             <div style={{display: "flex", justifyContent: "start", alignItems: "center"}}>
                                 <div>
-                                    Các đơn hàng đã bị huỷ:
+                                    Các đơn hàng mới:
                                 </div>
-                                {!showInfoCANCELED &&
+                                {!showInfoNEW &&
                                     <Button style={{color: "#990000", fontSize: "12px"}}
-                                            onClick={() => setShowInfoCANCELED(true)}>
+                                            onClick={() => setShowInfoNEW(true)}>
                                         Xem chi tiết
                                     </Button>
                                 }
-                                {showInfoCANCELED &&
+                                {showInfoNEW &&
                                     <Button style={{color: "#990000", fontSize: "12px"}}
-                                            onClick={() => setShowInfoCANCELED(false)}>
+                                            onClick={() => setShowInfoNEW(false)}>
                                         Ẩn
                                     </Button>
                                 }
                             </div>
                         </div>
+                        {showInfoNEW &&
+                            <div className="main-car-info">
+                                <Title/>
+                                <DeliveryNEW/>
+                                {deliveryNEW.length === 5 &&
+                                    <Button style={{width: "100%", color: "#990000"}} onClick={handlePageSizeNEW}>
+                                        Xem thêm
+                                    </Button>
+                                }
+                            </div>
+                        }
                     </div>
-                    {showInfoCANCELED &&
-                        <div className="main-car-info">
-                            <Title/>
-                            <DeliveryCANCELED/>
-                            {deliveryCANCELED.length === 5 &&
-                                <Button style={{width: "100%", color: "#990000"}} onClick={handlePageSizeCANCELED}>
-                                    Xem thêm
-                                </Button>
+
+                    <>
+                        <div>
+                            <div className="info-v1">
+                                <div style={{display: "flex", justifyContent: "start", alignItems: "center"}}>
+                                    <div>
+                                        Các đơn hàng đang trong quá trình vận chuyển:
+                                    </div>
+                                    {!showInfoINPROGRESS &&
+                                        <Button style={{color: "#990000", fontSize: "12px"}}
+                                                onClick={() => setShowInfoINPROGRESS(true)}>
+                                            Xem chi tiết
+                                        </Button>
+                                    }
+                                    {showInfoINPROGRESS &&
+                                        <Button style={{color: "#990000", fontSize: "12px"}}
+                                                onClick={() => setShowInfoINPROGRESS(false)}>
+                                            Ẩn
+                                        </Button>
+                                    }
+                                </div>
+                            </div>
+                            {showInfoINPROGRESS &&
+                                <div className="main-car-info">
+                                    <Title/>
+                                    <DeliveryINPROGRESS/>
+                                    {deliveryINPROGRESS.length === 5 &&
+                                        <Button style={{width: "100%", color: "#990000"}}
+                                                onClick={handlePageSizeINPROGRESS}>
+                                            Xem thêm
+                                        </Button>
+                                    }
+                                </div>
                             }
                         </div>
-                    }
-                </div>
-            </>
+                        <div>
+                            <div className="info-v1">
+                                <div style={{display: "flex", justifyContent: "start", alignItems: "center"}}>
+                                    <div>
+                                        Các đơn hàng đã hoàn thành:
+                                    </div>
+                                    {!showInfoCOMPLETED &&
+                                        <Button style={{color: "#990000", fontSize: "12px"}}
+                                                onClick={() => setShowInfoCOMPLETED(true)}>
+                                            Xem chi tiết
+                                        </Button>
+                                    }
+                                    {showInfoCOMPLETED &&
+                                        <Button style={{color: "#990000", fontSize: "12px"}}
+                                                onClick={() => setShowInfoCOMPLETED(false)}>
+                                            Ẩn
+                                        </Button>
+                                    }
+                                </div>
+                            </div>
+                            {showInfoCOMPLETED &&
+                                <div className="main-car-info">
+                                    <Title/>
+                                    <DeliveryCOMPLETED/>
+                                    {deliveryCOMPLETED.length === 5 &&
+                                        <Button style={{width: "100%", color: "#990000"}}
+                                                onClick={handlePageSizeCOMPLETED}>
+                                            Xem thêm
+                                        </Button>
+                                    }
+                                </div>
+                            }
+                        </div>
+                        <div>
+                            <div className="info-v1">
+                                <div className="info-v1">
+                                    <div style={{display: "flex", justifyContent: "start", alignItems: "center"}}>
+                                        <div>
+                                            Các đơn hàng đã bị huỷ:
+                                        </div>
+                                        {!showInfoCANCELED &&
+                                            <Button style={{color: "#990000", fontSize: "12px"}}
+                                                    onClick={() => setShowInfoCANCELED(true)}>
+                                                Xem chi tiết
+                                            </Button>
+                                        }
+                                        {showInfoCANCELED &&
+                                            <Button style={{color: "#990000", fontSize: "12px"}}
+                                                    onClick={() => setShowInfoCANCELED(false)}>
+                                                Ẩn
+                                            </Button>
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                            {showInfoCANCELED &&
+                                <div className="main-car-info">
+                                    <Title/>
+                                    <DeliveryCANCELED/>
+                                    {deliveryCANCELED.length === 5 &&
+                                        <Button style={{width: "100%", color: "#990000"}}
+                                                onClick={handlePageSizeCANCELED}>
+                                            Xem thêm
+                                        </Button>
+                                    }
+                                </div>
+                            }
+                        </div>
+                    </>
+                </>
+            }
         </>
     )
 }

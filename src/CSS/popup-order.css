@@ -13,10 +13,23 @@
     font-weight: 700;
     transform: rotate(45deg);
 }
+.title-exit-3 {
+    cursor: pointer;
+    font-size: 25px;
+    font-weight: 700;
+    transform: rotate(45deg);
+}
 .title-exit-1 {
     width: 100%;
     display: flex;
     justify-content: end;
+    align-items: center;
+    padding: 0 1rem;
+}
+.title-exit-nagative {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
     align-items: center;
     padding: 0 1rem;
 }

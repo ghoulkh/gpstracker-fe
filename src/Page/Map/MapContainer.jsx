@@ -7,7 +7,7 @@ import iconOrder from '../../Image/iconOrder.png';
 import iconOffice from '../../Image/icon-office.png';
 import notice from "../../Utils/Notice.js";
 import {useRecoilValue} from "recoil";
-import {positionClickState} from "../recoil.js";
+import {collapsedState, positionClickState} from "../recoil.js";
 import {format} from "date-fns";
 
 // eslint-disable-next-line react-refresh/only-export-components
@@ -35,6 +35,7 @@ function MapContainer(props) {
     const [officeInfo, setOfficeInfo] = useState({});
     const [isMarkerStart, setIsmarkerStart] = useState(false);
     const [addressOffice, setAddressOffice] = useState("");
+    const collapsed = useRecoilValue(collapsedState);
 
     useEffect(() => {
         setMarkers(props.markers)
@@ -178,7 +179,7 @@ function MapContainer(props) {
         <>
             <div className="map">
                 <div className="map-main">
-                    <div className="map-info">
+                    <div className={collapsed ? "map-info-v2" : "map-info"}>
                         <Map
 
                             google={props.google}
