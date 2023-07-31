@@ -203,6 +203,9 @@
     font-family: 'Sarabun', sans-serif;
     color: #282828;
 }
+.title-info-use-body ul li {
+    color: #282828;
+}
 .h2-uses-body {
     font-family: "FS Magistral-Medium", "Segoe UI", serif;
     font-style: normal;
