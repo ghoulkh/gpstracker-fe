@@ -102,6 +102,9 @@ function Login(props) {
                                placeholder="Tên đăng nhập..."/>
                         <input onChange={handleInputPassword}
                                className="input-login"
+                               maxLength={32}
+                               minLength={8}
+                               type="password"
                                placeholder="Mật khẩu..."/>
                     </div>
                     <div className="div-btn-login">
