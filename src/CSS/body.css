@@ -15,7 +15,7 @@
     visibility: visible;
     animation-duration: 1.5s;
     animation-name: fadeInUp;
-    color: #172B47;
+    color: #282828;
     font-family: "FS Magistral-Medium", "Segoe UI", serif;
     font-style: normal;
     font-weight: 500;
@@ -180,7 +180,7 @@
     }
 }
 .text-icon-use-body {
-    color: #172B47;
+    color: #282828;
     margin-top: 1rem;
     margin-bottom: 1rem;
 }
@@ -201,7 +201,7 @@
     font-weight: bold;
     font-size: 20px;
     font-family: 'Sarabun', sans-serif;
-    color: #172B47;
+    color: #282828;
 }
 .h2-uses-body {
     font-family: "FS Magistral-Medium", "Segoe UI", serif;
@@ -210,7 +210,7 @@
     line-height: 56px;
     text-align: center;
     text-transform: uppercase;
-    color: #172B47;
+    color: #282828;
     font-size: 36px;
 }
 .CaretUpOutlined {
