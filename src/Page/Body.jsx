@@ -27,6 +27,11 @@ function Body() {
         <>
             <div className="main-body">
                 <div className="background-body">
+                    <div className="div-image-background-body">
+                        <img className="image-background-body"
+                             src={background}
+                             alt={background}/>
+                    </div>
                     <div className="title-background-body">
                         <div className="title-background-body-1">
                             HỆ THỐNG QUẢN LÝ VÀ GIÁM SÁT PHƯƠNG TIỆN VẬN TẢI HUST-TRACKING
@@ -35,11 +40,6 @@ function Body() {
                             Chỉ cần truy cập hệ thống từ các thiết bị có kết nối internet
                             để giám sát hành trình và quản lý những chiếc xe của bạn
                         </div>
-                    </div>
-                    <div className="div-image-background-body">
-                        <img className="image-background-body"
-                             src={background}
-                             alt={background}/>
                     </div>
                 </div>
                 <Container>

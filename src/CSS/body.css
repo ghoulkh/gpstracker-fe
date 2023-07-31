@@ -73,6 +73,112 @@
     display: flex;
     padding-top: 3rem;
 }
+.title-header-mobile {
+    display: none;
+}
+.text-order-mobile {
+    display: none;
+}
+@media screen and (max-width: 768px) {
+    .info-use-body {
+        width: 100%;
+        height: 10rem;
+        flex-direction: column;
+    }
+    .icon-btn-use-body {
+        padding: unset;
+        width: 25%;
+        height: 10rem;
+        justify-content: start;
+    }
+    .title-header {
+        display: none;
+    }
+    .logo-header {
+        font-size: 20px;
+    }
+    .main-header {
+        padding: 1rem 1rem;
+    }
+    .items-app-bar2 {
+        padding: unset;
+    }
+    .li-title-header {
+        width: 100%;
+        padding: unset;
+    }
+    .div-login-header {
+        margin-left: 0;
+    }
+    .main-login {
+        width: 100%;
+    }
+    .image-background-body {
+        width: 85vh;
+    }
+    .title-background-body {
+        position: unset;
+        width: 100%;
+        padding: unset;
+    }
+    .title-background-body-1 {
+        font-size: 25px;
+        width: 100%;
+        text-align: center;
+    }
+    .div-image-background-body {
+        position: unset;
+    }
+    .background-body {
+        height: 800px;
+    }
+    .title-background-body-2 {
+        text-align: center;
+    }
+    .h2-uses-body {
+        font-size: 25px !important;
+    }
+    .div-image-background-footer {
+        position: unset;
+    }
+    .introduction-body {
+        margin-top: 15rem !important;
+        display: flex;
+        flex-direction: column;
+    }
+    .image-background-footer {
+        width: 100%;
+    }
+    .title-background-footer-2 {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        width: 100%;
+    }
+    .title-background-footer-2 ul {
+        width: fit-content;
+    }
+    .title-header-mobile {
+        display: flex;
+    }
+    .text-order-mobile {
+        display: unset;
+    }
+    .text-order {
+        display: none;
+    }
+    .order-main {
+        flex-direction: column;
+        padding: 1rem 1rem !important;
+    }
+    .driver-in-progress {
+        display: none;
+    }
+    .order-main-2 {
+        padding: 1rem 1rem !important;
+    }
+}
 .text-icon-use-body {
     color: #172B47;
     margin-top: 1rem;
@@ -112,6 +218,8 @@
     font-size: 30px;
 }
 .introduction-body {
-    padding-top: 50px;
-    height: 900px;
+    display: flex;
+    justify-content: space-between;
+    align-items: end;
+    margin-top: 50rem;
 }

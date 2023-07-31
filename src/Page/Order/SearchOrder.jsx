@@ -53,6 +53,9 @@ const SearchOrder = () => {
                 ĐỊNH VỊ ĐƠN HÀNG
             </div>
             <div className="order-main">
+                <div className="text-order-mobile">
+                    Mã vận đơn (Có dạng: xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx/Email hoặc số điện thoại)
+                </div>
                 <div className="order-main-2">
                     <div className="text-order">
                         Mã vận đơn (Có dạng: xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx/Email hoặc số điện thoại)

@@ -4,10 +4,14 @@ import Login from "./Login.jsx";
 import {useState} from "react";
 import PropTypes from "prop-types";
 import auth from "../API/AuthService.js";
+import iconMenu from "../Image/icon-menu.svg";
+import {DownOutlined} from "@ant-design/icons";
+import {Menu, MenuItem} from "@mui/material";
 
 function Header(props) {
     const [clickLogin, setClickLogin] = useState(false);
     const [isAdmin] = useState(auth.checkAdmin());
+    const [anchorProfile, setAnchorProfile] = useState();
 
     Header.propTypes = {
         loginProp: PropTypes.func,
@@ -16,6 +20,16 @@ function Header(props) {
 
     const onClickLogin = (value) => {
         setClickLogin(value)
+    }
+
+    const handleHoverProfile = (event) => {
+        if (anchorProfile !== event.currentTarget) {
+            setAnchorProfile(event.currentTarget)
+        }
+    }
+
+    const handleCloseProfile = () => {
+        setAnchorProfile(null)
     }
 
     const scrollToDiv = (id) => {
@@ -68,7 +82,7 @@ function Header(props) {
                                     Đối tượng sử dụng
                                 </div> */}
                                 <div onClick={() => scrollToDiv('introduction-body')}
-                                    className="li-title-header">
+                                     className="li-title-header">
                                     Giới thiệu
                                 </div>
                             </>
@@ -86,6 +100,69 @@ function Header(props) {
                 <div className={clickLogin ? "login-click" : "none-click-login"}>
                     <Login loginProp={props.loginProp}
                            clickLoginProp={onClickLogin}/>
+                </div>
+                <div style={{"justifyContent": "center", "alignItems": "center"}}
+                     className="title-header-mobile"
+                >
+                    <button
+                        className="home-2"
+                        style={{display: "flex"}}
+                        onClick={(e) => handleHoverProfile(e)}
+                    >
+                        <div
+                            className="user-profile"
+                        >
+                            {anchorProfile ?
+                                <DownOutlined style={{marginLeft: "0.5rem", marginTop: "2px"}}/>
+                                :
+                                <div>
+                                    <img src={iconMenu} alt="menu"/>
+                                </div>
+                            }
+                        </div>
+                    </button>
+                    <Menu
+                        id="user-profile-menu"
+                        className="user-profile-menu"
+                        anchorEl={anchorProfile}
+                        open={Boolean(anchorProfile)}
+                        onClose={() => handleCloseProfile()}
+                        MenuListProps={{onMouseLeave: () => handleCloseProfile()}}
+                    >
+                        <div className="items-app-bar2">
+                            <MenuItem className="item-app-bar3">
+                                <div className="li-title-header"
+                                     onClick={() => window.location.href = '/checking/order'}>
+                                    Tra cứu - Định vị
+                                </div>
+                            </MenuItem>
+                            <MenuItem className="item-app-bar3">
+                                <div onClick={() => scrollToDiv('uses-body')}
+                                     className="li-title-header">
+                                    Tính năng
+                                </div>
+                            </MenuItem>
+                            <MenuItem className="item-app-bar3">
+                                <div onClick={() => scrollToDiv('introduction-body')}
+                                     className="li-title-header">
+                                    Giới thiệu
+                                </div>
+                            </MenuItem>
+                            {props.loggedInUserObj.username === undefined &&
+                                <MenuItem className="item-app-bar3">
+                                    <div className="div-login-header">
+                                        <button onClick={() => {
+                                            onClickLogin(true)
+                                            handleCloseProfile()
+                                        }}
+                                                className="btn-login-header">
+                                            Đăng nhập
+                                        </button>
+                                    </div>
+                                </MenuItem>
+                            }
+                        </div>
+                    </Menu>
                 </div>
             </div>
         </>

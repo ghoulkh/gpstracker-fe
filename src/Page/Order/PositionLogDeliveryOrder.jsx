@@ -4,15 +4,16 @@ import service from "../../API/Service.js";
 import notice from "../../Utils/Notice.js";
 import MapContainer from "../Map/MapContainer.jsx";
 import {useSetRecoilState} from "recoil";
-import {positionClickState} from "../recoil.js";
+import {collapsedState, positionClickState} from "../recoil.js";
+import {Button} from "@mui/material";
 
-const PositionLogDeliveryOrder = () => {
+const PositionLogDeliveryOrder = ({username, setUsername}) => {
     const [data, setData] = useState([])
-    const [searchParams] = useSearchParams();
     const setPositionClick = useSetRecoilState(positionClickState)
-    const username = searchParams.get("username")
+    const setCollapsed = useSetRecoilState(collapsedState)
 
     useEffect(() => {
+        setCollapsed(true)
         service.getPositionByUserName(username)
             .then(data => {
                 setData(data)
@@ -24,16 +25,29 @@ const PositionLogDeliveryOrder = () => {
                 }
             })
             .catch(() => {
-                notice.err("Không tồn tại trang web này!");
-                setInterval(() => {
-                    window.location.href = "/"
-                }, 3000)
+                // notice.err("Không tồn tại trang web này!");
+                // setInterval(() => {
+                //     window.location.href = "/"
+                // }, 3000)
             })
     }, [username])
+
+    const handleRollBack = () => {
+        setUsername(null)
+    }
 
     return (
         <>
             <MapContainer markerStart={[]} markers={data.length > 0 ? [data[0]] : []} locations={[]}/>
+            <div className="user-view-map">
+                <div className="user-view-map-btn">
+                    <Button
+                        onClick={handleRollBack}
+                        style={{width:"fit-content", padding: "1rem 3rem", color: "#990000"}}>
+                        Quay lại
+                    </Button>
+                </div>
+            </div>
         </>
     )
 }
