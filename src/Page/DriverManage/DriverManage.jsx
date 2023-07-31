@@ -53,13 +53,6 @@ const DriverManage = ({setLocation, setMarkerStart, isPopupNavigation}) => {
                     if (dataINPROGRESS.length > 0) {
                         setIsAllowAction(true);
                         service.getMyCarInfo().then(dataRFID => {
-                            if (dataRFID.length === 0) {
-                                notice.inf('Bạn không phải tài xế');
-                                setInterval(() => {
-                                    localStorage.clear();
-                                    window.location.reload();
-                                }, 2000)
-                            }
                             if (dataRFID.length > 0) {
                                 setCarInfo(dataRFID[0]);
                                 service.getPositionHistoryByRfid(dataRFID[0]?.rfid, 1, 1)
@@ -93,6 +86,38 @@ const DriverManage = ({setLocation, setMarkerStart, isPopupNavigation}) => {
             })
         })
     }
+
+    useEffect(() => {
+        const socket = new SockJS(config.WS);
+        const client = Stomp.over(socket);
+        client.connect({}, () => {
+            console.log('WebSocket connection opened');
+            service.getMyCarInfo().then(data => {
+                if (data.length === 0) {
+                    notice.inf('Bạn không phải tài xế');
+                    setInterval(() => {
+                        localStorage.clear();
+                        window.location.reload();
+                    }, 2000)
+                    return;
+                }
+                client.subscribe('/driver/' + data[0].username, message => {
+                    if (message) {
+                        notice.inf("Bạn có đơn hàng mới")
+                        const deliveryNew = JSON.parse(message.body)
+                        console.log(deliveryNew)
+                        setDeliveryNEW(prevState => [deliveryNew.data, ...prevState])
+                    }
+                });
+
+            });
+        })
+
+        return () => {
+            client.disconnect();
+            console.log('WebSocket connection closed');
+        };
+    }, [])
 
     useEffect(() => {
         service.driverGetDeliveryByStatus(1, pageSizeNEW, "NEW").then(data => {

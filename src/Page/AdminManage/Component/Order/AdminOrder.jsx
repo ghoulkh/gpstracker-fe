@@ -27,6 +27,7 @@ const AdminOrder = ({setLocation, setMarkerStart}) => {
     const [isView, setIsView] = useState(false);
     const [isEdit, setIsEdit] = useState(false);
     const [itemView, setItemView] = useState({})
+    const [idSocket, setIdSocket] = useState()
     const usernameAdmin = auth.getUserInfo()?.username;
 
     const handleOpenMap = (value) => {
@@ -132,13 +133,48 @@ const AdminOrder = ({setLocation, setMarkerStart}) => {
     }, []);
 
     useEffect(() => {
+        const socket = new SockJS(config.WS);
+        const client = Stomp.over(socket);
+        client.connect({}, () => {
+            client.subscribe('/admin/deliveries', message => {
+                if (message) {
+                    const data = JSON.parse(message.body)
+                    const usernameDriver = data.data.driverUsername
+                    const idDelivery = data.data.id
+                    switch (data.type) {
+                        case "DELIVERY_IN_PROGRESS":
+                            notice.inf(`Mã vận đơn ${idDelivery} đã được tài xế ${usernameDriver} xác nhận đơn hàng`);
+                            setIdSocket(idDelivery)
+                            break;
+                        case "DELIVERY_COMPLETED":
+                            notice.inf(`Mã vận đơn ${idDelivery} đã được tài xế ${usernameDriver} giao đến người nhận`);
+                            setIdSocket(idDelivery)
+                            break;
+                        case "DRIVER_CANCEL_DELIVERY":
+                            notice.inf(`Mã vận đơn ${idDelivery} đã bị huỷ bởi tài xế ${usernameDriver}`);
+                            setIdSocket(idDelivery)
+                            setDeliveryCANCELED(prevState => [data.data, ...prevState])
+                            break;
+                        default:
+                            break;
+                    }
+                    console.log(data)
+                }
+            });
+        });
+        return () => {
+            client.disconnect();
+            console.log('WebSocket connection closed');
+        };
+    }, []);
+
+    useEffect(() => {
         const listOption = [{
             value: "",
             label: `None`
         }]
         service.getInfoCar(1, 20).then(data => {
             data.map(data => {
-                console.log(data)
                 if (data.status === "INACTIVE") {
                     listOption.push({
                         value: data.username,
@@ -212,7 +248,7 @@ const AdminOrder = ({setLocation, setMarkerStart}) => {
             }).catch((err) => {
             console.log(err)
         })
-    }, [chooseUser, pageSize]);
+    }, [chooseUser, pageSize, idSocket]);
 
 
     useEffect(() => {
