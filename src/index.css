@@ -23,6 +23,7 @@ a {
 #root {
     background-color: #FFF;
     color: #282828;
+    touch-action: manipulation;
 }
 
 a:hover {
@@ -84,6 +85,7 @@ button {
 
     .map-info > div:first-child {
         width: 100% !important;
+        height: 90% !important;
     }
 
     .sider-mobile-main {
