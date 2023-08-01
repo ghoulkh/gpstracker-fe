@@ -70,9 +70,9 @@ const UserLogin = ({loggedInUserObj}) => {
                     MenuListProps={{onMouseLeave: () => handleCloseProfile()}}
                 >
                     <div className="items-app-bar2">
-                        <MenuItem className="item-app-bar3"
-                                  onClick={() => onClickRegister(true)}>
-                            Kích hoạt tài khoản</MenuItem>
+                        {/*<MenuItem className="item-app-bar3"*/}
+                        {/*          onClick={() => onClickRegister(true)}>*/}
+                        {/*    Kích hoạt tài khoản</MenuItem>*/}
                         <MenuItem className="item-app-bar3"
                                   onClick={() => handleClickItem("/change-password")}>
                             Đổi mật khẩu</MenuItem>
@@ -121,11 +121,6 @@ const UserLogin = ({loggedInUserObj}) => {
                     </div>
                 </Menu>
             </div>}
-            <div className={register ? "login-click" : "none-click-login"}>
-                <Register clickRegisterProp={onClickRegister}
-                          isAdminClick={register}
-                />
-            </div>
         </>
     )
 }

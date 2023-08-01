@@ -101,6 +101,10 @@ let service = {
     getUserInfo: (userName, pageIndex, pageSize) => {
         let url = `api/admin/user-info?user_name=${userName}&page_index=${pageIndex}&page_size=${pageSize}`;
         return method.get(url);
+    },
+    permissionAdmin: (params) => {
+        let url = `api/admin/permission`;
+        return method.post(params, url);
     }
 };
 

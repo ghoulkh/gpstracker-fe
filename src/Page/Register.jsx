@@ -92,6 +92,8 @@ function Register(props) {
                 setPassword("")
                 setRePassword("")
                 setFullName("")
+                props.clickRegisterProp(false)
+                notice.inf("Loading...")
                 notice.success("Đăng ký thành công tài khoản: " + data.username)
             }
         }).catch(data => {
@@ -103,7 +105,7 @@ function Register(props) {
     }
 
     const registerRfid = () => {
-        if (!username) {
+        if (!props.username) {
             notice.warn("Tên đăng nhập của user cần gán thẻ không được để trống")
             return;
         }
@@ -127,13 +129,16 @@ function Register(props) {
         notice.inf("Loading...")
 
         service.registerRfid({
-            username: username,
+            username: props.username ? props.username : username,
             rfid: rfid,
             licensePlate: template,
             drivingLicense: gpx,
             activeAreas: district
         }).then(data => {
             console.log(data);
+            props.setId(username)
+            props.clickRegisterProp(false)
+            notice.inf("Loading...")
             notice.success("Đăng ký thành công!")
         }).catch(data => {
             console.log(data)
@@ -201,7 +206,8 @@ function Register(props) {
                             </div>
                             <div className="div-input-login">
                                 <input onChange={handleInputUsername}
-                                       value={username}
+                                       disabled={props.username}
+                                       value={props.username ? props.username : username}
                                        className="input-login"
                                        placeholder="Tên đăng nhập..."/>
                                 <input onChange={handleInputRfid}

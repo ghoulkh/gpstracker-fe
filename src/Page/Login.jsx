@@ -60,7 +60,7 @@ function Login(props) {
                             return;
                         }
                         onLoginComplete(data);
-                        notice.inf("Đăng nhập thành công")
+                        notice.success("Đăng nhập thành công")
                         window.location.reload();
                     }).catch(data => {
                     console.log(data)

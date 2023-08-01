@@ -1,0 +1,28 @@
+.user-info-manage-div {
+    display: flex;
+    flex-direction: column;
+    border-radius: 1rem;
+    background-color: #FFF;
+    padding: 1rem;
+    box-shadow: 1px 1px 1px #AAA;
+    cursor: pointer;
+}
+.user-info-manage-div:hover {
+    border: #990000 1px solid;
+    box-shadow: 5px 5px 5px #AAA;
+}
+.grid-container {
+    height: 80vh;
+    overflow: auto;
+    display: grid;
+    grid-template-columns: auto auto auto;
+    gap: 10px;
+    padding: 10px;
+}
+.btn-custom:hover {
+    background-color: #990000;
+    color: #FFF;
+}
+.btn-custom {
+    margin: 5px;
+}

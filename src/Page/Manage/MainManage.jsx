@@ -14,7 +14,8 @@ import DriverManage from "../DriverManage/DriverManage.jsx";
 import {useRecoilState, useRecoilValue} from "recoil";
 import {collapsedState, driverDeliveryTypeState} from "../recoil.js";
 import NavigationMobileDriver from "../DriverManage/NavigationMobileDriver.jsx";
-import ManageUser from "../AdminManage/Component/ManageUser.jsx";
+import ManageUser from "../AdminManage/Component/User/ManageUser.jsx";
+import HandleUser from "../AdminManage/Component/User/HandleUser.jsx";
 
 const {Header, Sider} = Layout;
 
@@ -117,6 +118,10 @@ const MainManage = ({loggedInUserObj}) => {
                                 {mode === 'order' &&
                                     <AdminOrder setLocation={(location) => handleSetLocation(location)}
                                                 setMarkerStart={(markerStart) => handleSetMarkerStart(markerStart)}
+                                    />
+                                }
+                                {mode === 'user' &&
+                                    <HandleUser
                                     />
                                 }
                             </div>
