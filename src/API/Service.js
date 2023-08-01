@@ -97,6 +97,10 @@ let service = {
     getMyCarInfo: () => {
         let url = `api/me/cars-info`;
         return method.get(url);
+    },
+    getUserInfo: (userName, pageIndex, pageSize) => {
+        let url = `api/admin/user-info?user_name=${userName}&page_index=${pageIndex}&page_size=${pageSize}`;
+        return method.get(url);
     }
 };
 

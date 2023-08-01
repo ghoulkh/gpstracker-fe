@@ -14,6 +14,7 @@ import DriverManage from "../DriverManage/DriverManage.jsx";
 import {useRecoilState, useRecoilValue} from "recoil";
 import {collapsedState, driverDeliveryTypeState} from "../recoil.js";
 import NavigationMobileDriver from "../DriverManage/NavigationMobileDriver.jsx";
+import ManageUser from "../AdminManage/Component/ManageUser.jsx";
 
 const {Header, Sider} = Layout;
 
@@ -97,6 +98,7 @@ const MainManage = ({loggedInUserObj}) => {
                                     allowClear
                                     options={[
                                         {value: 'none', label: 'Chọn...', disabled: true},
+                                        {value: 'user', label: 'Quản lý người dùng'},
                                         {value: 'manage', label: 'Giám sát'},
                                         {value: 'video', label: 'Xem lại hành trình'},
                                         {value: 'image', label: 'Hình ảnh'},
@@ -139,7 +141,7 @@ const MainManage = ({loggedInUserObj}) => {
                             <UserLogin loggedInUserObj={loggedInUserObj}/>
                         </div>
                     </Header>
-                    {mode === 'image' ?
+                    {mode === 'image' &&
                         <div style={{width: "100%"}}>
                             <div>
                                 {linkImage ? (
@@ -155,7 +157,14 @@ const MainManage = ({loggedInUserObj}) => {
                                     <img style={{width: "100%"}} src={imageNotFound} alt="Fallback Image"/>
                                 )}
                             </div>
-                        </div> :
+                        </div>
+                    }
+                    {mode === 'user' &&
+                        <div style={{width: "100%"}}>
+                            <ManageUser />
+                        </div>
+                    }
+                    {(mode !== 'image' && mode !== 'user') &&
                         <MapContainer markerStart={markerStart} markers={markers} locations={locations}/>
                     }
                 </Layout>
