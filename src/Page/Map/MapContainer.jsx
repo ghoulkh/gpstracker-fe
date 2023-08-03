@@ -9,6 +9,7 @@ import notice from "../../Utils/Notice.js";
 import {useRecoilValue} from "recoil";
 import {collapsedState, positionClickState} from "../recoil.js";
 import {format} from "date-fns";
+import Weather from "../Weather.jsx";
 
 // eslint-disable-next-line react-refresh/only-export-components
 function MapContainer(props) {
@@ -177,6 +178,9 @@ function MapContainer(props) {
 
     return (
         <>
+            <div className="weather">
+                <Weather marker={markerStart} />
+            </div>
             <div className="map">
                 <div className="map-main">
                     <div className={collapsed ? "map-info-v2" : "map-info"}>

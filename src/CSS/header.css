@@ -137,3 +137,17 @@
 .item-app-bar3:hover {
     color: #E61A45 !important;
 }
+.weather {
+    position: fixed;
+    top: 77px;
+    right: 10px;
+    z-index: 99;
+    width: 150px;
+    height: fit-content;
+    background: #FFF;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    padding: 1rem 0;
+}
