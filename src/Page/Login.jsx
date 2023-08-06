@@ -5,6 +5,7 @@ import {useEffect, useState} from "react";
 import service from "../API/Service.js";
 import Register from "./Register.jsx";
 import notice from "../Utils/Notice.js";
+import ChangePassword from "./ChangePassword.jsx";
 
 function Login(props) {
     const [username, setUsername] = useState();
@@ -120,7 +121,10 @@ function Login(props) {
                         </button>
                     </div>
                 </div>
-                <div className="body-login-2">
+                <div className="body-login-2" onClick={() => {
+                    props.setForgotPass(true)
+                    onClickExit()
+                }}>
                     Quên mật khẩu?
                 </div>
             </div>

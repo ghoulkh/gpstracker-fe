@@ -105,7 +105,19 @@ let service = {
     permissionAdmin: (params) => {
         let url = `api/admin/permission`;
         return method.post(params, url);
-    }
+    },
+    sendMail: (username) => {
+        let url = `api/auth/forgot-mail/user/${username}`;
+        return method.postForm({}, url);
+    },
+    resetPass: (params) => {
+        let url = `api/auth/reset-pass`;
+        return method.postForm(params, url);
+    },
+    changePass: (params) => {
+        let url = `api/auth/change-password`;
+        return method.postForm(params, url);
+    },
 };
 
 export default service;

@@ -117,6 +117,7 @@
     text-align: center;
     color: #BA1318;
     border-radius: 0 0 10px 10px;
+    cursor: pointer;
 }
 #register-select-district {
     padding: 0 1rem;

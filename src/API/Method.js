@@ -82,6 +82,28 @@ const method = {
             }
         }
     },
+    postForm: async (data, url) => {
+        url = config.HOST + '/' + url
+        let headers = {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            'Accept-Language': 'vi',
+        }
+        let response = await fetch(url, {
+            method: 'POST',
+            headers,
+            body: JSON.stringify(data),
+        });
+        switch (response.status) {
+            case 200:
+                return response
+            default: {
+                let rs = await response.json();
+                console.log(rs)
+                throw (rs)
+            }
+        }
+    },
     delete: async (data, url) => {
         url = config.HOST + '/' + url
         let headers = {

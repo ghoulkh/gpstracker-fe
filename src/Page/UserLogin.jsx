@@ -6,6 +6,7 @@ import Register from "./Register.jsx";
 import service from "../API/Service.js";
 import {useState} from "react";
 import auth from "../API/AuthService.js";
+import ChangePassword from "./ChangePassword.jsx";
 
 const UserLogin = ({loggedInUserObj}) => {
     const [register, setRegister] = useState(false);
@@ -74,7 +75,7 @@ const UserLogin = ({loggedInUserObj}) => {
                         {/*          onClick={() => onClickRegister(true)}>*/}
                         {/*    Kích hoạt tài khoản</MenuItem>*/}
                         <MenuItem className="item-app-bar3"
-                                  onClick={() => handleClickItem("/change-password")}>
+                                  onClick={() => setRegister(true)}>
                             Đổi mật khẩu</MenuItem>
                         <MenuItem className="item-app-bar3" onClick={() => handleLogout()}>
                             Đăng xuất</MenuItem>
@@ -114,13 +115,17 @@ const UserLogin = ({loggedInUserObj}) => {
                 >
                     <div className="items-app-bar2">
                         <MenuItem className="item-app-bar3"
-                                  onClick={() => handleClickItem("/change-password")}>
+                                  onClick={() => setRegister(true)}>
                             Đổi mật khẩu</MenuItem>
                         <MenuItem className="item-app-bar3" onClick={() => handleLogout()}>
                             Đăng xuất</MenuItem>
                     </div>
                 </Menu>
             </div>}
+            <div className={register ? "login-click" : "none-click-login"}>
+                <ChangePassword clickRegisterProp={onClickRegister}
+                />
+            </div>
         </>
     )
 }

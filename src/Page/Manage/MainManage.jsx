@@ -16,6 +16,7 @@ import {collapsedState, driverDeliveryTypeState} from "../recoil.js";
 import NavigationMobileDriver from "../DriverManage/NavigationMobileDriver.jsx";
 import ManageUser from "../AdminManage/Component/User/ManageUser.jsx";
 import HandleUser from "../AdminManage/Component/User/HandleUser.jsx";
+import ChangePassword from "../ChangePassword.jsx";
 
 const {Header, Sider} = Layout;
 

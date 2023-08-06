@@ -1,17 +1,35 @@
 import "../CSS/header.css";
 import "../CSS/login.css";
 import Login from "./Login.jsx";
-import {useState} from "react";
+import {useEffect, useState} from "react";
 import PropTypes from "prop-types";
 import auth from "../API/AuthService.js";
 import iconMenu from "../Image/icon-menu.svg";
 import {DownOutlined} from "@ant-design/icons";
 import {Menu, MenuItem} from "@mui/material";
+import ChangePassword from "./ChangePassword.jsx";
+import {useSearchParams} from "react-router-dom";
 
 function Header(props) {
     const [clickLogin, setClickLogin] = useState(false);
     const [isAdmin] = useState(auth.checkAdmin());
     const [anchorProfile, setAnchorProfile] = useState();
+    const [forgotPass, setForgotPass] = useState(false);
+    const [actContinue, setActContinue] = useState(false);
+    const [code, setCode] = useState("");
+    const [username, setUsername] = useState("");
+    const [searchParams] = useSearchParams();
+
+    useEffect(() => {
+        const code = searchParams.get("code")
+        const username = searchParams.get("username")
+        if (code && username) {
+            setCode(code)
+            setUsername(username)
+            setActContinue(true)
+            setForgotPass(true)
+        }
+    }, []);
 
     Header.propTypes = {
         loginProp: PropTypes.func,
@@ -99,7 +117,16 @@ function Header(props) {
                 </div>
                 <div className={clickLogin ? "login-click" : "none-click-login"}>
                     <Login loginProp={props.loginProp}
+                           setForgotPass={setForgotPass}
                            clickLoginProp={onClickLogin}/>
+                </div>
+                <div className={forgotPass ? "login-click" : "none-click-login"}>
+                    <ChangePassword clickRegisterProp={setForgotPass}
+                                    clickLoginProp={onClickLogin}
+                                    actContinueProp={actContinue}
+                                    codeProp={code}
+                                    usernameProp={username}
+                    />
                 </div>
                 <div style={{"justifyContent": "center", "alignItems": "center"}}
                      className="title-header-mobile"
