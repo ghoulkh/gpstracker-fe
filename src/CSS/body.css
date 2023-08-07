@@ -226,3 +226,12 @@
     align-items: end;
     margin-top: 50rem;
 }
+.warning {
+    z-index: 99;
+    position: fixed;
+    top: 0;
+    right: 0;
+    width: 100%;
+    height: 100%;
+    background: #FFF;
+}

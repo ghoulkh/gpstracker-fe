@@ -7,8 +7,8 @@ import Stomp from "stompjs";
 import SockJS from "sockjs-client/dist/sockjs"
 import {format} from "date-fns";
 import {driverDeliveryTypeState} from "../recoil.js";
-import {useRecoilValue} from "recoil";
-import {actLogout} from "../../ActionService/Action.js";
+import {useRecoilValue, useSetRecoilState} from "recoil";
+import {popupState} from "../AdminManage/Component/User/recoil.js";
 
 const DriverManage = ({setLocation, setMarkerStart, isPopupNavigation}) => {
     const [deliveryNEW, setDeliveryNEW] = useState([]);
@@ -28,6 +28,7 @@ const DriverManage = ({setLocation, setMarkerStart, isPopupNavigation}) => {
     const [completeId, setCompleteId] = useState("");
     const [cancelId, setCancelId] = useState("");
     const [carInfo, setCarInfo] = useState({});
+    const setPopup = useSetRecoilState(popupState);
     const typeNagaDelivery = useRecoilValue(driverDeliveryTypeState)
 
     useEffect(() => {
@@ -102,10 +103,11 @@ const DriverManage = ({setLocation, setMarkerStart, isPopupNavigation}) => {
                     return;
                 }
                 client.subscribe('/driver/' + data[0].username, message => {
-                    if (message) {
+                    const deliveryNew = JSON.parse(message.body)
+                    if (deliveryNew.type === "WARNING_MESSAGE") {
+                        setPopup(true)
+                    } else {
                         notice.inf("Bạn có đơn hàng mới")
-                        const deliveryNew = JSON.parse(message.body)
-                        console.log(deliveryNew)
                         setDeliveryNEW(prevState => [deliveryNew.data, ...prevState])
                     }
                 });

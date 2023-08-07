@@ -77,3 +77,16 @@ export const adminState = selector({
         set(admin, newValue);
     }
 });
+
+const popup = atom({
+    key: 'POPUP',
+    default: false,
+});
+
+export const popupState = selector({
+    key: 'POPUP_STATE',
+    get: ({ get }) => get(popup),
+    set: ({ set }, newValue) => {
+        set(popup, newValue);
+    }
+});

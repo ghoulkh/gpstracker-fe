@@ -16,7 +16,7 @@ import {collapsedState, driverDeliveryTypeState} from "../recoil.js";
 import NavigationMobileDriver from "../DriverManage/NavigationMobileDriver.jsx";
 import ManageUser from "../AdminManage/Component/User/ManageUser.jsx";
 import HandleUser from "../AdminManage/Component/User/HandleUser.jsx";
-import ChangePassword from "../ChangePassword.jsx";
+import {popupState} from "../AdminManage/Component/User/recoil.js";
 
 const {Header, Sider} = Layout;
 
@@ -31,6 +31,7 @@ const MainManage = ({loggedInUserObj}) => {
     const [isPopupNavigation, setIsPopupNavigation] = useState(false);
     const [errorImageUrl, setErrorImageUrl] = useState('');
     const role = auth.checkAdmin();
+    const [popup, setPopup] = useRecoilState(popupState);
 
     const chooseMode = (value) => {
         setMode(value)
@@ -167,7 +168,7 @@ const MainManage = ({loggedInUserObj}) => {
                     }
                     {mode === 'user' &&
                         <div style={{width: "100%"}}>
-                            <ManageUser />
+                            <ManageUser/>
                         </div>
                     }
                     {(mode !== 'image' && mode !== 'user') &&
@@ -196,6 +197,25 @@ const MainManage = ({loggedInUserObj}) => {
                     </div>
                 </div>
             }
+            {role !== "admin" &&
+                <div className={popup ? "login-click" : "none-click-login"}>
+                    <>
+                        <div className="main-login">
+                            <div className="body-popup-1">
+                                <div className="title-popup">
+                                    <div className="title-popup-1">Bạn đã lái xe 8 tiếng liên tục!</div>
+                                    <div className="title-popup-1">Vui lòng nghỉ ngơi</div>
+                                </div>
+                                <div className="div-btn-popup" style={{justifyContent: "center"}}>
+                                    <button onClick={() => setPopup(false)}
+                                            className="btn-popup">
+                                        XÁC NHẬN
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </>
+                </div>}
         </>
 
     );
