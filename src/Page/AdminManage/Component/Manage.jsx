@@ -41,20 +41,18 @@ const UserManagementComponent = (props) => {
                     client.subscribe('/rfid/' + value, message => {
                         console.log('Received message:', message.body);
                         if (message) {
-                            setTimeout(() => {
-                                service.getPositionRfidInOneDay(rfidValue, startTime, endTime)
-                                    .then(data => {
-                                        if (data) {
-                                            const list = [];
-                                            data.forEach(i => {
-                                                console.log(i);
-                                                list.push(i);
-                                            });
-                                            setPosition(list);
-                                            props.setMarker([list[0]]);
-                                        }
-                                    });
-                            }, 2000);
+                            service.getPositionRfidInOneDay(rfidValue, startTime, endTime)
+                                .then(data => {
+                                    if (data) {
+                                        const list = [];
+                                        data.forEach(i => {
+                                            console.log(i);
+                                            list.push(i);
+                                        });
+                                        setPosition(list);
+                                        props.setMarker([list[0]]);
+                                    }
+                                });
                         }
                     });
                 });
@@ -206,7 +204,7 @@ const UserManagementComponent = (props) => {
                                 border: index === userIndex && "1px solid #990000",
                             }}
                             onClick={() => {
-                                handleCarInfoChange(data,index)
+                                handleCarInfoChange(data, index)
                             }}
                             className="car-user-info-disable">
                             <div className="rfid">
