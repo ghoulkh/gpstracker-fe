@@ -1,6 +1,6 @@
 import Button from "@mui/material/Button";
 import PopupOrder from "./PopupOrder.jsx";
-import {useEffect, useState} from "react";
+import {useEffect, useRef, useState} from "react";
 import ClickChooseLocation from "../../../Map/ClickChooseLocation.jsx";
 import service from "../../../../API/Service.js";
 import config from "../../../../API/Config.js";
@@ -13,15 +13,18 @@ import {format} from "date-fns";
 const AdminOrder = ({setLocation, setMarkerStart}) => {
     const [openPopup, setOpenPopup] = useState(false);
     const [openMap, setOpenMap] = useState(false);
+    const [openMapInfo, setOpenMapInfo] = useState();
     const [lat, setLat] = useState(false);
     const [lon, setLon] = useState(false);
     const [address, setAddress] = useState(false);
+    const [fromAddress, setFromAddress] = useState();
     const [user, setUser] = useState([]);
     const [userOptions, setUserOptions] = useState([]);
     const [checkUser, setCheckUser] = useState([]);
     const [delivery, setDelivery] = useState([]);
     const [deliveryCANCELED, setDeliveryCANCELED] = useState([]);
     const [chooseUser, setChooseUser] = useState({});
+    const [userIndex, setUserIndex] = useState();
     const [pageSize, setPageSize] = useState(5);
     const [pageSizeCANCELED, setPageSizeCANCELED] = useState(5);
     const [isView, setIsView] = useState(false);
@@ -48,9 +51,15 @@ const AdminOrder = ({setLocation, setMarkerStart}) => {
     }
 
     const handleSetClickLocation = (lat, lon, address) => {
-        setLat(lat)
-        setLon(lon)
-        setAddress(address)
+        if (openMapInfo === 0) {
+            setLat(lat)
+            setLon(lon)
+            setAddress(address)
+        }
+        if (openMapInfo === 1) {
+            setFromAddress(address)
+        }
+
     }
 
     const handleOpenPopup = (value) => {
@@ -73,7 +82,10 @@ const AdminOrder = ({setLocation, setMarkerStart}) => {
         setIsEdit(false)
     }
 
-    const handleInputChange = (value) => {
+    const handleInputChange = (value, index) => {
+        setUserIndex(index)
+        const button = divRefUser.current.querySelector(`[data-index="${index}"]`);
+        button.scrollIntoView({behavior: 'smooth', block: 'nearest'});
         setPageSize(5);
         setChooseUser(value)
     }
@@ -303,12 +315,18 @@ const AdminOrder = ({setLocation, setMarkerStart}) => {
         })
     }
 
+    const divRefUser = useRef(null);
+
     const UserInfo = () => {
         return (
             <>
                 {user.map((data, index) => (
-                    <button onClick={() => handleInputChange(data)}
+                    <button onClick={() => handleInputChange(data, index)}
                             key={index}
+                            data-index={index}
+                            style={{
+                                border: index === userIndex && "1px solid #990000",
+                            }}
                             className={data.status === 'ACTIVE' ? 'car-user-info' : 'car-user-info-disable'}>
                         <div className="rfid">
                             <div>{data.rfid}</div>
@@ -416,8 +434,8 @@ const AdminOrder = ({setLocation, setMarkerStart}) => {
             </div>
             <div>
                 <div className="info-v1">Thông tin xe</div>
-                <div className="main-car-info">
-                    <div className="car-info">
+                <div ref={divRefUser} className="main-car-info">
+                <div className="car-info">
                         <div className="rfid">
                             <div>RFID</div>
                         </div>
@@ -490,12 +508,14 @@ const AdminOrder = ({setLocation, setMarkerStart}) => {
                     lon: lon,
                     address: address
                 }}
+                            valueClickFromLocation={{address: fromAddress}}
                             isView={isView}
                             isEdit={isEdit}
                             item={itemView}
                             callBackGetDeliveryCANCELED={callBackGetDeliveryCANCELED}
                             handleOpenPopup={handleOpenPopup}
                             handleOpenMap={handleOpenMap}
+                            setOpenMapInfo={setOpenMapInfo}
                             userOptionsProps={userOptions}
                 />
             </div>

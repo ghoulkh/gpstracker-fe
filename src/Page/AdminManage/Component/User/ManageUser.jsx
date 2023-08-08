@@ -86,7 +86,7 @@ const ManageUser = () => {
                                 setIndex(data.username)
                                 setOpenPopup(true)
                             }}>
-                                Kích hoạt làm xế
+                                Kích hoạt làm tài xế
                             </button>
                             <button className="btn-custom" onClick={() => permisstionAdmin(data.username)}>Kích hoạt làm
                                 quản lý
@@ -124,6 +124,16 @@ const ManageUser = () => {
                                     <li>RFID: {data?.carInfo?.rfid}</li>
                                     <li>Khu vực chạy: {data?.carInfo?.activeAreas.map(r => r).join(', ')}</li>
                                 </ul>
+                            </div>
+                        }
+                        {!data?.carInfo?.rfid &&
+                            <div style={{width: "100%", marginTop: "1rem", display: "flex", justifyContent: "center", alignItems: "end", height: "100%"}}>
+                                <button className="btn-custom" onClick={() => {
+                                    setIndex(data.username)
+                                    setOpenPopup(true)
+                                }}>
+                                    Kích hoạt làm tài xế
+                                </button>
                             </div>
                         }
                     </div>

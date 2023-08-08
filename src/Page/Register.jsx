@@ -134,8 +134,11 @@ function Register(props) {
             licensePlate: template,
             drivingLicense: gpx,
             activeAreas: district
-        }).then(data => {
-            console.log(data);
+        }).then(() => {
+            setRfid("")
+            setTemplate("")
+            setGpx("")
+            setDistrict([])
             props.setId(username)
             props.clickRegisterProp(false)
             notice.inf("Loading...")

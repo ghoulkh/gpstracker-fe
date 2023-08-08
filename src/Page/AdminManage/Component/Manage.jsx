@@ -41,18 +41,20 @@ const UserManagementComponent = (props) => {
                     client.subscribe('/rfid/' + value, message => {
                         console.log('Received message:', message.body);
                         if (message) {
-                            service.getPositionRfidInOneDay(rfidValue, startTime, endTime)
-                                .then(data => {
-                                    if (data) {
-                                        const list = [];
-                                        data.forEach(i => {
-                                            console.log(i)
-                                            list.push(i)
-                                        })
-                                        setPosition(list);
-                                        props.setMarker([list[0]])
-                                    }
-                                });
+                            setTimeout(() => {
+                                service.getPositionRfidInOneDay(rfidValue, startTime, endTime)
+                                    .then(data => {
+                                        if (data) {
+                                            const list = [];
+                                            data.forEach(i => {
+                                                console.log(i);
+                                                list.push(i);
+                                            });
+                                            setPosition(list);
+                                            props.setMarker([list[0]]);
+                                        }
+                                    });
+                            }, 2000);
                         }
                     });
                 });

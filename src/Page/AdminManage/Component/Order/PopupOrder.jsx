@@ -7,6 +7,7 @@ import "../../../../CSS/popup-order.css";
 import {Input} from "antd";
 import Select from 'react-select';
 import service from "../../../../API/Service.js";
+import AddressInput2 from "../../../Map/AddressInput2.jsx";
 
 
 const PopupOrder = ({
@@ -17,10 +18,14 @@ const PopupOrder = ({
                         isView,
                         item,
                         isEdit,
-                        callBackGetDeliveryCANCELED
+                        callBackGetDeliveryCANCELED,
+                        setOpenMapInfo,
+                        valueClickFromLocation
                     }) => {
     const [input, setInput] = useState(1);
     const [choose, setChoose] = useState(0);
+    const [inputFrom, setInputFrom] = useState(1);
+    const [chooseFrom, setChooseFrom] = useState(0);
     const [fromAddress, setFromAddress] = useState("");
     const [fromLat, setFromLat] = useState("");
     const [fromLon, setFromLon] = useState("");
@@ -64,6 +69,11 @@ const PopupOrder = ({
         setToAddress(valueClickLocation.address)
     }, [valueClickLocation]);
 
+
+    useEffect(() => {
+        setFromAddress(valueClickFromLocation.address)
+    }, [valueClickFromLocation]);
+
     useEffect(() => {
         setUserOptions(userOptionsProps)
     }, [userOptionsProps])
@@ -102,6 +112,12 @@ const PopupOrder = ({
         }
     }
 
+    function handleFromAddressInputChanged(lat, lng, address) {
+        if (address) {
+            setFromAddress(address);
+        }
+    }
+
     const openMap = () => {
         handleOpenMap(true)
     }
@@ -113,6 +129,16 @@ const PopupOrder = ({
         } else {
             setChoose(2);
             setInput(1);
+        }
+    }
+
+    const handleChooseAreaOrLocationFrom = (type) => {
+        if (type === "input") {
+            setInputFrom(2);
+            setChooseFrom(1);
+        } else {
+            setChooseFrom(2);
+            setInputFrom(1);
         }
     }
 
@@ -291,7 +317,7 @@ const PopupOrder = ({
                     </div>
                     <div className="value-form-data">
                         <h2>
-                            Địa chỉ chi nhánh: {fromAddress}
+                            Địa chỉ chi nhánh: Số 1 Đại Cồ Việt, Bách Khoa, Hai Bà Trưng, Hà Nội, Vietnam
                         </h2>
                         {item?.id &&
                             <h3>Mã vận đơn: {item?.id}</h3>
@@ -351,6 +377,59 @@ const PopupOrder = ({
                             </div>
                         </div>
 
+                        {!isView && !isEdit ?
+                            <>
+                                <div className="div-location">
+                                    <div className="div-location-1">
+                                        <h3>
+                                            Địa chỉ người gửi:
+                                        </h3>
+                                        <div className="background-btn-choose-input">
+                                            <button onClick={() => handleChooseAreaOrLocationFrom("input")}
+                                                    style={{marginRight: "1rem"}}
+                                                    className={inputFrom % 2 === 0 ? "choose-input-or-choose-2" : "choose-input-or-choose"}>
+                                                Nhập vị trí
+                                            </button>
+                                            <button onClick={() => handleChooseAreaOrLocationFrom("choose")}
+                                                    className={chooseFrom % 2 === 0 ? "choose-input-or-choose-2" : "choose-input-or-choose"}>
+                                                Chọn trên bản đồ
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div className="div-select-type-main">
+                                        {inputFrom % 2 === 0 &&
+                                            <div className="div-type">
+                                                <AddressInput2 disable={isView}
+                                                              isFrom={true}
+                                                              onFromAddressChanged={handleFromAddressInputChanged}/>
+                                            </div>
+                                        }
+                                        {chooseFrom % 2 === 0 &&
+                                            <div className="btn-type-0">
+                                                <button className="btn-type" onClick={() => {
+                                                    openMap()
+                                                    setOpenMapInfo(1)
+                                                }}>
+                                                    {fromAddress ? fromAddress : "Mở bản đồ"}
+                                                </button>
+                                            </div>}
+                                    </div>
+                                </div>
+                            </> :
+                            <>
+                                <div className="div-location">
+                                    <div className="div-location-1">
+                                        <h3>
+                                            Địa chỉ người gửi:
+                                        </h3>
+                                        <div className="background-btn-choose-input">
+                                            <Input value={item?.fromAddress} disabled={isView || isEdit}/>
+                                        </div>
+                                    </div>
+                                </div>
+                            </>
+                        }
+
                         <div style={{display: "flex", width: "100%", justifyContent: "start", alignItems: "center"}}>
                             <h3>
                                 Họ tên người nhận:
@@ -409,7 +488,10 @@ const PopupOrder = ({
                                         }
                                         {choose % 2 === 0 &&
                                             <div className="btn-type-0">
-                                                <button className="btn-type" onClick={openMap}>
+                                                <button className="btn-type" onClick={() => {
+                                                    openMap()
+                                                    setOpenMapInfo(0)
+                                                }}>
                                                     {toAddress ? toAddress : "Mở bản đồ"}
                                                 </button>
                                             </div>}
