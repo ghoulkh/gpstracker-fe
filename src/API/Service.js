@@ -118,6 +118,10 @@ let service = {
         let url = `api/auth/change-password`;
         return method.postForm(params, url);
     },
+    exportExcel: (startTime, endTime) => {
+        let url = `api/deliveries/excel?start_time=${startTime}&end_time=${endTime}`;
+        return method.getFileV2(url);
+    }
 };
 
 export default service;

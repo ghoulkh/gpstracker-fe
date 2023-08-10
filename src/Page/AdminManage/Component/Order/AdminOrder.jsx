@@ -9,9 +9,11 @@ import notice from "../../../../Utils/Notice.js";
 import SockJS from "sockjs-client/dist/sockjs"
 import auth from "../../../../API/AuthService.js";
 import {format} from "date-fns";
+import PopupExcel from "./PopupExcel.jsx";
 
 const AdminOrder = ({setLocation, setMarkerStart}) => {
     const [openPopup, setOpenPopup] = useState(false);
+    const [openPopupExcel, setOpenPopupExcel] = useState(false);
     const [openMap, setOpenMap] = useState(false);
     const [openMapInfo, setOpenMapInfo] = useState();
     const [lat, setLat] = useState(false);
@@ -426,11 +428,17 @@ const AdminOrder = ({setLocation, setMarkerStart}) => {
 
     return (
         <>
-            <div>
-                <Button style={{width: "100%", color: "#990000"}} onClick={() => handleOpenPopup(true)}>
+            <div style={{display:"flex"}}>
+                <Button
+                    style={{width: "100%", color: "#990000", border: "1px solid #990000", marginRight: "1rem"}}
+                    onClick={() => handleOpenPopup(true)}>
                     Thêm đơn
                 </Button>
-
+                <Button
+                    style={{width: "100%", color: "#990000", border: "1px solid #990000"}}
+                    onClick={() => setOpenPopupExcel(true)}>
+                    Thống kê đơn hàng
+                </Button>
             </div>
             <div>
                 <div className="info-v1">Thông tin xe</div>
@@ -517,6 +525,12 @@ const AdminOrder = ({setLocation, setMarkerStart}) => {
                             handleOpenMap={handleOpenMap}
                             setOpenMapInfo={setOpenMapInfo}
                             userOptionsProps={userOptions}
+                />
+            </div>
+            <div className={openPopupExcel ? "login-click" : "none-click-login"}>
+                <PopupExcel
+                            setOpenPopupExcel={setOpenPopupExcel}
+
                 />
             </div>
             <div className={openMap ? "login-click" : "none-click-login"}>

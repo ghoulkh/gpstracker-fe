@@ -110,6 +110,12 @@ function TimeSlider(props) {
     };
 
     const handleStartTimeChange = (event) => {
+        try {
+            format(new Date(event.target.value), 'yyyy-MM-dd\'T\'HH:mm')
+        } catch (err) {
+            notice.warn("Bạn nhập sai kí tự")
+            return;
+        }
         const selectedDateTime = parseISO(event.target.value);
         const startTimeMilliseconds = selectedDateTime.getTime();
         setStartTime(startTimeMilliseconds);
@@ -118,6 +124,12 @@ function TimeSlider(props) {
     };
 
     const handleEndTimeChange = (event) => {
+        try {
+            format(new Date(event.target.value), 'yyyy-MM-dd\'T\'HH:mm')
+        } catch (err) {
+            notice.warn("Bạn nhập sai kí tự")
+            return;
+        }
         const selectedDateTime = parseISO(event.target.value);
         const endTimeMilliseconds = selectedDateTime.getTime();
         setEndTime(endTimeMilliseconds);

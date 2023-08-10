@@ -39,6 +39,12 @@
     background-color: #FFFFFF;
     border-radius: 1rem;
 }
+.popup-order-root-123 {
+    width: fit-content;
+    height: fit-content;
+    background-color: #FFFFFF;
+    border-radius: 1rem;
+}
 .value-form-data {
     padding: 0 2rem 2rem 2rem;
 }
@@ -67,4 +73,16 @@
 }
 .css-b62m3t-container {
     width: 50vh;
+}
+.btn-excel {
+    background: #990000 !important;
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    padding: 0.5rem 1rem !important;
+    font-size: 14px !important;
+    color: #FFF !important;
+}
+.btn-excel:hover {
+    background: #9f4a49 !important;
 }
