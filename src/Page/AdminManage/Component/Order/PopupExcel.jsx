@@ -66,7 +66,7 @@ const PopupExcel = ({setOpenPopupExcel}) => {
 
     const exportExcel = () => {
         const name1 = "Từ " + format(startTime, "yyyy-MM-dd");
-        const name2 = " Đến " + format(startTime, "yyyy-MM-dd");
+        const name2 = " Đến " + format(endTime, "yyyy-MM-dd");
 
         service.exportExcel(startTime.getTime(), endTime.getTime()).then(response => {
             response.blob().then(blob => {
