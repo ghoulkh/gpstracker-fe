@@ -1,19 +1,30 @@
 import {useEffect, useState} from "react";
 import "../../../../CSS/popup-order.css";
 import {format} from "date-fns";
-import {Button} from "@mui/material";
+// import {Button} from "@mui/material";
 import service from "../../../../API/Service.js";
 import notice from "../../../../Utils/Notice.js";
 import { saveAs } from 'file-saver';
+import { PoweroffOutlined } from '@ant-design/icons';
+import { Button, Space } from 'antd';
 
 
 const PopupExcel = ({setOpenPopupExcel}) => {
     const [startTime, setStartTime] = useState(new Date());
     const [endTime, setEndTime] = useState(new Date());
     const [selectedDays, setSelectedDays] = useState(0);
+    const [loadings, setLoadings] = useState(false);
 
-    useEffect(() => {
-    }, []);
+    const enterLoading = () => {
+        setLoadings(true)
+        setTimeout(() => {
+            setLoadings((prevLoadings) => {
+                const newLoadings = [...prevLoadings];
+                newLoadings[index] = false;
+                return newLoadings;
+            });
+        }, 6000);
+    };
 
     const onClickExit = () => {
         setOpenPopupExcel(false);
@@ -65,15 +76,18 @@ const PopupExcel = ({setOpenPopupExcel}) => {
     };
 
     const exportExcel = () => {
+        setLoadings(true)
         const name1 = "Từ " + format(startTime, "yyyy-MM-dd");
         const name2 = " Đến " + format(endTime, "yyyy-MM-dd");
 
         service.exportExcel(startTime.getTime(), endTime.getTime()).then(response => {
             response.blob().then(blob => {
                 saveAs(blob, name1 + name2 + ".xlsx");
+                setLoadings(false)
             });
         }).catch(() => {
             notice.warn("Không có dữ liệu")
+            setLoadings(false)
         });
     }
 
@@ -123,9 +137,13 @@ const PopupExcel = ({setOpenPopupExcel}) => {
                                 </div>
                             </div>
                             <div style={{width: "100%", display: "flex", justifyContent: "center", alignItems: "center", marginTop: "1rem"}}>
-                                <Button className="btn-excel" onClick={exportExcel}>
-                                    Xuất báo cáo
-                                </Button>
+                                <Space direction="vertical">
+                                    <Space wrap>
+                                        <Button className="btn-excel" loading={loadings} onClick={exportExcel}>
+                                            Xuất báo cáo
+                                        </Button>
+                                    </Space>
+                                </Space>
                             </div>
                         </div>
                     </div>
