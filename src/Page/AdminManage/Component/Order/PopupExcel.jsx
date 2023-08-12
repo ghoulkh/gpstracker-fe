@@ -30,15 +30,15 @@ const PopupExcel = ({setOpenPopupExcel}) => {
             currentDate.setHours(0, 0, 0, 0);
             const startTime = currentDate.getTime();
             const endTime = startTime + 24 * 60 * 60 * 1000;
-            setStartTime(startTime);
-            setEndTime(endTime);
+            setStartTime(new Date(startTime));
+            setEndTime(new Date(endTime));
         } else {
             const currentDate = new Date();
             currentDate.setHours(0, 0, 0, 0);
             const startTime = currentDate - selectedDays * 24 * 60 * 60 * 1000;// Convert days to milliseconds
             const endTime = startTime + 24 * 60 * 60 * 1000;
-            setStartTime(startTime);
-            setEndTime(endTime);
+            setStartTime(new Date(startTime));
+            setEndTime(new Date(endTime));
         }
     }, [selectedDays]);
 
