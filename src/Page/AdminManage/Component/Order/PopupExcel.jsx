@@ -1,11 +1,9 @@
 import {useEffect, useState} from "react";
 import "../../../../CSS/popup-order.css";
 import {format} from "date-fns";
-// import {Button} from "@mui/material";
 import service from "../../../../API/Service.js";
 import notice from "../../../../Utils/Notice.js";
 import { saveAs } from 'file-saver';
-import { PoweroffOutlined } from '@ant-design/icons';
 import { Button, Space } from 'antd';
 
 
@@ -14,17 +12,6 @@ const PopupExcel = ({setOpenPopupExcel}) => {
     const [endTime, setEndTime] = useState(new Date());
     const [selectedDays, setSelectedDays] = useState(0);
     const [loadings, setLoadings] = useState(false);
-
-    const enterLoading = () => {
-        setLoadings(true)
-        setTimeout(() => {
-            setLoadings((prevLoadings) => {
-                const newLoadings = [...prevLoadings];
-                newLoadings[index] = false;
-                return newLoadings;
-            });
-        }, 6000);
-    };
 
     const onClickExit = () => {
         setOpenPopupExcel(false);
