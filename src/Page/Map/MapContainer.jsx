@@ -73,34 +73,59 @@ function MapContainer(props) {
             return;
         }
 
-        const waypoints = locations.slice(1, locations.length - 1).map((location) => ({
-            location: `${location.lat},${location.lon}`
-        }));
+        const maxPoint = 25; // Số lượng điểm trong mỗi phần
+        const points = [];
+        for (let i = 0; i < locations.length; i += maxPoint) {
+            // Chia đoạn đường thành các phần nhỏ, mỗi phần có tối đa `maxPoint` điểm
+            points.push(locations.slice(i, i + maxPoint));
+        }
 
-        const origin = `${locations[0].lat},${locations[0].lon}`;
-        const destination = `${locations[locations.length - 1].lat},${locations[locations.length - 1].lon}`;
+        const promises = points.map(point => {
+            const waypoints = point.slice(1, point.length - 1).map((location) => ({
+                location: `${location.lat},${location.lon}`
+            }));
 
-        const request = {
-            origin,
-            destination,
-            waypoints,
-            optimizeWaypoints: true,
-            travelMode: props.google.maps.TravelMode.DRIVING
-        };
+            const origin = `${point[0].lat},${point[0].lon}`;
+            const destination = `${point[point.length - 1].lat},${point[point.length - 1].lon}`;
 
-        directionsService.route(request, (result, status) => {
-            if (status === props.google.maps.DirectionsStatus.OK) {
-                const pathCoordinates = result.routes[0].overview_path.map((point) => ({
-                    lat: point.lat(),
-                    lng: point.lng()
-                }));
-                setPath(pathCoordinates);
-            }
-        }).catch(() => {
-            notice.inf("Không có kết quả nào phù hợp");
-            setPath([])
+            const request = {
+                origin,
+                destination,
+                waypoints,
+                optimizeWaypoints: true,
+                travelMode: props.google.maps.TravelMode.DRIVING
+            };
+
+            return new Promise((resolve, reject) => {
+                // Gửi yêu cầu dịch vụ chỉ đường cho từng phần đoạn đường nhỏ
+                directionsService.route(request, (result, status) => {
+                    if (status === props.google.maps.DirectionsStatus.OK) {
+                        // Chuyển đổi dữ liệu đoạn đường thành tọa độ đường đi
+                        const pathCoordinates = result.routes[0].overview_path.map((point) => ({
+                            lat: point.lat(),
+                            lng: point.lng()
+                        }));
+                        resolve(pathCoordinates); //resolve để hàm Promise.all bên dưới có thể chạy được
+                    } else {
+                        reject(); //hàm Promise.all sẽ bị loại bỏ
+                    }
+                });
+            });
         });
+
+        // Kết hợp các tọa độ đường đi của các phần nhỏ để tạo ra đoạn đường hoàn chỉnh
+        Promise.all(promises)
+            .then(pathCoordinates => {
+                //pathCoordinates chính là toạ độ các điểm đã được nối, reduce là gộp lại thành một mảng điểm mới sau khi nối
+                const fullPathCoordinates = pathCoordinates.reduce((acc, chunk) => [...acc, ...chunk], []);
+                setPath(fullPathCoordinates);
+            })
+            .catch(() => {
+                notice.inf("Không có kết quả nào phù hợp");
+                setPath([]);
+            });
     };
+
 
 
     const onMarkerClick = (props, marker) => {
