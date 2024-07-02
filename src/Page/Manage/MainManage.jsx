@@ -104,7 +104,7 @@ const MainManage = ({loggedInUserObj}) => {
                                         {value: 'user', label: 'Quản lý người dùng'},
                                         {value: 'manage', label: 'Giám sát'},
                                         {value: 'video', label: 'Xem lại hành trình'},
-                                        {value: 'image', label: 'Hình ảnh'},
+                                        // {value: 'image', label: 'Hình ảnh'},
                                         {value: 'order', label: 'Lên đơn hàng'},
                                     ]}
                                 />

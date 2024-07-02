@@ -213,7 +213,6 @@ const AdminOrder = ({setLocation, setMarkerStart}) => {
                 console.log('WebSocket connection opened');
                 client.subscribe('/rfid/' + chooseUser?.rfid, message => {
                     console.log('Received message:', message.body);
-                    console.log("KHANH")
                     const result = JSON.parse(message.body)
                     setMarkerStart(prevState => {
                         return ([result, ...prevState.slice(1)])

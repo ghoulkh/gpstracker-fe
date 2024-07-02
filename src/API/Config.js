@@ -1,5 +1,5 @@
 const config = {
-    HOST: "http://34.87.43.29:8000",
-    WS: "http://34.87.43.29:8000/ws"
+    HOST: "https://api.hust.id.vn",
+    WS: "https://api.hust.id.vn/ws"
 };
 export default config;

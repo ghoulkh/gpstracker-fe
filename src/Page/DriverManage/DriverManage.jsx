@@ -351,7 +351,6 @@ const DriverManage = ({setLocation, setMarkerStart, isPopupNavigation}) => {
                 console.log('WebSocket connection opened');
                 client.subscribe('/rfid/' + carInfo?.rfid, message => {
                     console.log('Received message:', message.body);
-                    console.log("KHANH")
                     const result = JSON.parse(message.body)
                     setMarkerStart(prevState => {
                         return ([result, ...prevState.slice(1)])

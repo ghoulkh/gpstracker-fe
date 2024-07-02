@@ -94,7 +94,11 @@ const UserManagementComponent = (props) => {
             client.subscribe('/checkin/realtime', message => {
                 if (message) {
                     const data = JSON.parse(message.body)
-                    notice.inf("User rfid: " + data.rfid + " đã online")
+                    if (data?.enabled) {
+                        notice.inf("User rfid: " + data.rfid + " đã online")
+                    } else {
+                        notice.inf("User rfid: " + data.rfid + " đã offline")
+                    }
                     setCheckUser(data)
                 }
             });
