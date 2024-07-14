@@ -122,7 +122,11 @@ const AdminOrder = ({setLocation, setMarkerStart}) => {
                 if (message) {
                     const data = JSON.parse(message.body)
                     const listOptionNew = [];
-                    notice.inf("User rfid: " + data.rfid + " đã bắt đầu giao hàng");
+                    if (data?.enabled) {
+                        notice.inf("User rfid: " + data.rfid + " đã đi giao hàng")
+                    } else {
+                        notice.inf("User rfid: " + data.rfid + " đã dừng giao hàng")
+                    }
                     listOptionNew.forEach(data => {
                         if (data.status === "INACTIVE") {
                             listOptionNew.push({
@@ -427,7 +431,7 @@ const AdminOrder = ({setLocation, setMarkerStart}) => {
 
     return (
         <>
-            <div style={{display:"flex"}}>
+            <div style={{display: "flex"}}>
                 <Button
                     style={{width: "100%", color: "#990000", border: "1px solid #990000", marginRight: "1rem"}}
                     onClick={() => handleOpenPopup(true)}>
@@ -442,7 +446,7 @@ const AdminOrder = ({setLocation, setMarkerStart}) => {
             <div>
                 <div className="info-v1">Thông tin xe</div>
                 <div ref={divRefUser} className="main-car-info">
-                <div className="car-info">
+                    <div className="car-info">
                         <div className="rfid">
                             <div>RFID</div>
                         </div>
@@ -528,7 +532,7 @@ const AdminOrder = ({setLocation, setMarkerStart}) => {
             </div>
             <div className={openPopupExcel ? "login-click" : "none-click-login"}>
                 <PopupExcel
-                            setOpenPopupExcel={setOpenPopupExcel}
+                    setOpenPopupExcel={setOpenPopupExcel}
 
                 />
             </div>

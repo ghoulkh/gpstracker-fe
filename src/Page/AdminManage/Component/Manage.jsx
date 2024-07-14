@@ -95,9 +95,9 @@ const UserManagementComponent = (props) => {
                 if (message) {
                     const data = JSON.parse(message.body)
                     if (data?.enabled) {
-                        notice.inf("User rfid: " + data.rfid + " đã online")
+                        notice.inf("User rfid: " + data.rfid + " đã đi giao hàng")
                     } else {
-                        notice.inf("User rfid: " + data.rfid + " đã offline")
+                        notice.inf("User rfid: " + data.rfid + " đã dừng giao hàng")
                     }
                     setCheckUser(data)
                 }
